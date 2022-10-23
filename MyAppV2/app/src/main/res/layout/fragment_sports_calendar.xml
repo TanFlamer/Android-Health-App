@@ -1,19 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#00BCD4"
+    android:orientation="vertical"
+    android:gravity="center"
     tools:context=".subfragments.sports.SportsCalendar">
 
-    <!-- TODO: Update blank fragment layout -->
     <TextView
-        android:id="@+id/fragmentPlaylists"
+        android:id="@+id/textView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#00BCD4"
-        android:text="Sports Calendar"
+        android:layout_height="wrap_content"
+        android:text="Sports Schedule"
         android:textAlignment="center"
-        android:textSize="34sp"
-        android:textStyle="bold" />
+        android:textAllCaps="true"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:typeface="serif"/>
 
-</FrameLayout>
+    <CalendarView
+        android:id="@+id/calendarView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+</LinearLayout>
