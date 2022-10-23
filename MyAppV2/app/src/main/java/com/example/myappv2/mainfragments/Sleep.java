@@ -1,22 +1,17 @@
 package com.example.myappv2.mainfragments;
 
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager2.widget.ViewPager2;
 
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-
 import com.example.myappv2.R;
-import com.example.myappv2.subfragments.MusicAdapter;
 import com.example.myappv2.subfragments.SleepAdapter;
-import com.example.myappv2.subfragments.music.MusicStatistics;
-import com.example.myappv2.subfragments.music.Playlists;
-import com.example.myappv2.subfragments.music.Songs;
 import com.example.myappv2.subfragments.sleep.SleepCalendar;
 import com.example.myappv2.subfragments.sleep.SleepList;
 import com.example.myappv2.subfragments.sleep.SleepStatistics;

@@ -19,10 +19,10 @@ import java.util.ArrayList;
 
 public class SleepDialogFragment extends DialogFragment {
 
-    String date;
+    SleepDialogFragment sleepDialog;
 
-    public SleepDialogFragment(int i, int i1, int i2) {
-        date = "" + i + i1 + i2;
+    public void setSleepDialog(SleepDialogFragment sleepDialogFragment){
+        sleepDialog = sleepDialogFragment;
     }
 
     @Nullable
@@ -37,13 +37,24 @@ public class SleepDialogFragment extends DialogFragment {
 
         ListView listView = (ListView) requireView().findViewById(R.id.sleepInfo);
         ArrayList<String> info = new ArrayList<>();
-        info.add(date);
-        ArrayAdapter arrayAdapter = new ArrayAdapter(getContext(), android.R.layout.simple_list_item_1, info);
+        info.add("test");
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, info);
         listView.setAdapter(arrayAdapter);
 
         Button edit = requireView().findViewById(R.id.sleepEdit);
-        edit.setOnClickListener(view1 -> {
-            Toast.makeText(getActivity(),"test", Toast.LENGTH_SHORT).show();
+            edit.setOnClickListener(view1 -> {
+                Toast.makeText(getActivity(),"test", Toast.LENGTH_SHORT).show();
+                SleepDialogEditFragment sleepDialogEdit = new SleepDialogEditFragment();
+                sleepDialogEdit.setSleepDialog(sleepDialog);
+                sleepDialogEdit.show(getChildFragmentManager(), "sleepDialogEdit");
+            });
+
+        Button delete = requireView().findViewById(R.id.sleepDelete);
+        delete.setOnClickListener(view1 -> {
+            Toast.makeText(getActivity(),"lol", Toast.LENGTH_SHORT).show();
+            SleepDialogDeleteFragment sleepDialogDelete = new SleepDialogDeleteFragment();
+            sleepDialogDelete.setSleepDialog(sleepDialog);
+            sleepDialogDelete.show(getChildFragmentManager(), "sleepDialogDelete");
         });
     }
 }

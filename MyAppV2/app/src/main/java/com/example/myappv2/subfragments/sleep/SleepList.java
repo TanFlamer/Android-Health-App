@@ -2,13 +2,22 @@ package com.example.myappv2.subfragments.sleep;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.myappv2.R;
+import com.example.myappv2.recyclers.SleepRecyclerAdapter;
+import com.example.myappv2.recyclers.SleepRecyclerItem;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -62,5 +71,17 @@ public class SleepList extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_sleep_list, container, false);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        RecyclerView recyclerView = requireView().findViewById(R.id.sleepRecycler);
+        List<SleepRecyclerItem> items = new ArrayList<>();
+        items.add(new SleepRecyclerItem("test1","test1","test1", 0));
+        items.add(new SleepRecyclerItem("test2","test2","test2", 0));
+        recyclerView.setAdapter(new SleepRecyclerAdapter(getContext(), items));
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
     }
 }

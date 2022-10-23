@@ -10,12 +10,14 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.CalendarView;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import com.example.myappv2.MainActivity;
 import com.example.myappv2.R;
+import com.example.myappv2.customdialogs.SleepDialogEditFragment;
 import com.example.myappv2.customdialogs.SleepDialogFragment;
 import com.example.myappv2.mainfragments.Sleep;
 
@@ -76,9 +78,11 @@ public class SleepCalendar extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
         CalendarView calendarView = (CalendarView) requireView().findViewById(R.id.calendarSleep);
         calendarView.setOnDateChangeListener((calendarView1, i, i1, i2) -> {
-            SleepDialogFragment sleepDialog = new SleepDialogFragment(i, i1, i2);
+            SleepDialogFragment sleepDialog = new SleepDialogFragment();
+            sleepDialog.setSleepDialog(sleepDialog);
             sleepDialog.show(getChildFragmentManager(), "sleepDialog");
         });
     }
