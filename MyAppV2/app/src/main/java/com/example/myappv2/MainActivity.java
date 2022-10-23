@@ -6,6 +6,9 @@ import androidx.fragment.app.FragmentManager;
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ImageButton;
 
 import com.example.myappv2.mainfragments.Info;
 import com.example.myappv2.mainfragments.Music;
@@ -44,6 +47,12 @@ public class MainActivity extends AppCompatActivity {
                     .replace(R.id.mainFragmentContainer, returnFragmentClass(item), null)
                     .commit();
             return true;
+        });
+
+        MP3Player mp3Player = new MP3Player(this);
+        ImageButton pause = findViewById(R.id.songPause);
+        pause.setOnClickListener(view -> {
+            mp3Player.play();
         });
     }
 

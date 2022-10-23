@@ -38,6 +38,8 @@ public class SleepDialogFragment extends DialogFragment {
         ListView listView = (ListView) requireView().findViewById(R.id.sleepInfo);
         ArrayList<String> info = new ArrayList<>();
         info.add("test");
+        info.add("test");
+        info.add("test");
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, info);
         listView.setAdapter(arrayAdapter);
 
