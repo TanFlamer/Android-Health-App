@@ -2,11 +2,18 @@ package com.example.myappv2.subfragments.sports;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TableLayout;
+import android.widget.TableRow;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.myappv2.R;
 
@@ -62,5 +69,51 @@ public class SportsList extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_sports_list, container, false);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        addTableRow("test");
+        addTableRow("test2");
+
+        TableLayout table = requireView().findViewById(R.id.sportsTable);
+        for(int i = 0, j = table.getChildCount(); i < j; i++) {
+            View tableRow = table.getChildAt(i);
+            if (tableRow instanceof TableRow) {
+                // then, you can remove the the row you want...
+                // for instance...
+                Toast.makeText(getContext(), "test", Toast.LENGTH_SHORT).show();
+                TableRow row = (TableRow) tableRow;
+                if(((TextView) row.getChildAt(0)).getText().toString().equals("test")) {
+                    //table.removeView(row);
+                    table.removeViewAt(i);
+                }
+            }
+        }
+    }
+
+    public void addTableRow(String text){
+        TableLayout tableLayout = requireView().findViewById(R.id.sportsTable);
+        TableRow tableRow = new TableRow(getContext());
+
+        TextView tv0 = new TextView(getContext());
+        tv0.setText(text);
+        tableRow.addView(tv0);
+
+        TextView tv1 = new TextView(getContext());
+        tv1.setText(text);
+        tableRow.addView(tv1);
+
+        TextView tv2 = new TextView(getContext());
+        tv2.setText(text);
+        tableRow.addView(tv2);
+
+        TextView tv3 = new TextView(getContext());
+        tv3.setText(text);
+        tableRow.addView(tv3);
+
+        tableLayout.addView(tableRow);
     }
 }

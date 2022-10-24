@@ -11,7 +11,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.Toast;
 
 import com.example.myappv2.R;
 import com.example.myappv2.recyclers.SleepRecyclerAdapter;
@@ -78,11 +81,24 @@ public class SleepList extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        RecyclerView recyclerView = requireView().findViewById(R.id.sleepRecycler);
+        ListView listView = requireView().findViewById(R.id.sleepListInfo);
+        List<SleepListItem> sleepListItemList = new ArrayList<>();
+        sleepListItemList.add(new SleepListItem("test", "test","test", 0));
+        sleepListItemList.add(new SleepListItem("test1", "test1","test1", 1));
+        SleepListAdapter sleepListAdapter = new SleepListAdapter(getContext(), R.layout.sleep_list_item, sleepListItemList);
+        listView.setAdapter(sleepListAdapter);
+
+        listView.setOnItemClickListener((adapterView, view1, i, l) -> {
+            SleepListItem sleepListItem = (SleepListItem) listView.getItemAtPosition(i);
+            Toast.makeText(getContext(), sleepListItem.getDate(), Toast.LENGTH_SHORT).show();
+        });
+
+        //for recycler view use
+        /*RecyclerView recyclerView = requireView().findViewById(R.id.sleepRecycler);
         List<SleepRecyclerItem> items = new ArrayList<>();
         items.add(new SleepRecyclerItem("test1","test1","test1", 0));
         items.add(new SleepRecyclerItem("test2","test2","test2", 0));
         recyclerView.setAdapter(new SleepRecyclerAdapter(getContext(), items));
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));*/
     }
 }

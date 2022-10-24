@@ -19,10 +19,13 @@
         android:layout_width="match_parent"
         android:layout_height="2dp"
         android:background="#000000"
-        android:orientation="vertical"></LinearLayout>
+        android:orientation="vertical">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/sleepRecycler"
+    </LinearLayout>
+
+    <ListView
+        android:id="@+id/sleepListInfo"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
+
 </LinearLayout>

@@ -1,19 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/sportsTable"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".subfragments.sports.SportsList">
+    tools:context=".subfragments.sports.SportsList"
+    android:stretchColumns="*">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:id="@+id/fragmentPlaylists"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#00BCD4"
-        android:text="Sports List"
-        android:textAlignment="center"
-        android:textSize="34sp"
-        android:textStyle="bold" />
+    <TableRow
+        android:id="@+id/sportsHeader"
+        android:background="@color/white">
 
-</FrameLayout>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Rank" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Player" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Team" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Points" />
+    </TableRow>
+
+</TableLayout>

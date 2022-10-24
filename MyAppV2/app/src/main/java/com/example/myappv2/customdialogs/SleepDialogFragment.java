@@ -35,7 +35,7 @@ public class SleepDialogFragment extends DialogFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        ListView listView = (ListView) requireView().findViewById(R.id.sleepInfo);
+        ListView listView = requireView().findViewById(R.id.sleepInfo);
         ArrayList<String> info = new ArrayList<>();
         info.add("test");
         info.add("test");
