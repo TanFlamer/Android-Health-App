@@ -1,89 +1,53 @@
 # Adapted from: https://medium.com/@tuzzer/cart-pole-balancing-with-q-learning-b54c6068d947
 
+import results_processing
 import math
 import random
 import gym
 import numpy as np
 
 # Initialize the "Cart-Pole" environment
-env = gym.make('Pendulum-v1')
+env = gym.make('Acrobot-v1')
 
-# Defining the environment related constants
 # Number of discrete states (bucket) per state dimension
-NUM_BUCKETS = (10, 1, 10)
+NUM_BUCKETS = (10, 10, 10, 10, 10, 10)
+
 # Number of discrete actions
-NUM_ACTIONS = 32
+NUM_ACTIONS = env.action_space.n
+
 # Bounds for each discrete state
 STATE_BOUNDS = list(zip(env.observation_space.low, env.observation_space.high))
 
 # Learning related constants
-# Continue here
 MIN_EXPLORE_RATE = 0.01
 MIN_LEARNING_RATE = 0.1
+DISCOUNT_FACTOR = 0.999
 
 # Defining the simulation related constants
-NUM_TRAIN_EPISODES = 500  # 1000
+NUM_TRAIN_EPISODES = 1000
 MAX_TRAIN_T = 500
+MAX_RUNS = 50
 
 
-def loop():
+def loop(runs):
     episodes = []
     failed_runs = []
     run_number = 0
-    while len(episodes) < 30 and run_number < 50:
+    while len(episodes) < runs and run_number < MAX_RUNS:
         run_number += 1
         episode, solved = train(run_number)
         if solved:
             episodes.append(episode)
         else:
             failed_runs.append(run_number)
-            print("Run %2d failed in 500 episodes - *" % run_number)
-    return get_results(episodes), failed_runs
-
-
-def get_results(episodes):
-    runs = len(episodes)
-    if runs == 0:
-        return 0, 0, 0, 0, 0, 0
-    elif runs == 1:
-        return episodes[0], 0, episodes[0], 0, episodes[0], episodes[0]
-    else:
-        mean = sum(episodes) / runs
-        variance = (sum(np.square(episodes)) / runs) - (mean * mean)
-        standard_deviation = math.sqrt(variance)
-
-        episodes.sort()
-        if runs % 2 == 0:
-            midpoint = runs // 2 - 1
-            median = (episodes[midpoint] + episodes[midpoint + 1]) / 2
-            runs_halved = runs // 2
-            offset = 0
-        else:
-            midpoint = (runs + 1) // 2 - 1
-            median = episodes[midpoint]
-            runs_halved = (runs - 1) // 2
-            offset = 1
-
-        if runs_halved % 2 == 0:
-            midpoint = runs_halved // 2 - 1
-            print(midpoint)
-            first_quartile = (episodes[midpoint] + episodes[midpoint + 1]) / 2
-            third_quartile = (episodes[midpoint + runs_halved + offset] + episodes[
-                midpoint + runs_halved + offset + 1]) / 2
-        else:
-            midpoint = (runs_halved + 1) // 2 - 1
-            first_quartile = episodes[midpoint]
-            third_quartile = episodes[midpoint + runs_halved + offset]
-        inter_quartile_range = third_quartile - first_quartile
-
-        return mean, standard_deviation, median, inter_quartile_range, max(episodes), min(episodes)
+            print("Run %2d failed in %d episodes - *" % (run_number, NUM_TRAIN_EPISODES))
+    return results_processing.get_results(episodes), failed_runs
 
 
 def train(run):
     # Instantiating the learning related parameters
     learning_rate = get_learning_rate(0)
     explore_rate = get_explore_rate(0)
-    discount_factor = 0.999  # since the world is unchanging
 
     q_table = np.zeros(NUM_BUCKETS + (NUM_ACTIONS,))
     time_steps = [0]
@@ -98,8 +62,6 @@ def train(run):
         # the initial state
         state_0 = state_to_bucket(obv)
 
-        rewards = 0
-
         for t in range(1, MAX_TRAIN_T + 1):
             env.render()
 
@@ -107,38 +69,32 @@ def train(run):
             action = select_action(state_0, explore_rate, q_table)
 
             # Execute the action
-            obv, reward, _, truncated, _ = env.step(action)
-
-            rewards += reward
+            obv, reward, terminated, _, _ = env.step(action)
 
             # Observe the result
             state = state_to_bucket(obv)
 
             # Update the Q based on the result
-            action_bucket = round((action[0] + 2.0) / (4.0 / NUM_ACTIONS) - 0.5)
             best_q = np.amax(q_table[state])
-            q_table[state_0 + (action_bucket,)] += learning_rate * (
-                    reward + discount_factor * best_q - q_table[state_0 + (action_bucket,)])
+            q_table[state_0 + (action,)] += learning_rate * (
+                    reward + DISCOUNT_FACTOR * best_q - q_table[state_0 + (action,)])
 
             # Setting up for the next iteration
             state_0 = state
 
-            if truncated:
-                # print("Episode %d finished after %f time steps" % (episode, t))
-                time_steps.append(reward + time_steps[-1])
+            if terminated:
+                time_steps.append(t + time_steps[-1])
                 break
-
-        # It's considered done when average for last 100 time steps is >= 195.0
-        num_elements = len(time_steps) - 1
-        if num_elements <= 100:
-            average = time_steps[-1] / num_elements
         else:
-            average = (time_steps[-1] - time_steps[-101]) / 100
+            time_steps.append(MAX_TRAIN_T + time_steps[-1])
 
-        if episode % 100 == 0:
+        # It's considered done when average for last 100 time steps is <= 150.0
+        average = results_processing.get_average(time_steps)
+
+        if episode % 50 == 0:
             print("%d %f" % (episode, average))
 
-        if average >= -5 and episode >= 100:
+        if average <= 200.0:
             episodes_to_solve = episode
             solved = True
             print("Run %2d solved in %d episodes" % (run, episode))
@@ -158,7 +114,7 @@ def select_action(state, explore_rate, q_table):
         action = env.action_space.sample()
     # Select the action with the highest q
     else:
-        action = [(np.argmax(q_table[state]) + 0.5) * (4.0 / NUM_ACTIONS) - 2.0]
+        action = np.argmax(q_table[state])
     return action
 
 
@@ -200,19 +156,7 @@ def random_seed(seed):
     env.reset(seed=seed)
 
 
-def print_results(result, failed_runs):
-    print("")
-    print("Mean = %f" % result[0])
-    print("Standard Deviation = %f" % result[1])
-    print("Median = %.1f" % result[2])
-    print("Inter-Quartile Range = %.1f" % result[3])
-    print("Max = %d" % result[4])
-    print("Min = %d" % result[5])
-    print("Runs failed: %d" % len(failed_runs))
-    print("Failed runs:", failed_runs)
-
-
 if __name__ == "__main__":
     random_seed(20313854)
-    results, failed = loop()
-    print_results(results, failed)
+    results, failed = loop(30)
+    results_processing.print_results(results, failed)

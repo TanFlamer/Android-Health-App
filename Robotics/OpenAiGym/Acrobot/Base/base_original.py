@@ -7,40 +7,40 @@ import gym
 import numpy as np
 
 # Initialize the "Cart-Pole" environment
-env = gym.make('CartPole-v0')
+env = gym.make('Acrobot-v1')
 
-# Defining the environment related constants
 # Number of discrete states (bucket) per state dimension
-NUM_BUCKETS = (1, 1, 6, 3)  # (x, x', theta, theta')
+NUM_BUCKETS = (10, 10, 10, 10, 10, 10)
+
 # Number of discrete actions
-NUM_ACTIONS = env.action_space.n  # (left, right)
+NUM_ACTIONS = env.action_space.n
+
 # Bounds for each discrete state
 STATE_BOUNDS = list(zip(env.observation_space.low, env.observation_space.high))
-STATE_BOUNDS[1] = (-0.5, 0.5)
-STATE_BOUNDS[3] = (-math.radians(50), math.radians(50))
 
 # Learning related constants
-# Continue here
 MIN_EXPLORE_RATE = 0.01
 MIN_LEARNING_RATE = 0.1
+DISCOUNT_FACTOR = 0.999
 
 # Defining the simulation related constants
-NUM_TRAIN_EPISODES = 500  # 1000
-MAX_TRAIN_T = 200
+NUM_TRAIN_EPISODES = 1000
+MAX_TRAIN_T = 500
+MAX_RUNS = 50
 
 
-def loop():
+def loop(runs):
     episodes = []
     failed_runs = []
     run_number = 0
-    while len(episodes) < 30 and run_number < 50:
+    while len(episodes) < runs and run_number < MAX_RUNS:
         run_number += 1
         episode, solved = train(run_number)
         if solved:
             episodes.append(episode)
         else:
             failed_runs.append(run_number)
-            print("Run %2d failed in 500 episodes - *" % run_number)
+            print("Run %2d failed in %d episodes - *" % (run_number, NUM_TRAIN_EPISODES))
     return results_processing.get_results(episodes), failed_runs
 
 
@@ -48,7 +48,6 @@ def train(run):
     # Instantiating the learning related parameters
     learning_rate = get_learning_rate(0)
     explore_rate = get_explore_rate(0)
-    discount_factor = 0.999  # since the world is unchanging
 
     q_table = np.zeros(NUM_BUCKETS + (NUM_ACTIONS,))
     time_steps = [0]
@@ -70,11 +69,7 @@ def train(run):
             action = select_action(state_0, explore_rate, q_table)
 
             # Execute the action
-            obv, reward, terminated, truncated, _ = env.step(action)
-
-            if terminated:
-                time_steps.append(t + time_steps[-1])
-                break
+            obv, reward, terminated, _, _ = env.step(action)
 
             # Observe the result
             state = state_to_bucket(obv)
@@ -82,19 +77,27 @@ def train(run):
             # Update the Q based on the result
             best_q = np.amax(q_table[state])
             q_table[state_0 + (action,)] += learning_rate * (
-                    reward + discount_factor * best_q - q_table[state_0 + (action,)])
+                    reward + DISCOUNT_FACTOR * best_q - q_table[state_0 + (action,)])
 
             # Setting up for the next iteration
             state_0 = state
 
+            if terminated:
+                time_steps.append(t + time_steps[-1])
+                break
         else:
             time_steps.append(MAX_TRAIN_T + time_steps[-1])
 
-        # It's considered done when average for last 100 time steps is >= 195.0
-        if results_processing.get_average(time_steps) >= 195.0:
-            print("Run %2d solved in %d episodes" % (run, episode))
+        # It's considered done when average for last 100 time steps is <= 150.0
+        average = results_processing.get_average(time_steps)
+
+        if episode % 50 == 0:
+            print("%d %f" % (episode, average))
+
+        if average <= 200.0:
             episodes_to_solve = episode
             solved = True
+            print("Run %2d solved in %d episodes" % (run, episode))
             break
 
         # Update parameters
@@ -155,5 +158,5 @@ def random_seed(seed):
 
 if __name__ == "__main__":
     random_seed(20313854)
-    results, failed = loop()
+    results, failed = loop(30)
     results_processing.print_results(results, failed)

@@ -54,8 +54,8 @@ def get_results(episodes):
 
 def print_results(result, failed_runs):
     print("")
-    print("Mean = %f" % result[0])
-    print("Standard Deviation = %f" % result[1])
+    print("Mean = %.2f" % result[0])
+    print("Standard Deviation = %.2f" % result[1])
     print("Median = %.1f" % result[2])
     print("Inter-Quartile Range = %.1f" % result[3])
     print("Max = %d" % result[4])
