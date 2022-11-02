@@ -12,14 +12,14 @@
         android:icon="@drawable/ic_sleep" />
 
     <item
-        android:id="@+id/mp3"
-        android:title="MP3"
-        android:icon="@drawable/ic_mp3" />
+        android:id="@+id/music"
+        android:title="Music"
+        android:icon="@drawable/ic_music" />
 
     <item
-        android:id="@+id/exercise"
-        android:title="Exercise"
-        android:icon="@drawable/ic_exercise" />
+        android:id="@+id/sport"
+        android:title="Sport"
+        android:icon="@drawable/ic_sport" />
 
     <item
         android:id="@+id/info"

@@ -1,4 +1,4 @@
-package com.example.myapp;
+package com.example.myapp.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -6,9 +6,10 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.example.myapp.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-public class Exercise extends AppCompatActivity {
+public class Info extends AppCompatActivity {
 
     BottomNavigationView bottomNavigation;
 
@@ -16,14 +17,14 @@ public class Exercise extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_exercise);
+        setContentView(R.layout.activity_info);
 
         //Initialization
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigator);
         bottomNavigation = bottomNavigationView;
 
         //Select MP3 as default
-        bottomNavigationView.setSelectedItemId(R.id.exercise);
+        bottomNavigationView.setSelectedItemId(R.id.info);
 
         //Item Selected Listener
         bottomNavigationView.setOnItemSelectedListener(item -> {
@@ -38,17 +39,17 @@ public class Exercise extends AppCompatActivity {
                     overridePendingTransition(0, 0);
                     return true;
 
-                case R.id.mp3:
-                    startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                case R.id.music:
+                    startActivity(new Intent(getApplicationContext(), Music.class));
                     overridePendingTransition(0, 0);
                     return true;
 
-                case R.id.exercise:
+                case R.id.sport:
+                    startActivity(new Intent(getApplicationContext(), Sport.class));
+                    overridePendingTransition(0, 0);
                     return true;
 
                 case R.id.info:
-                    startActivity(new Intent(getApplicationContext(), Info.class));
-                    overridePendingTransition(0, 0);
                     return true;
             }
             return false;
@@ -58,6 +59,6 @@ public class Exercise extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        bottomNavigation.setSelectedItemId(R.id.exercise);
+        bottomNavigation.setSelectedItemId(R.id.info);
     }
 }
