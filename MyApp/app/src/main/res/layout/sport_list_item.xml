@@ -1,17 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context=".fragmentsSport.SportType">
+    android:orientation="vertical">
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/sportType"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Music List"
-        android:textAlignment="center"
+        android:text="Name"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/sportEnergy"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Calorie per Minute"
         android:textSize="20sp"
         android:textStyle="bold" />
 
@@ -19,12 +24,5 @@
         android:layout_width="match_parent"
         android:layout_height="2dp"
         android:background="#000000"
-        android:orientation="vertical">
-
-    </LinearLayout>
-
-    <ListView
-        android:id="@+id/sportListView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:orientation="vertical" />
 </LinearLayout>

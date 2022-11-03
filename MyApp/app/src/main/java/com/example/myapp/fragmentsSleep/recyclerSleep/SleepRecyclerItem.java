@@ -42,12 +42,12 @@ public class SleepRecyclerItem {
         this.title = title;
     }
 
-    public boolean isHidden() {
-        return hidden;
+    public boolean isShown() {
+        return shown;
     }
 
-    public void setHidden(boolean hidden) {
-        this.hidden = hidden;
+    public void setShown(boolean shown) {
+        this.shown = shown;
     }
 
     String title;
@@ -55,7 +55,7 @@ public class SleepRecyclerItem {
     String sleepTime;
     String wakeTime;
     int sleepDuration;
-    boolean hidden;
+    boolean shown;
 
     public SleepRecyclerItem(String title, String date, String sleepTime, String wakeTime, int sleepDuration){
         this.title = title;
@@ -63,6 +63,6 @@ public class SleepRecyclerItem {
         this.sleepTime = sleepTime;
         this.wakeTime = wakeTime;
         this.sleepDuration = sleepDuration;
-        this.hidden = false;
+        this.shown = false;
     }
 }

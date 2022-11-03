@@ -2,13 +2,23 @@ package com.example.myapp.fragmentsSport;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 
 import com.example.myapp.R;
+import com.example.myapp.fragmentsMusic.listMusic.MusicListAdapter;
+import com.example.myapp.fragmentsMusic.listMusic.MusicListItem;
+import com.example.myapp.fragmentsSport.listSport.SportListAdapter;
+import com.example.myapp.fragmentsSport.listSport.SportListItem;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -62,5 +72,19 @@ public class SportType extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_sport_type, container, false);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        ListView listView = requireView().findViewById(R.id.sportListView);
+        List<SportListItem> sportListItemList = new ArrayList<>();
+
+        sportListItemList.add(new SportListItem("test", 0));
+        sportListItemList.add(new SportListItem("test1", 1));
+
+        SportListAdapter sportListAdapter = new SportListAdapter(getContext(), R.layout.music_list_item, sportListItemList);
+        listView.setAdapter(sportListAdapter);
     }
 }
