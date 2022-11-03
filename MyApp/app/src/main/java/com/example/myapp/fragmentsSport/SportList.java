@@ -13,14 +13,12 @@ import android.widget.ExpandableListView;
 import android.widget.Toast;
 
 import com.example.myapp.R;
-import com.example.myapp.fragmentsSport.expandableListSport.SportData;
+import com.example.myapp.fragmentsSport.expandableListSport.SportExpandableListData;
 import com.example.myapp.fragmentsSport.expandableListSport.SportExpandableListAdapter;
-import com.example.myapp.fragmentsSport.expandableListSport.SportListItem;
+import com.example.myapp.fragmentsSport.expandableListSport.SportExpandableListItem;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -80,22 +78,22 @@ public class SportList extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        List<SportListItem> sportListItemList = new ArrayList<>();
+        List<SportExpandableListItem> sportExpandableListItemList = new ArrayList<>();
 
-        List<SportData> sportData = new ArrayList<>();
-        List<SportData> sportData1 = new ArrayList<>();
+        List<SportExpandableListData> sportExpandableListDataList = new ArrayList<>();
+        List<SportExpandableListData> sportExpandableListDataList1 = new ArrayList<>();
 
-        sportData.add(new SportData("lol", 0, 0));
-        sportData.add(new SportData("lol", 0, 0));
+        sportExpandableListDataList.add(new SportExpandableListData("lol", 0, 0));
+        sportExpandableListDataList.add(new SportExpandableListData("lol", 0, 0));
 
-        sportData1.add(new SportData("lol1", 0, 0));
-        sportData1.add(new SportData("lol1", 0, 0));
+        sportExpandableListDataList1.add(new SportExpandableListData("lol1", 0, 0));
+        sportExpandableListDataList1.add(new SportExpandableListData("lol1", 0, 0));
 
-        sportListItemList.add(new SportListItem("test", sportData));
-        sportListItemList.add(new SportListItem("test1", sportData1));
+        sportExpandableListItemList.add(new SportExpandableListItem("test", sportExpandableListDataList));
+        sportExpandableListItemList.add(new SportExpandableListItem("test1", sportExpandableListDataList1));
 
         ExpandableListView expandableListView = requireView().findViewById(R.id.sportExpandableListView);
-        SportExpandableListAdapter sportExpandableListAdapter = new SportExpandableListAdapter(getContext(), sportListItemList);
+        SportExpandableListAdapter sportExpandableListAdapter = new SportExpandableListAdapter(getContext(), sportExpandableListItemList);
         expandableListView.setAdapter(sportExpandableListAdapter);
 
         expandableListView.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
@@ -109,30 +107,10 @@ public class SportList extends Fragment {
             }
         });
 
-        expandableListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
-            @Override
-            public boolean onChildClick(ExpandableListView expandableListView, View view, int i, int i1, long l) {
-                String selected = sportExpandableListAdapter.getChild(i, i1).toString();
-                Toast.makeText(getContext(), selected, Toast.LENGTH_SHORT).show();
-                return true;
-            }
+        expandableListView.setOnChildClickListener((expandableListView1, view1, i, i1, l) -> {
+            String selected = sportExpandableListAdapter.getChild(i, i1).toString();
+            Toast.makeText(getContext(), selected, Toast.LENGTH_SHORT).show();
+            return true;
         });
-
-        /*ListView listView = requireView().findViewById(R.id.sportListView);
-
-        List<SportData> sportDataList = new ArrayList<>();
-        sportDataList.add(new SportData("lol", 0, 0));
-        sportDataList.add(new SportData("lol1", 1, 1));
-
-        List<SportListItem> sportListItemList = new ArrayList<>();
-        sportListItemList.add(new SportListItem("test", sportDataList));
-
-        SportListAdapter sportListAdapter = new SportListAdapter(getContext(), R.layout.sport_list_item, sportListItemList);
-        listView.setAdapter(sportListAdapter);
-
-        listView.setOnItemClickListener((adapterView, view1, i, l) -> {
-            SportListItem sportListItem = (SportListItem) listView.getItemAtPosition(i);
-            Toast.makeText(getContext(), sportListItem.getDate(), Toast.LENGTH_SHORT).show();
-        });*/
     }
 }

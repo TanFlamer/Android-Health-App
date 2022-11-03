@@ -11,36 +11,35 @@ import android.widget.TextView;
 import com.example.myapp.R;
 
 import java.util.List;
-import java.util.Objects;
 
 public class SportExpandableListAdapter extends BaseExpandableListAdapter {
 
     private Context context;
-    private List<SportListItem> sportListItemList;
+    private List<SportExpandableListItem> sportExpandableListItemList;
 
-    public SportExpandableListAdapter(Context context, List<SportListItem> sportListItemList){
+    public SportExpandableListAdapter(Context context, List<SportExpandableListItem> sportExpandableListItemList){
         this.context = context;
-        this.sportListItemList = sportListItemList;
+        this.sportExpandableListItemList = sportExpandableListItemList;
     }
 
     @Override
     public int getGroupCount() {
-        return sportListItemList.size();
+        return sportExpandableListItemList.size();
     }
 
     @Override
     public int getChildrenCount(int i) {
-        return sportListItemList.get(i).getSportData().size();
+        return sportExpandableListItemList.get(i).getSportData().size();
     }
 
     @Override
     public Object getGroup(int i) {
-        return sportListItemList.get(i).getSportData();
+        return sportExpandableListItemList.get(i).getSportData();
     }
 
     @Override
     public Object getChild(int i, int i1) {
-        return sportListItemList.get(i).getSportData().get(i1);
+        return sportExpandableListItemList.get(i).getSportData().get(i1);
     }
 
     @Override
@@ -61,10 +60,10 @@ public class SportExpandableListAdapter extends BaseExpandableListAdapter {
     @SuppressLint("InflateParams")
     @Override
     public View getGroupView(int i, boolean b, View view, ViewGroup viewGroup) {
-        String sportDate = sportListItemList.get(i).getDate();
+        String sportDate = sportExpandableListItemList.get(i).getDate();
 
         if(view == null)
-            view = LayoutInflater.from(context.getApplicationContext()).inflate(R.layout.sport_list_item, null);
+            view = LayoutInflater.from(context.getApplicationContext()).inflate(R.layout.sport_expandable_list_item, null);
 
         TextView dateView = view.findViewById(R.id.sportDate);
         dateView.setText(sportDate);
@@ -75,18 +74,18 @@ public class SportExpandableListAdapter extends BaseExpandableListAdapter {
     @SuppressLint("InflateParams")
     @Override
     public View getChildView(int i, int i1, boolean b, View view, ViewGroup viewGroup) {
-        SportData sportData = sportListItemList.get(i).getSportData().get(i1);
+        SportExpandableListData sportExpandableListData = sportExpandableListItemList.get(i).getSportData().get(i1);
 
         if(view == null)
-            view = LayoutInflater.from(context.getApplicationContext()).inflate(R.layout.sport_list_item_data, null);
+            view = LayoutInflater.from(context.getApplicationContext()).inflate(R.layout.sport_expandable_list_item_data, null);
 
         TextView nameView = view.findViewById(R.id.sportName);
         TextView durationView = view.findViewById(R.id.sportDuration);
         TextView calorieView = view.findViewById(R.id.sportCalorie);
 
-        nameView.setText(sportData.getName());
-        durationView.setText(String.valueOf(sportData.getDuration()));
-        calorieView.setText(String.valueOf(sportData.getCalories()));
+        nameView.setText(sportExpandableListData.getName());
+        durationView.setText(String.valueOf(sportExpandableListData.getDuration()));
+        calorieView.setText(String.valueOf(sportExpandableListData.getCalories()));
 
         return view;
     }

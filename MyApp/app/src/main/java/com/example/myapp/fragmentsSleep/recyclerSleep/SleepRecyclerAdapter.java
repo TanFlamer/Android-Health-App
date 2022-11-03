@@ -14,40 +14,40 @@ import com.example.myapp.R;
 
 import java.util.List;
 
-public class SleepItemAdapter extends RecyclerView.Adapter<SleepItemAdapter.SleepItemViewHolder> {
+public class SleepRecyclerAdapter extends RecyclerView.Adapter<SleepRecyclerAdapter.SleepItemViewHolder> {
 
     Context context;
-    List<SleepItem> sleepItemList;
+    List<SleepRecyclerItem> sleepRecyclerItemList;
 
-    public SleepItemAdapter(Context context, List<SleepItem> sleepItemList){
+    public SleepRecyclerAdapter(Context context, List<SleepRecyclerItem> sleepRecyclerItemList){
         this.context = context;
-        this.sleepItemList = sleepItemList;
+        this.sleepRecyclerItemList = sleepRecyclerItemList;
     }
 
     @NonNull
     @Override
     public SleepItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.sleep_list_item, parent, false);
+        View view = LayoutInflater.from(context).inflate(R.layout.sleep_recycler_list_item, parent, false);
         return new SleepItemViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull SleepItemViewHolder holder, int position) {
-        SleepItem sleepItem = sleepItemList.get(position);
+        SleepRecyclerItem sleepRecyclerItem = sleepRecyclerItemList.get(position);
 
-        holder.titleView.setText(sleepItem.getTitle());
-        holder.dateView.setText(sleepItem.getDate());
-        holder.sleepView.setText(sleepItem.getSleepTime());
-        holder.wakeView.setText(sleepItem.getWakeTime());
-        holder.durationView.setText(String.valueOf(sleepItem.getSleepDuration()));
+        holder.titleView.setText(sleepRecyclerItem.getTitle());
+        holder.dateView.setText(sleepRecyclerItem.getDate());
+        holder.sleepView.setText(sleepRecyclerItem.getSleepTime());
+        holder.wakeView.setText(sleepRecyclerItem.getWakeTime());
+        holder.durationView.setText(String.valueOf(sleepRecyclerItem.getSleepDuration()));
 
-        boolean isHidden = sleepItemList.get(position).isHidden();
+        boolean isHidden = sleepRecyclerItemList.get(position).isHidden();
         holder.layoutHidden.setVisibility(isHidden ? View.VISIBLE : View.GONE);
     }
 
     @Override
     public int getItemCount() {
-        return sleepItemList.size();
+        return sleepRecyclerItemList.size();
     }
 
     public class SleepItemViewHolder extends RecyclerView.ViewHolder {
@@ -68,8 +68,8 @@ public class SleepItemAdapter extends RecyclerView.Adapter<SleepItemAdapter.Slee
             layoutHidden = itemView.findViewById(R.id.sleepLayoutHidden);
 
             layoutVisible.setOnClickListener(view -> {
-                SleepItem sleepItem = sleepItemList.get(getAdapterPosition());
-                sleepItem.setHidden(!sleepItem.isHidden());
+                SleepRecyclerItem sleepRecyclerItem = sleepRecyclerItemList.get(getAdapterPosition());
+                sleepRecyclerItem.setHidden(!sleepRecyclerItem.isHidden());
                 notifyItemChanged(getAdapterPosition());
             });
         }

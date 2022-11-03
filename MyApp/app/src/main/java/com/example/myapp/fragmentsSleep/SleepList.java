@@ -12,8 +12,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.myapp.R;
-import com.example.myapp.fragmentsSleep.recyclerSleep.SleepItem;
-import com.example.myapp.fragmentsSleep.recyclerSleep.SleepItemAdapter;
+import com.example.myapp.fragmentsSleep.recyclerSleep.SleepRecyclerItem;
+import com.example.myapp.fragmentsSleep.recyclerSleep.SleepRecyclerAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -76,16 +76,16 @@ public class SleepList extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        RecyclerView recyclerView = requireView().findViewById(R.id.sleepRecycler);
-        List<SleepItem> sleepItemList = new ArrayList<>();
+        RecyclerView recyclerView = requireView().findViewById(R.id.sleepRecyclerView);
+        List<SleepRecyclerItem> sleepRecyclerItemList = new ArrayList<>();
 
-        sleepItemList.add(new SleepItem("test","test", "test","test", 0));
-        sleepItemList.add(new SleepItem("test1", "test1", "test1","test1", 1));
-        sleepItemList.add(new SleepItem("test","test", "test","test", 0));
-        sleepItemList.add(new SleepItem("test1", "test1", "test1","test1", 1));
+        sleepRecyclerItemList.add(new SleepRecyclerItem("test","test", "test","test", 0));
+        sleepRecyclerItemList.add(new SleepRecyclerItem("test1", "test1", "test1","test1", 1));
+        sleepRecyclerItemList.add(new SleepRecyclerItem("test","test", "test","test", 0));
+        sleepRecyclerItemList.add(new SleepRecyclerItem("test1", "test1", "test1","test1", 1));
 
-        SleepItemAdapter sleepItemAdapter = new SleepItemAdapter(getContext(), sleepItemList);
-        recyclerView.setAdapter(sleepItemAdapter);
+        SleepRecyclerAdapter sleepRecyclerAdapter = new SleepRecyclerAdapter(getContext(), sleepRecyclerItemList);
+        recyclerView.setAdapter(sleepRecyclerAdapter);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
     }

@@ -2,13 +2,26 @@ package com.example.myapp.fragmentsMusic;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ExpandableListView;
+import android.widget.Toast;
 
 import com.example.myapp.R;
+import com.example.myapp.fragmentsMusic.expandableListMusic.MusicExpandableListAdapter;
+import com.example.myapp.fragmentsMusic.expandableListMusic.MusicExpandableListData;
+import com.example.myapp.fragmentsMusic.expandableListMusic.MusicExpandableListItem;
+import com.example.myapp.fragmentsSport.expandableListSport.SportExpandableListAdapter;
+import com.example.myapp.fragmentsSport.expandableListSport.SportExpandableListData;
+import com.example.myapp.fragmentsSport.expandableListSport.SportExpandableListItem;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -62,5 +75,45 @@ public class MusicPlaylists extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_music_playlists, container, false);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        List<MusicExpandableListItem> musicExpandableListItemList = new ArrayList<>();
+
+        List<MusicExpandableListData> musicExpandableListDataList = new ArrayList<>();
+        List<MusicExpandableListData> musicExpandableListDataList1 = new ArrayList<>();
+
+        musicExpandableListDataList.add(new MusicExpandableListData("lol", 0));
+        musicExpandableListDataList.add(new MusicExpandableListData("lol", 0));
+
+        musicExpandableListDataList1.add(new MusicExpandableListData("lol1", 0));
+        musicExpandableListDataList1.add(new MusicExpandableListData("lol1", 0));
+
+        musicExpandableListItemList.add(new MusicExpandableListItem("test", musicExpandableListDataList));
+        musicExpandableListItemList.add(new MusicExpandableListItem("test1", musicExpandableListDataList1));
+
+        ExpandableListView expandableListView = requireView().findViewById(R.id.musicExpandableListView);
+        MusicExpandableListAdapter musicExpandableListAdapter = new MusicExpandableListAdapter(getContext(), musicExpandableListItemList);
+        expandableListView.setAdapter(musicExpandableListAdapter);
+
+        expandableListView.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
+            int lastExpandedPosition = -1;
+            @Override
+            public void onGroupExpand(int i) {
+                if(lastExpandedPosition != -1 && i != lastExpandedPosition){
+                    expandableListView.collapseGroup(lastExpandedPosition);
+                }
+                lastExpandedPosition = i;
+            }
+        });
+
+        expandableListView.setOnChildClickListener((expandableListView1, view1, i, i1, l) -> {
+            String selected = musicExpandableListAdapter.getChild(i, i1).toString();
+            Toast.makeText(getContext(), selected, Toast.LENGTH_SHORT).show();
+            return true;
+        });
     }
 }

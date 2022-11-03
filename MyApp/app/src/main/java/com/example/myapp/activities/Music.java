@@ -10,7 +10,7 @@ import androidx.viewpager2.widget.ViewPager2;
 import com.example.myapp.R;
 import com.example.myapp.fragmentsMusic.MusicFragmentAdapter;
 import com.example.myapp.fragmentsMusic.MusicPlaylists;
-import com.example.myapp.fragmentsMusic.MusicSongs;
+import com.example.myapp.fragmentsMusic.MusicList;
 import com.example.myapp.fragmentsMusic.MusicStatistics;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.tabs.TabLayout;
@@ -64,7 +64,7 @@ public class Music extends AppCompatActivity {
         ViewPager2 viewPager2 = findViewById(R.id.viewpagerMusic);
         MusicFragmentAdapter musicFragmentAdapter = new MusicFragmentAdapter(getSupportFragmentManager(), getLifecycle());
 
-        musicFragmentAdapter.addFragment(new MusicSongs());
+        musicFragmentAdapter.addFragment(new MusicList());
         musicFragmentAdapter.addFragment(new MusicPlaylists());
         musicFragmentAdapter.addFragment(new MusicStatistics());
         viewPager2.setAdapter(musicFragmentAdapter);

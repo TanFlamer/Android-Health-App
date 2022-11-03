@@ -1,6 +1,6 @@
 package com.example.myapp.fragmentsSleep.recyclerSleep;
 
-public class SleepItem {
+public class SleepRecyclerItem {
 
     public String getDate() {
         return date;
@@ -57,7 +57,7 @@ public class SleepItem {
     int sleepDuration;
     boolean hidden;
 
-    public SleepItem(String title, String date, String sleepTime, String wakeTime, int sleepDuration){
+    public SleepRecyclerItem(String title, String date, String sleepTime, String wakeTime, int sleepDuration){
         this.title = title;
         this.date = date;
         this.sleepTime = sleepTime;

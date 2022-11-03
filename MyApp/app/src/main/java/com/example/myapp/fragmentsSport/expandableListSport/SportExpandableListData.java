@@ -1,6 +1,6 @@
 package com.example.myapp.fragmentsSport.expandableListSport;
 
-public class SportData {
+public class SportExpandableListData {
 
     public String getName() {
         return name;
@@ -30,7 +30,7 @@ public class SportData {
     int duration;
     int calories;
 
-    public SportData(String name, int duration, int calories){
+    public SportExpandableListData(String name, int duration, int calories){
         this.name = name;
         this.duration = duration;
         this.calories = calories;
