@@ -1,26 +1,21 @@
-package com.example.myapp.activities;
-
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.viewpager2.widget.ViewPager2;
+package com.example.myapp.mainActivities;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.myapp.R;
 import com.example.myapp.fragmentsSleep.SleepCalendar;
 import com.example.myapp.fragmentsSleep.SleepFragmentAdapter;
 import com.example.myapp.fragmentsSleep.SleepList;
 import com.example.myapp.fragmentsSleep.SleepStatistics;
-import com.example.myapp.fragmentsSport.SportCalendar;
-import com.example.myapp.fragmentsSport.SportFragmentAdapter;
-import com.example.myapp.fragmentsSport.SportList;
-import com.example.myapp.fragmentsSport.SportStatistics;
-import com.example.myapp.fragmentsSport.SportType;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.tabs.TabLayout;
 
-public class Sport extends AppCompatActivity {
+public class Sleep extends AppCompatActivity {
 
     BottomNavigationView bottomNavigation;
 
@@ -28,14 +23,14 @@ public class Sport extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_sport);
+        setContentView(R.layout.activity_sleep);
 
         //Initialization
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigator);
         bottomNavigation = bottomNavigationView;
 
         //Select MP3 as default
-        bottomNavigationView.setSelectedItemId(R.id.sport);
+        bottomNavigationView.setSelectedItemId(R.id.sleep);
 
         //Item Selected Listener
         bottomNavigationView.setOnItemSelectedListener(item -> {
@@ -46,8 +41,6 @@ public class Sport extends AppCompatActivity {
                     return true;
 
                 case R.id.sleep:
-                    startActivity(new Intent(getApplicationContext(), Sleep.class));
-                    overridePendingTransition(0, 0);
                     return true;
 
                 case R.id.music:
@@ -56,6 +49,8 @@ public class Sport extends AppCompatActivity {
                     return true;
 
                 case R.id.sport:
+                    startActivity(new Intent(getApplicationContext(), Sport.class));
+                    overridePendingTransition(0, 0);
                     return true;
 
                 case R.id.info:
@@ -66,16 +61,15 @@ public class Sport extends AppCompatActivity {
             return false;
         });
 
-        ViewPager2 viewPager2 = findViewById(R.id.viewpagerSport);
-        SportFragmentAdapter sportFragmentAdapter = new SportFragmentAdapter(getSupportFragmentManager(), getLifecycle());
+        ViewPager2 viewPager2 = findViewById(R.id.viewpagerSleep);
+        SleepFragmentAdapter sleepFragmentAdapter = new SleepFragmentAdapter(getSupportFragmentManager(), getLifecycle());
 
-        sportFragmentAdapter.addFragment(new SportList());
-        sportFragmentAdapter.addFragment(new SportCalendar());
-        sportFragmentAdapter.addFragment(new SportType());
-        sportFragmentAdapter.addFragment(new SportStatistics());
-        viewPager2.setAdapter(sportFragmentAdapter);
+        sleepFragmentAdapter.addFragment(new SleepList());
+        sleepFragmentAdapter.addFragment(new SleepCalendar());
+        sleepFragmentAdapter.addFragment(new SleepStatistics());
+        viewPager2.setAdapter(sleepFragmentAdapter);
 
-        TabLayout tabLayout = findViewById(R.id.layoutSport);
+        TabLayout tabLayout = findViewById(R.id.layoutSleep);
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
@@ -104,6 +98,6 @@ public class Sport extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        bottomNavigation.setSelectedItemId(R.id.sport);
+        bottomNavigation.setSelectedItemId(R.id.sleep);
     }
 }

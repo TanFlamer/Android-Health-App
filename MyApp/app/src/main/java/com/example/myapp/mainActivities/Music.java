@@ -1,4 +1,4 @@
-package com.example.myapp.activities;
+package com.example.myapp.mainActivities;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -8,14 +8,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.myapp.R;
-import com.example.myapp.fragmentsSleep.SleepCalendar;
-import com.example.myapp.fragmentsSleep.SleepFragmentAdapter;
-import com.example.myapp.fragmentsSleep.SleepList;
-import com.example.myapp.fragmentsSleep.SleepStatistics;
+import com.example.myapp.fragmentsMusic.MusicFragmentAdapter;
+import com.example.myapp.fragmentsMusic.MusicPlaylists;
+import com.example.myapp.fragmentsMusic.MusicList;
+import com.example.myapp.fragmentsMusic.MusicStatistics;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.tabs.TabLayout;
 
-public class Sleep extends AppCompatActivity {
+public class Music extends AppCompatActivity {
 
     BottomNavigationView bottomNavigation;
 
@@ -23,14 +23,14 @@ public class Sleep extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_sleep);
+        setContentView(R.layout.activity_music);
 
         //Initialization
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigator);
         bottomNavigation = bottomNavigationView;
 
         //Select MP3 as default
-        bottomNavigationView.setSelectedItemId(R.id.sleep);
+        bottomNavigationView.setSelectedItemId(R.id.music);
 
         //Item Selected Listener
         bottomNavigationView.setOnItemSelectedListener(item -> {
@@ -41,11 +41,11 @@ public class Sleep extends AppCompatActivity {
                     return true;
 
                 case R.id.sleep:
+                    startActivity(new Intent(getApplicationContext(), Sleep.class));
+                    overridePendingTransition(0, 0);
                     return true;
 
                 case R.id.music:
-                    startActivity(new Intent(getApplicationContext(), Music.class));
-                    overridePendingTransition(0, 0);
                     return true;
 
                 case R.id.sport:
@@ -61,15 +61,15 @@ public class Sleep extends AppCompatActivity {
             return false;
         });
 
-        ViewPager2 viewPager2 = findViewById(R.id.viewpagerSleep);
-        SleepFragmentAdapter sleepFragmentAdapter = new SleepFragmentAdapter(getSupportFragmentManager(), getLifecycle());
+        ViewPager2 viewPager2 = findViewById(R.id.viewpagerMusic);
+        MusicFragmentAdapter musicFragmentAdapter = new MusicFragmentAdapter(getSupportFragmentManager(), getLifecycle());
 
-        sleepFragmentAdapter.addFragment(new SleepList());
-        sleepFragmentAdapter.addFragment(new SleepCalendar());
-        sleepFragmentAdapter.addFragment(new SleepStatistics());
-        viewPager2.setAdapter(sleepFragmentAdapter);
+        musicFragmentAdapter.addFragment(new MusicList());
+        musicFragmentAdapter.addFragment(new MusicPlaylists());
+        musicFragmentAdapter.addFragment(new MusicStatistics());
+        viewPager2.setAdapter(musicFragmentAdapter);
 
-        TabLayout tabLayout = findViewById(R.id.layoutSleep);
+        TabLayout tabLayout = findViewById(R.id.layoutMusic);
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
@@ -98,6 +98,6 @@ public class Sleep extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        bottomNavigation.setSelectedItemId(R.id.sleep);
+        bottomNavigation.setSelectedItemId(R.id.music);
     }
 }

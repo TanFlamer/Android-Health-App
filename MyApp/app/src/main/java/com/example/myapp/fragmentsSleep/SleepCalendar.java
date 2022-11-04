@@ -1,5 +1,6 @@
 package com.example.myapp.fragmentsSleep;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -9,10 +10,13 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.CalendarView;
 import android.widget.Toast;
 
 import com.example.myapp.R;
+import com.example.myapp.subActivities.DataSleep;
+import com.example.myapp.subActivities.DataSport;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -72,9 +76,15 @@ public class SleepCalendar extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        CalendarView calendarView = (CalendarView) requireView().findViewById(R.id.calendarSleep);
+        CalendarView calendarView = requireView().findViewById(R.id.calendarSleep);
         calendarView.setOnDateChangeListener((calendarView1, i, i1, i2) -> {
             Toast.makeText(getContext(), i + " " + i1 + " " + i2, Toast.LENGTH_SHORT).show();
+        });
+
+        Button button = requireView().findViewById(R.id.calendarSleepButton);
+        button.setOnClickListener(view1 -> {
+            startActivity(new Intent(getContext(), DataSleep.class));
+            getActivity().overridePendingTransition(0, 0);
         });
     }
 }
