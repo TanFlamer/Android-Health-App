@@ -37,31 +37,205 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/sleepDate"
+            <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Date"
-                android:textSize="20sp"
-                android:textStyle="bold" />
+                android:layout_height="match_parent">
 
-            <TextView
-                android:id="@+id/sleepTime"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Sleep Time" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/wakeTime"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Wake Time" />
+                    <LinearLayout
+                        android:id="@+id/sleepDateVisible"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/sleepDuration"
+                        <TextView
+                            android:id="@+id/sleepDate"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Sleep Date" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="2dp"
+                            android:layout_weight="1"
+                            android:background="#000000"
+                            android:orientation="vertical" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/sleepDateHidden"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Test" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="2dp"
+                            android:layout_weight="1"
+                            android:background="#000000"
+                            android:orientation="vertical" />
+                    </LinearLayout>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Sleep Duration" />
+                android:layout_height="match_parent">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:id="@+id/sleepTimeVisible"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/sleepTime"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Sleep Time" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="2dp"
+                            android:layout_weight="1"
+                            android:background="#000000"
+                            android:orientation="vertical" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/sleepTimeHidden"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Test" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="2dp"
+                            android:layout_weight="1"
+                            android:background="#000000"
+                            android:orientation="vertical" />
+                    </LinearLayout>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:id="@+id/wakeTimeVisible"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/wakeTime"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Wake Time" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="2dp"
+                            android:layout_weight="1"
+                            android:background="#000000"
+                            android:orientation="vertical" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/wakeTimeHidden"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Test" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="2dp"
+                            android:layout_weight="1"
+                            android:background="#000000"
+                            android:orientation="vertical" />
+                    </LinearLayout>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:id="@+id/sleepDurationVisible"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/sleepDuration"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Sleep Duration" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="2dp"
+                            android:layout_weight="1"
+                            android:background="#000000"
+                            android:orientation="vertical" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/sleepDurationHidden"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Test" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="2dp"
+                            android:layout_weight="1"
+                            android:background="#000000"
+                            android:orientation="vertical" />
+                    </LinearLayout>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
 
             <LinearLayout
                 android:layout_width="match_parent"

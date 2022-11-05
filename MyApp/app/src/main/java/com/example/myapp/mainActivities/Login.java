@@ -17,11 +17,16 @@ public class Login extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        LinearLayout layoutLogin = findViewById(R.id.layoutLogin);
-        LinearLayout layoutVerification = findViewById(R.id.layoutVerification);
-        LinearLayout layoutChange = findViewById(R.id.layoutChange);
-        LinearLayout layoutUsername = findViewById(R.id.layoutUsername);
-        LinearLayout layoutPassword = findViewById(R.id.layoutPassword);
-        LinearLayout layoutConfirmation = findViewById(R.id.layoutConfirmation);
+        Button buttonGuest = findViewById(R.id.buttonGuest);
+        buttonGuest.setOnClickListener(view -> {
+            startActivity(new Intent(getApplicationContext(), Music.class));
+            overridePendingTransition(0, 0);
+        });
+
+        Button buttonLogin = findViewById(R.id.buttonLogin);
+        buttonLogin.setOnClickListener(view -> {
+            startActivity(new Intent(getApplicationContext(), Account.class));
+            overridePendingTransition(0, 0);
+        });
     }
 }

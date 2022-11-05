@@ -2,13 +2,19 @@ package com.example.myapp.fragmentsMusic;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import com.example.myapp.R;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -62,5 +68,33 @@ public class MusicStatistics extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_music_statistics, container, false);
+    }
+
+    Map<LinearLayout, Boolean> linearLayoutBooleanMap = new HashMap<>();
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        hideLayout(requireView().findViewById(R.id.songTotalVisible), requireView().findViewById(R.id.songTotalHidden));
+        hideLayout(requireView().findViewById(R.id.songNumberVisible), requireView().findViewById(R.id.songNumberHidden));
+        hideLayout(requireView().findViewById(R.id.songLongestVisible), requireView().findViewById(R.id.songLongestHidden));
+        hideLayout(requireView().findViewById(R.id.songShortestVisible), requireView().findViewById(R.id.songShortestHidden));
+        hideLayout(requireView().findViewById(R.id.songAverageVisible), requireView().findViewById(R.id.songAverageHidden));
+
+        hideLayout(requireView().findViewById(R.id.playlistNumberVisible), requireView().findViewById(R.id.playlistNumberHidden));
+        hideLayout(requireView().findViewById(R.id.playlistLengthVisible), requireView().findViewById(R.id.playlistLengthHidden));
+        hideLayout(requireView().findViewById(R.id.playlistCountVisible), requireView().findViewById(R.id.playlistCountHidden));
+        hideLayout(requireView().findViewById(R.id.playlistLongestVisible), requireView().findViewById(R.id.playlistLongestHidden));
+        hideLayout(requireView().findViewById(R.id.playlistShortestVisible), requireView().findViewById(R.id.playlistShortestHidden));
+    }
+
+    public void hideLayout(LinearLayout layoutVisible, LinearLayout layoutHidden){
+        layoutHidden.setVisibility(View.GONE);
+        linearLayoutBooleanMap.put(layoutHidden, false);
+        layoutVisible.setOnClickListener(view -> {
+            linearLayoutBooleanMap.put(layoutHidden, Boolean.FALSE.equals(linearLayoutBooleanMap.get(layoutHidden)));
+            layoutHidden.setVisibility(Boolean.TRUE.equals(linearLayoutBooleanMap.get(layoutHidden)) ? View.VISIBLE : View.GONE);
+        });
     }
 }
