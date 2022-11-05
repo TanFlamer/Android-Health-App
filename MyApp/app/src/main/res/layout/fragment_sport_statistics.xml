@@ -6,13 +6,6 @@
     android:orientation="vertical"
     tools:context=".fragmentsSport.SportStatistics">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Sport Statistics"
-        android:textSize="24sp"
-        android:textStyle="bold" />
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="2dp"

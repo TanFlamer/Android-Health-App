@@ -67,11 +67,11 @@ public class Save extends AppCompatActivity {
         List<SaveListItem> saveListItemList = new ArrayList<>();
 
         saveListItemList.add(new SaveListItem("test", 0));
-        saveListItemList.add(new SaveListItem("test", 1));
-        saveListItemList.add(new SaveListItem("test", 0));
-        saveListItemList.add(new SaveListItem("test", 1));
-        saveListItemList.add(new SaveListItem("test", 0));
-        saveListItemList.add(new SaveListItem("test", 1));
+        saveListItemList.add(new SaveListItem("test1", 1));
+        saveListItemList.add(new SaveListItem("test2", 0));
+        saveListItemList.add(new SaveListItem("test3", 1));
+        saveListItemList.add(new SaveListItem("test4", 0));
+        saveListItemList.add(new SaveListItem("test5", 1));
 
         SaveListAdapter saveListAdapter = new SaveListAdapter(this, R.layout.save_list_item, saveListItemList);
         listView.setAdapter(saveListAdapter);

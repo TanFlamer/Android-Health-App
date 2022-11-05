@@ -11,12 +11,41 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <TextView
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Sleep Statistics"
-            android:textSize="24sp"
-            android:textStyle="bold" />
+            android:layout_height="2dp"
+            android:layout_weight="1"
+            android:background="#000000"
+            android:orientation="vertical" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="Total Sleep Time"
+                android:textSize="20sp" />
+
+            <LinearLayout
+                android:layout_width="2dp"
+                android:layout_height="match_parent"
+                android:background="#000000"
+                android:orientation="horizontal" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="Text"
+                android:textSize="20sp" />
+
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -25,446 +54,293 @@
             android:background="#000000"
             android:orientation="vertical" />
 
-        <androidx.cardview.widget.CardView
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="Total Days"
+                android:textSize="20sp" />
 
             <LinearLayout
-                android:layout_width="match_parent"
+                android:layout_width="2dp"
+                android:layout_height="match_parent"
+                android:background="#000000"
+                android:orientation="horizontal" />
+
+            <TextView
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="Text"
+                android:textSize="20sp" />
 
-                <LinearLayout
-                    android:id="@+id/sleepTotalVisible"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
+        </LinearLayout>
 
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Total Sleep Time" />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="2dp"
-                        android:layout_weight="1"
-                        android:background="#000000"
-                        android:orientation="vertical" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/sleepTotalHidden"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Test" />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="2dp"
-                        android:layout_weight="1"
-                        android:background="#000000"
-                        android:orientation="vertical" />
-                </LinearLayout>
-            </LinearLayout>
-        </androidx.cardview.widget.CardView>
-
-        <androidx.cardview.widget.CardView
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="2dp"
+            android:layout_weight="1"
+            android:background="#000000"
+            android:orientation="vertical" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="Longest Sleep Time"
+                android:textSize="20sp" />
 
             <LinearLayout
-                android:layout_width="match_parent"
+                android:layout_width="2dp"
+                android:layout_height="match_parent"
+                android:background="#000000"
+                android:orientation="horizontal" />
+
+            <TextView
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="Text"
+                android:textSize="20sp" />
 
-                <LinearLayout
-                    android:id="@+id/sleepDaysVisible"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
+        </LinearLayout>
 
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Total Days" />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="2dp"
-                        android:layout_weight="1"
-                        android:background="#000000"
-                        android:orientation="vertical" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/sleepDaysHidden"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Test" />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="2dp"
-                        android:layout_weight="1"
-                        android:background="#000000"
-                        android:orientation="vertical" />
-                </LinearLayout>
-            </LinearLayout>
-        </androidx.cardview.widget.CardView>
-
-        <androidx.cardview.widget.CardView
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="2dp"
+            android:layout_weight="1"
+            android:background="#000000"
+            android:orientation="vertical" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="Shortest Sleep Time"
+                android:textSize="20sp" />
 
             <LinearLayout
-                android:layout_width="match_parent"
+                android:layout_width="2dp"
+                android:layout_height="match_parent"
+                android:background="#000000"
+                android:orientation="horizontal" />
+
+            <TextView
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="Text"
+                android:textSize="20sp" />
 
-                <LinearLayout
-                    android:id="@+id/sleepLongestVisible"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
+        </LinearLayout>
 
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Longest Sleep Time" />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="2dp"
-                        android:layout_weight="1"
-                        android:background="#000000"
-                        android:orientation="vertical" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/sleepLongestHidden"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Test" />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="2dp"
-                        android:layout_weight="1"
-                        android:background="#000000"
-                        android:orientation="vertical" />
-                </LinearLayout>
-            </LinearLayout>
-        </androidx.cardview.widget.CardView>
-
-        <androidx.cardview.widget.CardView
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="2dp"
+            android:layout_weight="1"
+            android:background="#000000"
+            android:orientation="vertical" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="Average Sleep Time"
+                android:textSize="20sp" />
 
             <LinearLayout
-                android:layout_width="match_parent"
+                android:layout_width="2dp"
+                android:layout_height="match_parent"
+                android:background="#000000"
+                android:orientation="horizontal" />
+
+            <TextView
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="Text"
+                android:textSize="20sp" />
 
-                <LinearLayout
-                    android:id="@+id/sleepShortestVisible"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
+        </LinearLayout>
 
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Shortest Sleep Time" />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="2dp"
-                        android:layout_weight="1"
-                        android:background="#000000"
-                        android:orientation="vertical" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/sleepShortestHidden"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Test" />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="2dp"
-                        android:layout_weight="1"
-                        android:background="#000000"
-                        android:orientation="vertical" />
-                </LinearLayout>
-            </LinearLayout>
-        </androidx.cardview.widget.CardView>
-
-        <androidx.cardview.widget.CardView
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="2dp"
+            android:layout_weight="1"
+            android:background="#000000"
+            android:orientation="vertical" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="Earliest Sleep Time"
+                android:textSize="20sp" />
 
             <LinearLayout
-                android:layout_width="match_parent"
+                android:layout_width="2dp"
+                android:layout_height="match_parent"
+                android:background="#000000"
+                android:orientation="horizontal" />
+
+            <TextView
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="Text"
+                android:textSize="20sp" />
 
-                <LinearLayout
-                    android:id="@+id/sleepAverageVisible"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
+        </LinearLayout>
 
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Average Sleep Time" />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="2dp"
-                        android:layout_weight="1"
-                        android:background="#000000"
-                        android:orientation="vertical" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/sleepAverageHidden"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Test" />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="2dp"
-                        android:layout_weight="1"
-                        android:background="#000000"
-                        android:orientation="vertical" />
-                </LinearLayout>
-            </LinearLayout>
-        </androidx.cardview.widget.CardView>
-
-        <androidx.cardview.widget.CardView
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="2dp"
+            android:layout_weight="1"
+            android:background="#000000"
+            android:orientation="vertical" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="Latest Sleep Time"
+                android:textSize="20sp" />
 
             <LinearLayout
-                android:layout_width="match_parent"
+                android:layout_width="2dp"
+                android:layout_height="match_parent"
+                android:background="#000000"
+                android:orientation="horizontal" />
+
+            <TextView
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="Text"
+                android:textSize="20sp" />
 
-                <LinearLayout
-                    android:id="@+id/sleepEarliestVisible"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
+        </LinearLayout>
 
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Earliest Sleep Time" />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="2dp"
-                        android:layout_weight="1"
-                        android:background="#000000"
-                        android:orientation="vertical" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/sleepEarliestHidden"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Test" />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="2dp"
-                        android:layout_weight="1"
-                        android:background="#000000"
-                        android:orientation="vertical" />
-                </LinearLayout>
-            </LinearLayout>
-        </androidx.cardview.widget.CardView>
-
-        <androidx.cardview.widget.CardView
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="2dp"
+            android:layout_weight="1"
+            android:background="#000000"
+            android:orientation="vertical" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="Earliest Wake Time"
+                android:textSize="20sp" />
 
             <LinearLayout
-                android:layout_width="match_parent"
+                android:layout_width="2dp"
+                android:layout_height="match_parent"
+                android:background="#000000"
+                android:orientation="horizontal" />
+
+            <TextView
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="Text"
+                android:textSize="20sp" />
 
-                <LinearLayout
-                    android:id="@+id/sleepLatestVisible"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
+        </LinearLayout>
 
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Latest Sleep Time" />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="2dp"
-                        android:layout_weight="1"
-                        android:background="#000000"
-                        android:orientation="vertical" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/sleepLatestHidden"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Test" />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="2dp"
-                        android:layout_weight="1"
-                        android:background="#000000"
-                        android:orientation="vertical" />
-                </LinearLayout>
-            </LinearLayout>
-        </androidx.cardview.widget.CardView>
-
-        <androidx.cardview.widget.CardView
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="2dp"
+            android:layout_weight="1"
+            android:background="#000000"
+            android:orientation="vertical" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="Latest Wake Time"
+                android:textSize="20sp" />
 
             <LinearLayout
-                android:layout_width="match_parent"
+                android:layout_width="2dp"
+                android:layout_height="match_parent"
+                android:background="#000000"
+                android:orientation="horizontal" />
+
+            <TextView
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="Text"
+                android:textSize="20sp" />
 
-                <LinearLayout
-                    android:id="@+id/wakeEarliestVisible"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
+        </LinearLayout>
 
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Earliest Wake Time" />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="2dp"
-                        android:layout_weight="1"
-                        android:background="#000000"
-                        android:orientation="vertical" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/wakeEarliestHidden"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Test" />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="2dp"
-                        android:layout_weight="1"
-                        android:background="#000000"
-                        android:orientation="vertical" />
-                </LinearLayout>
-            </LinearLayout>
-        </androidx.cardview.widget.CardView>
-
-        <androidx.cardview.widget.CardView
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <LinearLayout
-                    android:id="@+id/wakeLatestVisible"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Latest Wake Time" />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="2dp"
-                        android:layout_weight="1"
-                        android:background="#000000"
-                        android:orientation="vertical" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/wakeLatestHidden"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Test" />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="2dp"
-                        android:layout_weight="1"
-                        android:background="#000000"
-                        android:orientation="vertical" />
-                </LinearLayout>
-            </LinearLayout>
-        </androidx.cardview.widget.CardView>
+            android:layout_height="2dp"
+            android:layout_weight="1"
+            android:background="#000000"
+            android:orientation="vertical" />
 
     </LinearLayout>
 </ScrollView>

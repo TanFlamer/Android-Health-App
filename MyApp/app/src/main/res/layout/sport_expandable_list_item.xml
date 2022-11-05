@@ -8,8 +8,9 @@
         android:id="@+id/sportDate"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:gravity="center"
         android:text="Date"
-        android:textSize="20sp"
+        android:textSize="28sp"
         android:textStyle="bold" />
 
     <LinearLayout

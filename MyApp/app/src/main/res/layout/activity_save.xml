@@ -86,25 +86,31 @@
                 android:layout_weight="1" />
 
             <TextView
-                android:id="@+id/textView11"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="3"
-                android:text="Sleep" />
+                android:gravity="center"
+                android:text="Sleep"
+                android:textSize="20sp"
+                android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/textView10"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="3"
-                android:text="Music" />
+                android:gravity="center"
+                android:text="Music"
+                android:textSize="20sp"
+                android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/textView9"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="3"
-                android:text="Sport" />
+                android:gravity="center"
+                android:text="Sport"
+                android:textSize="20sp"
+                android:textStyle="bold" />
 
             <Space
                 android:layout_width="0dp"
@@ -225,10 +231,25 @@
                 android:layout_weight="1" />
         </LinearLayout>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="#000000"
+            android:orientation="vertical" />
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Save Log" />
+            android:gravity="center"
+            android:text="Save Log"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="#000000"
+            android:orientation="vertical" />
 
         <ListView
             android:id="@+id/saveListView"

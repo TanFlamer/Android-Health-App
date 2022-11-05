@@ -70,31 +70,8 @@ public class MusicStatistics extends Fragment {
         return inflater.inflate(R.layout.fragment_music_statistics, container, false);
     }
 
-    Map<LinearLayout, Boolean> linearLayoutBooleanMap = new HashMap<>();
-
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        hideLayout(requireView().findViewById(R.id.songTotalVisible), requireView().findViewById(R.id.songTotalHidden));
-        hideLayout(requireView().findViewById(R.id.songNumberVisible), requireView().findViewById(R.id.songNumberHidden));
-        hideLayout(requireView().findViewById(R.id.songLongestVisible), requireView().findViewById(R.id.songLongestHidden));
-        hideLayout(requireView().findViewById(R.id.songShortestVisible), requireView().findViewById(R.id.songShortestHidden));
-        hideLayout(requireView().findViewById(R.id.songAverageVisible), requireView().findViewById(R.id.songAverageHidden));
-
-        hideLayout(requireView().findViewById(R.id.playlistNumberVisible), requireView().findViewById(R.id.playlistNumberHidden));
-        hideLayout(requireView().findViewById(R.id.playlistLengthVisible), requireView().findViewById(R.id.playlistLengthHidden));
-        hideLayout(requireView().findViewById(R.id.playlistCountVisible), requireView().findViewById(R.id.playlistCountHidden));
-        hideLayout(requireView().findViewById(R.id.playlistLongestVisible), requireView().findViewById(R.id.playlistLongestHidden));
-        hideLayout(requireView().findViewById(R.id.playlistShortestVisible), requireView().findViewById(R.id.playlistShortestHidden));
-    }
-
-    public void hideLayout(LinearLayout layoutVisible, LinearLayout layoutHidden){
-        layoutHidden.setVisibility(View.GONE);
-        linearLayoutBooleanMap.put(layoutHidden, false);
-        layoutVisible.setOnClickListener(view -> {
-            linearLayoutBooleanMap.put(layoutHidden, Boolean.FALSE.equals(linearLayoutBooleanMap.get(layoutHidden)));
-            layoutHidden.setVisibility(Boolean.TRUE.equals(linearLayoutBooleanMap.get(layoutHidden)) ? View.VISIBLE : View.GONE);
-        });
     }
 }

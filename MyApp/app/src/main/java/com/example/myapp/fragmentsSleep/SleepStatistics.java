@@ -70,29 +70,8 @@ public class SleepStatistics extends Fragment {
         return inflater.inflate(R.layout.fragment_sleep_statistics, container, false);
     }
 
-    Map<LinearLayout, Boolean> linearLayoutBooleanMap = new HashMap<>();
-
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        hideLayout(requireView().findViewById(R.id.sleepTotalVisible), requireView().findViewById(R.id.sleepTotalHidden));
-        hideLayout(requireView().findViewById(R.id.sleepDaysVisible), requireView().findViewById(R.id.sleepDaysHidden));
-        hideLayout(requireView().findViewById(R.id.sleepLongestVisible), requireView().findViewById(R.id.sleepLongestHidden));
-        hideLayout(requireView().findViewById(R.id.sleepShortestVisible), requireView().findViewById(R.id.sleepShortestHidden));
-        hideLayout(requireView().findViewById(R.id.sleepAverageVisible), requireView().findViewById(R.id.sleepAverageHidden));
-        hideLayout(requireView().findViewById(R.id.sleepEarliestVisible), requireView().findViewById(R.id.sleepEarliestHidden));
-        hideLayout(requireView().findViewById(R.id.sleepLatestVisible), requireView().findViewById(R.id.sleepLatestHidden));
-        hideLayout(requireView().findViewById(R.id.wakeEarliestVisible), requireView().findViewById(R.id.wakeEarliestHidden));
-        hideLayout(requireView().findViewById(R.id.wakeLatestVisible), requireView().findViewById(R.id.wakeLatestHidden));
-    }
-
-    public void hideLayout(LinearLayout layoutVisible, LinearLayout layoutHidden){
-        layoutHidden.setVisibility(View.GONE);
-        linearLayoutBooleanMap.put(layoutHidden, false);
-        layoutVisible.setOnClickListener(view -> {
-            linearLayoutBooleanMap.put(layoutHidden, Boolean.FALSE.equals(linearLayoutBooleanMap.get(layoutHidden)));
-            layoutHidden.setVisibility(Boolean.TRUE.equals(linearLayoutBooleanMap.get(layoutHidden)) ? View.VISIBLE : View.GONE);
-        });
     }
 }

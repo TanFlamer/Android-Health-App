@@ -19,7 +19,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Title"
-                android:textSize="24sp"
+                android:gravity="center"
+                android:textSize="28sp"
                 android:textStyle="bold" />
 
             <LinearLayout
@@ -35,505 +36,359 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <androidx.cardview.widget.CardView
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="Sport Name"
+                    android:textSize="20sp" />
 
                 <LinearLayout
-                    android:layout_width="match_parent"
+                    android:layout_width="2dp"
+                    android:layout_height="match_parent"
+                    android:background="#000000"
+                    android:orientation="horizontal" />
+
+                <TextView
+                    android:id="@+id/sportName"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="Text"
+                    android:textSize="20sp" />
 
-                    <LinearLayout
-                        android:id="@+id/sportNameVisible"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical">
+            </LinearLayout>
 
-                        <TextView
-                            android:id="@+id/sportName"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="Name" />
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="2dp"
-                            android:layout_weight="1"
-                            android:background="#000000"
-                            android:orientation="vertical" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:id="@+id/sportNameHidden"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="Test" />
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="2dp"
-                            android:layout_weight="1"
-                            android:background="#000000"
-                            android:orientation="vertical" />
-                    </LinearLayout>
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="2dp"
+                android:background="#000000"
+                android:orientation="vertical" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="Total Time"
+                    android:textSize="20sp" />
 
                 <LinearLayout
-                    android:layout_width="match_parent"
+                    android:layout_width="2dp"
+                    android:layout_height="match_parent"
+                    android:background="#000000"
+                    android:orientation="horizontal" />
+
+                <TextView
+                    android:id="@+id/sportTotalTime"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="Text"
+                    android:textSize="20sp" />
 
-                    <LinearLayout
-                        android:id="@+id/sportTotalTimeVisible"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical">
+            </LinearLayout>
 
-                        <TextView
-                            android:id="@+id/sportTotalTime"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="Total Time" />
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="2dp"
-                            android:layout_weight="1"
-                            android:background="#000000"
-                            android:orientation="vertical" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:id="@+id/sportTotalTimeHidden"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="Test" />
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="2dp"
-                            android:layout_weight="1"
-                            android:background="#000000"
-                            android:orientation="vertical" />
-                    </LinearLayout>
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="2dp"
+                android:background="#000000"
+                android:orientation="vertical" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="Total Calorie"
+                    android:textSize="20sp" />
 
                 <LinearLayout
-                    android:layout_width="match_parent"
+                    android:layout_width="2dp"
+                    android:layout_height="match_parent"
+                    android:background="#000000"
+                    android:orientation="horizontal" />
+
+                <TextView
+                    android:id="@+id/sportTotalCalorie"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="Text"
+                    android:textSize="20sp" />
 
-                    <LinearLayout
-                        android:id="@+id/sportTotalCalorieVisible"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical">
+            </LinearLayout>
 
-                        <TextView
-                            android:id="@+id/sportTotalCalorie"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="Total Calorie" />
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="2dp"
-                            android:layout_weight="1"
-                            android:background="#000000"
-                            android:orientation="vertical" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:id="@+id/sportTotalCalorieHidden"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="Test" />
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="2dp"
-                            android:layout_weight="1"
-                            android:background="#000000"
-                            android:orientation="vertical" />
-                    </LinearLayout>
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="2dp"
+                android:background="#000000"
+                android:orientation="vertical" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="Total Days"
+                    android:textSize="20sp" />
 
                 <LinearLayout
-                    android:layout_width="match_parent"
+                    android:layout_width="2dp"
+                    android:layout_height="match_parent"
+                    android:background="#000000"
+                    android:orientation="horizontal" />
+
+                <TextView
+                    android:id="@+id/sportTotalDays"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="Text"
+                    android:textSize="20sp" />
 
-                    <LinearLayout
-                        android:id="@+id/sportDaysVisible"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical">
+            </LinearLayout>
 
-                        <TextView
-                            android:id="@+id/sportTotalDays"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="Total Days" />
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="2dp"
-                            android:layout_weight="1"
-                            android:background="#000000"
-                            android:orientation="vertical" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:id="@+id/sportDaysHidden"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="Test" />
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="2dp"
-                            android:layout_weight="1"
-                            android:background="#000000"
-                            android:orientation="vertical" />
-                    </LinearLayout>
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="2dp"
+                android:background="#000000"
+                android:orientation="vertical" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="Average Time"
+                    android:textSize="20sp" />
 
                 <LinearLayout
-                    android:layout_width="match_parent"
+                    android:layout_width="2dp"
+                    android:layout_height="match_parent"
+                    android:background="#000000"
+                    android:orientation="horizontal" />
+
+                <TextView
+                    android:id="@+id/sportAverageTime"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="Text"
+                    android:textSize="20sp" />
 
-                    <LinearLayout
-                        android:id="@+id/sportAverageTimeVisible"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical">
+            </LinearLayout>
 
-                        <TextView
-                            android:id="@+id/sportAverageTime"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="Average Time" />
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="2dp"
-                            android:layout_weight="1"
-                            android:background="#000000"
-                            android:orientation="vertical" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:id="@+id/sportAverageTimeHidden"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="Test" />
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="2dp"
-                            android:layout_weight="1"
-                            android:background="#000000"
-                            android:orientation="vertical" />
-                    </LinearLayout>
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="2dp"
+                android:background="#000000"
+                android:orientation="vertical" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="Average Calorie"
+                    android:textSize="20sp" />
 
                 <LinearLayout
-                    android:layout_width="match_parent"
+                    android:layout_width="2dp"
+                    android:layout_height="match_parent"
+                    android:background="#000000"
+                    android:orientation="horizontal" />
+
+                <TextView
+                    android:id="@+id/sportAverageCalorie"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="Text"
+                    android:textSize="20sp" />
 
-                    <LinearLayout
-                        android:id="@+id/sportAverageCalorieVisible"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical">
+            </LinearLayout>
 
-                        <TextView
-                            android:id="@+id/sportAverageCalorie"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="Average Calorie" />
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="2dp"
-                            android:layout_weight="1"
-                            android:background="#000000"
-                            android:orientation="vertical" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:id="@+id/sportAverageCalorieHidden"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="Test" />
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="2dp"
-                            android:layout_weight="1"
-                            android:background="#000000"
-                            android:orientation="vertical" />
-                    </LinearLayout>
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="2dp"
+                android:background="#000000"
+                android:orientation="vertical" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="Longest Time"
+                    android:textSize="20sp" />
 
                 <LinearLayout
-                    android:layout_width="match_parent"
+                    android:layout_width="2dp"
+                    android:layout_height="match_parent"
+                    android:background="#000000"
+                    android:orientation="horizontal" />
+
+                <TextView
+                    android:id="@+id/sportLongestTime"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="Text"
+                    android:textSize="20sp" />
 
-                    <LinearLayout
-                        android:id="@+id/sportLongestVisible"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical">
+            </LinearLayout>
 
-                        <TextView
-                            android:id="@+id/sportLongestTime"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="Longest Time" />
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="2dp"
-                            android:layout_weight="1"
-                            android:background="#000000"
-                            android:orientation="vertical" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:id="@+id/sportLongestHidden"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="Test" />
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="2dp"
-                            android:layout_weight="1"
-                            android:background="#000000"
-                            android:orientation="vertical" />
-                    </LinearLayout>
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="2dp"
+                android:background="#000000"
+                android:orientation="vertical" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="Shortest Time"
+                    android:textSize="20sp" />
 
                 <LinearLayout
-                    android:layout_width="match_parent"
+                    android:layout_width="2dp"
+                    android:layout_height="match_parent"
+                    android:background="#000000"
+                    android:orientation="horizontal" />
+
+                <TextView
+                    android:id="@+id/sportShortestTime"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="Text"
+                    android:textSize="20sp" />
 
-                    <LinearLayout
-                        android:id="@+id/sportShortestVisible"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical">
+            </LinearLayout>
 
-                        <TextView
-                            android:id="@+id/sportShortestTime"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="Shortest Time" />
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="2dp"
-                            android:layout_weight="1"
-                            android:background="#000000"
-                            android:orientation="vertical" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:id="@+id/sportShortestHidden"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="Test" />
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="2dp"
-                            android:layout_weight="1"
-                            android:background="#000000"
-                            android:orientation="vertical" />
-                    </LinearLayout>
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="2dp"
+                android:background="#000000"
+                android:orientation="vertical" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="Most Calorie"
+                    android:textSize="20sp" />
 
                 <LinearLayout
-                    android:layout_width="match_parent"
+                    android:layout_width="2dp"
+                    android:layout_height="match_parent"
+                    android:background="#000000"
+                    android:orientation="horizontal" />
+
+                <TextView
+                    android:id="@+id/sportMostCalorie"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="Text"
+                    android:textSize="20sp" />
 
-                    <LinearLayout
-                        android:id="@+id/sportMostVisible"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical">
+            </LinearLayout>
 
-                        <TextView
-                            android:id="@+id/sportMostCalorie"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="Most Calorie" />
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="2dp"
-                            android:layout_weight="1"
-                            android:background="#000000"
-                            android:orientation="vertical" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:id="@+id/sportMostHidden"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="Test" />
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="2dp"
-                            android:layout_weight="1"
-                            android:background="#000000"
-                            android:orientation="vertical" />
-                    </LinearLayout>
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="2dp"
+                android:background="#000000"
+                android:orientation="vertical" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="Least Calorie"
+                    android:textSize="20sp" />
 
                 <LinearLayout
-                    android:layout_width="match_parent"
+                    android:layout_width="2dp"
+                    android:layout_height="match_parent"
+                    android:background="#000000"
+                    android:orientation="horizontal" />
+
+                <TextView
+                    android:id="@+id/sportLeastCalorie"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="Text"
+                    android:textSize="20sp" />
 
-                    <LinearLayout
-                        android:id="@+id/sportLeastVisible"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:id="@+id/sportLeastCalorie"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="Least Calorie" />
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="2dp"
-                            android:layout_weight="1"
-                            android:background="#000000"
-                            android:orientation="vertical" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:id="@+id/sportLeastHidden"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="Test" />
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="2dp"
-                            android:layout_weight="1"
-                            android:background="#000000"
-                            android:orientation="vertical" />
-                    </LinearLayout>
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
+            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"

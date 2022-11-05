@@ -4,25 +4,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:gravity="center"
     tools:context=".fragmentsSport.SportCalendar">
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Sports Schedule"
-        android:textAlignment="center"
-        android:textAllCaps="true"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:typeface="serif"/>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="2dp"
         android:background="#000000"
-        android:orientation="vertical">
-    </LinearLayout>
+        android:orientation="vertical"></LinearLayout>
 
     <CalendarView
         android:id="@+id/calendarSport"
@@ -31,25 +19,38 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:layout_height="2dp"
+        android:background="#000000"
+        android:orientation="vertical"></LinearLayout>
 
-        <Space
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical">
 
-        <Button
-            android:id="@+id/calendarSportButton"
-            android:layout_width="0dp"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="More Info" />
+            android:orientation="horizontal">
 
-        <Space
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1" />
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <Button
+                android:id="@+id/calendarSportButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="More Info" />
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+        </LinearLayout>
     </LinearLayout>
 
 </LinearLayout>
