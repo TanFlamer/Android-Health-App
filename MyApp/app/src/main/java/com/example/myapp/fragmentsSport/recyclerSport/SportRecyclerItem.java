@@ -10,6 +10,14 @@ public class SportRecyclerItem {
         this.title = title;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public int getTotalTime() {
         return totalTime;
     }
@@ -91,6 +99,7 @@ public class SportRecyclerItem {
     }
 
     String title;
+    String name;
     int totalTime;
     int totalCalorie;
     int totalDays;
@@ -102,8 +111,9 @@ public class SportRecyclerItem {
     int leastCalorie;
     boolean shown;
 
-    public SportRecyclerItem(String title, int totalTime, int totalCalorie, int totalDays, int longestTime, int shortestTime, int mostCalorie, int leastCalorie){
-        this.title = title;
+    public SportRecyclerItem(String name, int totalTime, int totalCalorie, int totalDays, int longestTime, int shortestTime, int mostCalorie, int leastCalorie){
+        this.title = name;
+        this.name = name;
         this.totalTime = totalTime;
         this.totalCalorie = totalCalorie;
         this.totalDays = totalDays;

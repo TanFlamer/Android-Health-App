@@ -57,8 +57,8 @@ public class SleepRecyclerItem {
     int sleepDuration;
     boolean shown;
 
-    public SleepRecyclerItem(String title, String date, String sleepTime, String wakeTime, int sleepDuration){
-        this.title = title;
+    public SleepRecyclerItem(String date, String sleepTime, String wakeTime, int sleepDuration){
+        this.title = date;
         this.date = date;
         this.sleepTime = sleepTime;
         this.wakeTime = wakeTime;

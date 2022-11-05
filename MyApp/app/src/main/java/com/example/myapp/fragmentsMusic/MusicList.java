@@ -1,5 +1,6 @@
 package com.example.myapp.fragmentsMusic;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +14,9 @@ import androidx.fragment.app.Fragment;
 import com.example.myapp.R;
 import com.example.myapp.fragmentsMusic.listMusic.MusicListAdapter;
 import com.example.myapp.fragmentsMusic.listMusic.MusicListItem;
+import com.example.myapp.subActivities.DataMusic;
+import com.example.myapp.subActivities.DataSleep;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -83,5 +87,11 @@ public class MusicList extends Fragment {
 
         MusicListAdapter musicListAdapter = new MusicListAdapter(getContext(), R.layout.music_list_item, musicListItemList);
         listView.setAdapter(musicListAdapter);
+
+        FloatingActionButton floatingActionButton = requireView().findViewById(R.id.buttonFloating);
+        floatingActionButton.setOnClickListener(view1 -> {
+            startActivity(new Intent(getContext(), DataMusic.class));
+            getActivity().overridePendingTransition(0, 0);
+        });
     }
 }

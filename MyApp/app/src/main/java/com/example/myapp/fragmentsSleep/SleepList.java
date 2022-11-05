@@ -1,5 +1,6 @@
 package com.example.myapp.fragmentsSleep;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +15,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.myapp.R;
 import com.example.myapp.fragmentsSleep.recyclerSleep.SleepRecyclerItem;
 import com.example.myapp.fragmentsSleep.recyclerSleep.SleepRecyclerAdapter;
+import com.example.myapp.mainActivities.Account;
+import com.example.myapp.subActivities.DataSleep;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -79,14 +83,20 @@ public class SleepList extends Fragment {
         RecyclerView recyclerView = requireView().findViewById(R.id.sleepRecyclerView);
         List<SleepRecyclerItem> sleepRecyclerItemList = new ArrayList<>();
 
-        sleepRecyclerItemList.add(new SleepRecyclerItem("test","test", "test","test", 0));
-        sleepRecyclerItemList.add(new SleepRecyclerItem("test1", "test1", "test1","test1", 1));
-        sleepRecyclerItemList.add(new SleepRecyclerItem("test","test", "test","test", 0));
-        sleepRecyclerItemList.add(new SleepRecyclerItem("test1", "test1", "test1","test1", 1));
+        sleepRecyclerItemList.add(new SleepRecyclerItem("test", "test","test", 0));
+        sleepRecyclerItemList.add(new SleepRecyclerItem( "test1", "test1","test1", 1));
+        sleepRecyclerItemList.add(new SleepRecyclerItem("test", "test","test", 0));
+        sleepRecyclerItemList.add(new SleepRecyclerItem( "test1", "test1","test1", 1));
 
         SleepRecyclerAdapter sleepRecyclerAdapter = new SleepRecyclerAdapter(getContext(), sleepRecyclerItemList);
         recyclerView.setAdapter(sleepRecyclerAdapter);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        FloatingActionButton floatingActionButton = requireView().findViewById(R.id.buttonFloating);
+        floatingActionButton.setOnClickListener(view1 -> {
+            startActivity(new Intent(getContext(), DataSleep.class));
+            getActivity().overridePendingTransition(0, 0);
+        });
     }
 }

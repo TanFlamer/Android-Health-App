@@ -12,7 +12,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.myapp.R;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class SportRecyclerAdapter extends RecyclerView.Adapter<SportRecyclerAdapter.SportRecyclerItemViewHolder> {
 
@@ -36,6 +38,7 @@ public class SportRecyclerAdapter extends RecyclerView.Adapter<SportRecyclerAdap
         SportRecyclerItem sportRecyclerItem = sportRecyclerItemList.get(position);
 
         holder.titleView.setText(sportRecyclerItem.getTitle());
+        holder.nameView.setText(sportRecyclerItem.getName());
         holder.totalTimeView.setText(String.valueOf(sportRecyclerItem.getTotalTime()));
         holder.totalCalorieView.setText(String.valueOf(sportRecyclerItem.getTotalCalorie()));
         holder.totalDaysView.setText(String.valueOf(sportRecyclerItem.getTotalDays()));
@@ -57,13 +60,15 @@ public class SportRecyclerAdapter extends RecyclerView.Adapter<SportRecyclerAdap
 
     public class SportRecyclerItemViewHolder extends RecyclerView.ViewHolder{
 
-        TextView titleView, totalTimeView, totalCalorieView, averageTimeView, totalDaysView, averageCalorieView, longestTimeView, shortestTimeView, mostCalorieView, leastCalorieView;
+        Map<LinearLayout, Boolean> linearLayoutBooleanMap = new HashMap<>();
+        TextView titleView, nameView, totalTimeView, totalCalorieView, averageTimeView, totalDaysView, averageCalorieView, longestTimeView, shortestTimeView, mostCalorieView, leastCalorieView;
         LinearLayout layoutVisible, layoutHidden;
 
         public SportRecyclerItemViewHolder(@NonNull View itemView) {
             super(itemView);
 
             titleView = itemView.findViewById(R.id.sportTitle);
+            nameView = itemView.findViewById(R.id.sportName);
             totalTimeView = itemView.findViewById(R.id.sportTotalTime);
             totalCalorieView = itemView.findViewById(R.id.sportTotalCalorie);
             totalDaysView = itemView.findViewById(R.id.sportTotalDays);
@@ -81,6 +86,26 @@ public class SportRecyclerAdapter extends RecyclerView.Adapter<SportRecyclerAdap
                 SportRecyclerItem sportRecyclerItem = sportRecyclerItemList.get(getAdapterPosition());
                 sportRecyclerItem.setShown(!sportRecyclerItem.isShown());
                 notifyItemChanged(getAdapterPosition());
+            });
+
+            hideLayout(itemView.findViewById(R.id.sportNameVisible), itemView.findViewById(R.id.sportNameHidden));
+            hideLayout(itemView.findViewById(R.id.sportTotalTimeVisible), itemView.findViewById(R.id.sportTotalTimeHidden));
+            hideLayout(itemView.findViewById(R.id.sportTotalCalorieVisible), itemView.findViewById(R.id.sportTotalCalorieHidden));
+            hideLayout(itemView.findViewById(R.id.sportDaysVisible), itemView.findViewById(R.id.sportDaysHidden));
+            hideLayout(itemView.findViewById(R.id.sportAverageTimeVisible), itemView.findViewById(R.id.sportAverageTimeHidden));
+            hideLayout(itemView.findViewById(R.id.sportAverageCalorieVisible), itemView.findViewById(R.id.sportAverageCalorieHidden));
+            hideLayout(itemView.findViewById(R.id.sportLongestVisible), itemView.findViewById(R.id.sportLongestHidden));
+            hideLayout(itemView.findViewById(R.id.sportShortestVisible), itemView.findViewById(R.id.sportShortestHidden));
+            hideLayout(itemView.findViewById(R.id.sportMostVisible), itemView.findViewById(R.id.sportMostHidden));
+            hideLayout(itemView.findViewById(R.id.sportLeastVisible), itemView.findViewById(R.id.sportLeastHidden));
+        }
+
+        public void hideLayout(LinearLayout layoutVisible, LinearLayout layoutHidden){
+            layoutHidden.setVisibility(View.GONE);
+            linearLayoutBooleanMap.put(layoutHidden, false);
+            layoutVisible.setOnClickListener(view -> {
+                linearLayoutBooleanMap.put(layoutHidden, Boolean.FALSE.equals(linearLayoutBooleanMap.get(layoutHidden)));
+                layoutHidden.setVisibility(Boolean.TRUE.equals(linearLayoutBooleanMap.get(layoutHidden)) ? View.VISIBLE : View.GONE);
             });
         }
     }

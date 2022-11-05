@@ -1,5 +1,6 @@
 package com.example.myapp.fragmentsSport;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -16,6 +17,9 @@ import com.example.myapp.R;
 import com.example.myapp.fragmentsSport.expandableListSport.SportExpandableListData;
 import com.example.myapp.fragmentsSport.expandableListSport.SportExpandableListAdapter;
 import com.example.myapp.fragmentsSport.expandableListSport.SportExpandableListItem;
+import com.example.myapp.subActivities.DataSleep;
+import com.example.myapp.subActivities.DataSport;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -111,6 +115,12 @@ public class SportList extends Fragment {
             String selected = sportExpandableListAdapter.getChild(i, i1).toString();
             Toast.makeText(getContext(), selected, Toast.LENGTH_SHORT).show();
             return true;
+        });
+
+        FloatingActionButton floatingActionButton = requireView().findViewById(R.id.buttonFloating);
+        floatingActionButton.setOnClickListener(view1 -> {
+            startActivity(new Intent(getContext(), DataSport.class));
+            getActivity().overridePendingTransition(0, 0);
         });
     }
 }
