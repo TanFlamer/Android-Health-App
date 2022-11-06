@@ -1,5 +1,6 @@
 package com.example.myapp.mainActivities;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -27,6 +28,15 @@ public class Account extends AppCompatActivity {
             startActivity(new Intent(getApplicationContext(), Music.class));
             overridePendingTransition(0, 0);
         });
+
+        Button buttonDelete = findViewById(R.id.buttonDelete);
+        buttonDelete.setOnClickListener(view -> new AlertDialog.Builder(this)
+                .setTitle("Account Deletion")
+                .setMessage("Are you sure you want to delete your account? There is no way to recover your account once deleted.")
+                .setPositiveButton("Yes", null)
+                .setNegativeButton("No", null)
+                .create()
+                .show());
 
         hideLayout(findViewById(R.id.layoutCreationVisible), findViewById(R.id.layoutCreationHidden));
         hideLayout(findViewById(R.id.layoutUsernameVisible), findViewById(R.id.layoutUsernameHidden));

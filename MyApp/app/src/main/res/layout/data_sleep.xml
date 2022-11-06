@@ -32,9 +32,19 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Date" />
+            android:gravity="center"
+            android:text="Date"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:layout_width="2dp"
+            android:layout_height="match_parent"
+            android:background="#000000"
+            android:orientation="vertical"></LinearLayout>
 
         <Button
+            android:id="@+id/buttonDate"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -59,7 +69,16 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Sleep Time" />
+            android:gravity="center"
+            android:text="Sleep Time"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:layout_width="2dp"
+            android:layout_height="match_parent"
+            android:background="#000000"
+            android:orientation="vertical"></LinearLayout>
 
         <Button
             android:layout_width="0dp"
@@ -86,7 +105,16 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Wake Time" />
+            android:gravity="center"
+            android:text="Wake Time"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:layout_width="2dp"
+            android:layout_height="match_parent"
+            android:background="#000000"
+            android:orientation="vertical"></LinearLayout>
 
         <Button
             android:layout_width="0dp"
@@ -113,13 +141,25 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Sleep Duration" />
+            android:gravity="center"
+            android:text="Sleep Duration"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:layout_width="2dp"
+            android:layout_height="match_parent"
+            android:background="#000000"
+            android:orientation="vertical"></LinearLayout>
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Test" />
+            android:gravity="center"
+            android:text="Test"
+            android:textSize="20sp"
+            android:textStyle="bold" />
 
     </LinearLayout>
 
