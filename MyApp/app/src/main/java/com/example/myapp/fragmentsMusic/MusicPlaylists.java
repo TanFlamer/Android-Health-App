@@ -1,5 +1,6 @@
 package com.example.myapp.fragmentsMusic;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -19,6 +20,8 @@ import com.example.myapp.fragmentsMusic.expandableListMusic.MusicExpandableListI
 import com.example.myapp.fragmentsSport.expandableListSport.SportExpandableListAdapter;
 import com.example.myapp.fragmentsSport.expandableListSport.SportExpandableListData;
 import com.example.myapp.fragmentsSport.expandableListSport.SportExpandableListItem;
+import com.example.myapp.subActivities.DataMusic;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -114,6 +117,12 @@ public class MusicPlaylists extends Fragment {
             String selected = musicExpandableListAdapter.getChild(i, i1).toString();
             Toast.makeText(getContext(), selected, Toast.LENGTH_SHORT).show();
             return true;
+        });
+
+        FloatingActionButton floatingActionButton = requireView().findViewById(R.id.buttonFloating);
+        floatingActionButton.setOnClickListener(view1 -> {
+            startActivity(new Intent(getContext(), DataMusic.class));
+            getActivity().overridePendingTransition(0, 0);
         });
     }
 }

@@ -9,6 +9,7 @@ import android.os.Bundle;
 
 import com.example.myapp.R;
 import com.example.myapp.fragmentsSport.SportCalendar;
+import com.example.myapp.fragmentsSport.SportChart;
 import com.example.myapp.fragmentsSport.SportFragmentAdapter;
 import com.example.myapp.fragmentsSport.SportList;
 import com.example.myapp.fragmentsSport.SportStatistics;
@@ -66,6 +67,7 @@ public class Sport extends AppCompatActivity {
         SportFragmentAdapter sportFragmentAdapter = new SportFragmentAdapter(getSupportFragmentManager(), getLifecycle());
 
         sportFragmentAdapter.addFragment(new SportList());
+        sportFragmentAdapter.addFragment(new SportChart());
         sportFragmentAdapter.addFragment(new SportCalendar());
         sportFragmentAdapter.addFragment(new SportType());
         sportFragmentAdapter.addFragment(new SportStatistics());

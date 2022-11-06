@@ -66,6 +66,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="#000000"
+            android:orientation="vertical" />
+
     </LinearLayout>
 
     <LinearLayout
@@ -85,6 +91,12 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1" />
 
+            <LinearLayout
+                android:layout_width="2dp"
+                android:layout_height="match_parent"
+                android:background="#000000"
+                android:orientation="horizontal" />
+
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -93,6 +105,12 @@
                 android:text="Sleep"
                 android:textSize="20sp"
                 android:textStyle="bold" />
+
+            <LinearLayout
+                android:layout_width="2dp"
+                android:layout_height="match_parent"
+                android:background="#000000"
+                android:orientation="horizontal" />
 
             <TextView
                 android:layout_width="0dp"
@@ -103,6 +121,12 @@
                 android:textSize="20sp"
                 android:textStyle="bold" />
 
+            <LinearLayout
+                android:layout_width="2dp"
+                android:layout_height="match_parent"
+                android:background="#000000"
+                android:orientation="horizontal" />
+
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -112,11 +136,23 @@
                 android:textSize="20sp"
                 android:textStyle="bold" />
 
+            <LinearLayout
+                android:layout_width="2dp"
+                android:layout_height="match_parent"
+                android:background="#000000"
+                android:orientation="horizontal" />
+
             <Space
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1" />
         </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="#000000"
+            android:orientation="vertical" />
 
         <LinearLayout
             android:layout_width="match_parent"

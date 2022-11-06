@@ -9,6 +9,7 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.myapp.R;
 import com.example.myapp.fragmentsSleep.SleepCalendar;
+import com.example.myapp.fragmentsSleep.SleepChart;
 import com.example.myapp.fragmentsSleep.SleepFragmentAdapter;
 import com.example.myapp.fragmentsSleep.SleepList;
 import com.example.myapp.fragmentsSleep.SleepStatistics;
@@ -65,6 +66,7 @@ public class Sleep extends AppCompatActivity {
         SleepFragmentAdapter sleepFragmentAdapter = new SleepFragmentAdapter(getSupportFragmentManager(), getLifecycle());
 
         sleepFragmentAdapter.addFragment(new SleepList());
+        sleepFragmentAdapter.addFragment(new SleepChart());
         sleepFragmentAdapter.addFragment(new SleepCalendar());
         sleepFragmentAdapter.addFragment(new SleepStatistics());
         viewPager2.setAdapter(sleepFragmentAdapter);

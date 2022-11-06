@@ -103,58 +103,67 @@
         android:gravity="center"
         android:orientation="vertical">
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="New User"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="2"
-                android:text="Guest Login"
-                android:gravity="center"
-                android:textSize="20sp"
-                android:textStyle="bold" />
 
             <Space
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="1" />
 
-            <TextView
+            <Button
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="2"
-                android:gravity="center"
-                android:text="New User"
-                android:textSize="20sp"
-                android:textStyle="bold" />
+                android:layout_weight="1"
+                android:text="New" />
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1" />
         </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="Guest Login"
+            android:textSize="20sp"
+            android:textStyle="bold" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1" />
 
             <Button
                 android:id="@+id/buttonGuest"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="2"
+                android:layout_weight="1"
                 android:text="Guest" />
 
             <Space
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="1" />
-
-            <Button
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="2"
-                android:text="New" />
         </LinearLayout>
+
     </LinearLayout>
 
 </LinearLayout>
