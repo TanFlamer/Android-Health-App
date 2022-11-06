@@ -63,7 +63,7 @@ public class SportExpandableListAdapter extends BaseExpandableListAdapter {
         String sportDate = sportExpandableListItemList.get(i).getDate();
 
         if(view == null)
-            view = LayoutInflater.from(context.getApplicationContext()).inflate(R.layout.sport_expandable_list_item, null);
+            view = LayoutInflater.from(context).inflate(R.layout.sport_expandable_list_item, null);
 
         TextView dateView = view.findViewById(R.id.sportDate);
         dateView.setText(sportDate);
@@ -77,7 +77,7 @@ public class SportExpandableListAdapter extends BaseExpandableListAdapter {
         SportExpandableListData sportExpandableListData = sportExpandableListItemList.get(i).getSportData().get(i1);
 
         if(view == null)
-            view = LayoutInflater.from(context.getApplicationContext()).inflate(R.layout.sport_expandable_list_item_data, null);
+            view = LayoutInflater.from(context).inflate(R.layout.sport_expandable_list_item_data, null);
 
         TextView nameView = view.findViewById(R.id.sportName);
         TextView durationView = view.findViewById(R.id.sportDuration);

@@ -1,5 +1,7 @@
 package com.example.myapp.fragmentsSport;
 
+import android.app.Dialog;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -9,6 +11,7 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.ListView;
 
 import com.example.myapp.R;
@@ -16,6 +19,8 @@ import com.example.myapp.fragmentsMusic.listMusic.MusicListAdapter;
 import com.example.myapp.fragmentsMusic.listMusic.MusicListItem;
 import com.example.myapp.fragmentsSport.listSport.SportListAdapter;
 import com.example.myapp.fragmentsSport.listSport.SportListItem;
+import com.example.myapp.subActivities.DataSport;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -86,5 +91,14 @@ public class SportType extends Fragment {
 
         SportListAdapter sportListAdapter = new SportListAdapter(getContext(), R.layout.music_list_item, sportListItemList);
         listView.setAdapter(sportListAdapter);
+
+        FloatingActionButton floatingActionButton = requireView().findViewById(R.id.buttonFloating);
+        floatingActionButton.setOnClickListener(view1 -> {
+            Dialog dialog = new Dialog(getContext());
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            dialog.setCancelable(true);
+            dialog.setContentView(R.layout.dialog_sport);
+            dialog.show();
+        });
     }
 }

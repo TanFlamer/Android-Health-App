@@ -63,7 +63,7 @@ public class MusicExpandableListAdapter extends BaseExpandableListAdapter {
         String playlistName = musicExpandableListItemList.get(i).getPlaylistName();
 
         if(view == null)
-            view = LayoutInflater.from(context.getApplicationContext()).inflate(R.layout.music_expandable_list_item, null);
+            view = LayoutInflater.from(context).inflate(R.layout.music_expandable_list_item, null);
 
         TextView nameView = view.findViewById(R.id.musicPlaylistName);
         nameView.setText(playlistName);
@@ -77,7 +77,7 @@ public class MusicExpandableListAdapter extends BaseExpandableListAdapter {
         MusicExpandableListData musicExpandableListData = musicExpandableListItemList.get(i).getMusicData().get(i1);
 
         if(view == null)
-            view = LayoutInflater.from(context.getApplicationContext()).inflate(R.layout.music_expandable_list_item_data, null);
+            view = LayoutInflater.from(context).inflate(R.layout.music_expandable_list_item_data, null);
 
         TextView nameView = view.findViewById(R.id.musicSongName);
         TextView lengthView = view.findViewById(R.id.musicSongLength);
