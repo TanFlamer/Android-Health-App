@@ -44,9 +44,10 @@ def get_results(episodes):
     elif runs == 1:
         return episodes[0], 0, episodes[0], 0, episodes[0], episodes[0]
     else:
-        mean = sum(episodes) / runs
-        variance = (sum(np.square(episodes)) / runs) - (mean * mean)
-        standard_deviation = math.sqrt(variance)
+        sample_sum = sum(episodes)
+        sample_variance = (sum(np.square(episodes)) - (sample_sum * sample_sum) / runs) / (runs - 1)
+        mean = sample_sum / runs
+        standard_deviation = math.sqrt(sample_variance)
 
     median, inter_quartile_range = get_quartiles(runs, episodes)
     return mean, standard_deviation, median, inter_quartile_range, max(episodes), min(episodes)

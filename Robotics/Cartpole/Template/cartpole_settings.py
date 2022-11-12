@@ -1,35 +1,37 @@
-import cartpole_template_quadruple as cartpole
+import cartpole_template as cartpole
+
+
+def reward_function(env_information):
+    obv, reward, terminated = env_information
+    # termination_penalty = 1  # -1.945
+    return reward
+
 
 if __name__ == "__main__":
-    # Random seed
-    RANDOM_SEED = 20313854
+    # Variables
+    num_tables = 1
+
+    num_buckets = (1, 1, 6, 7)  # (1, 1, 6, 3)
+
+    initial_q_table = 0
+
+    opposite_penalty = 0  # -0.15
+
+    opposite_q_learning = False
+
+    variables = (num_tables, num_buckets, initial_q_table, opposite_penalty, opposite_q_learning)
+
+    # Discount settings
+    fixed_discount_factor = True
+
+    min_discount_factor = 0.75
+
+    discount_steps = 50
+
+    discount_settings = (fixed_discount_factor, min_discount_factor, discount_steps)
 
     # Run settings
-    MIN_RUNS = 30
-
-    MAX_RUNS = 50
-
-    RUN_SETTINGS = (MIN_RUNS, MAX_RUNS)
-
-    # Hyper parameters
-    DISCOUNT_FACTOR = 0.999
-
-    MIN_LEARNING_RATE = 0.1
-
-    MIN_EXPLORE_RATE = 0.01
-
-    HYPER_PARAMETERS = (DISCOUNT_FACTOR, MIN_LEARNING_RATE, MIN_EXPLORE_RATE)
-
-    # Variables
-    NUM_BUCKETS = (1, 1, 6, 3)  # (1, 1, 6, 3)
-
-    Q_TABLE_SETTINGS = (0, 0)
-
-    TERMINATION_PENALTY = 1  # -1.945
-
-    OPPOSITE_PENALTY = 0  # -0.15
-
-    VARIABLES = (NUM_BUCKETS, Q_TABLE_SETTINGS, TERMINATION_PENALTY, OPPOSITE_PENALTY)
+    run_settings = (variables, discount_settings)
 
     # Run cartpole
-    cartpole.run_simulation(RANDOM_SEED, RUN_SETTINGS, HYPER_PARAMETERS, VARIABLES)
+    cartpole.run_simulation(run_settings, reward_function)

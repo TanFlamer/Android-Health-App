@@ -79,58 +79,12 @@ def train(run):
             state = state_to_bucket(obv)
 
             # Update the Q based on the result
-            random_chance = random.random()
-            if random_chance < 0.25:
-                # Update A
-                random_table = random.random()
-                if random_table < 0.333:
-                    best_q = q_table_b[state + (np.argmax(q_table_a[state]),)]
-                elif random_table < 0.666:
-                    best_q = q_table_c[state + (np.argmax(q_table_a[state]),)]
-                else:
-                    best_q = q_table_d[state + (np.argmax(q_table_a[state]),)]
+            q_table_all = [q_table_a, q_table_b, q_table_c, q_table_d]
+            q_table_main = q_table_all.pop(random.randint(0, 3))
+            q_table_secondary = q_table_all.pop(random.randint(0, 2))
 
-                q_table_a[state_0 + (action,)] += learning_rate * (
-                        reward + DISCOUNT_FACTOR * best_q - q_table_a[state_0 + (action,)])
-
-            elif random_chance < 0.50:
-                # Update B
-                random_table = random.random()
-                if random_table < 0.333:
-                    best_q = q_table_a[state + (np.argmax(q_table_b[state]),)]
-                elif random_table < 0.666:
-                    best_q = q_table_c[state + (np.argmax(q_table_b[state]),)]
-                else:
-                    best_q = q_table_d[state + (np.argmax(q_table_b[state]),)]
-
-                q_table_b[state_0 + (action,)] += learning_rate * (
-                        reward + DISCOUNT_FACTOR * best_q - q_table_b[state_0 + (action,)])
-
-            elif random_chance < 0.75:
-                # Update C
-                random_table = random.random()
-                if random_table < 0.333:
-                    best_q = q_table_a[state + (np.argmax(q_table_c[state]),)]
-                elif random_table < 0.666:
-                    best_q = q_table_b[state + (np.argmax(q_table_c[state]),)]
-                else:
-                    best_q = q_table_d[state + (np.argmax(q_table_c[state]),)]
-
-                q_table_c[state_0 + (action,)] += learning_rate * (
-                        reward + DISCOUNT_FACTOR * best_q - q_table_c[state_0 + (action,)])
-
-            else:
-                # Update D
-                random_table = random.random()
-                if random_table < 0.333:
-                    best_q = q_table_a[state + (np.argmax(q_table_d[state]),)]
-                elif random_table < 0.666:
-                    best_q = q_table_b[state + (np.argmax(q_table_d[state]),)]
-                else:
-                    best_q = q_table_c[state + (np.argmax(q_table_d[state]),)]
-
-                q_table_d[state_0 + (action,)] += learning_rate * (
-                        reward + DISCOUNT_FACTOR * best_q - q_table_d[state_0 + (action,)])
+            q_table_main[state_0 + (action,)] += learning_rate * (reward + DISCOUNT_FACTOR * q_table_secondary[
+                state + (np.argmax(q_table_main[state]),)] - q_table_main[state_0 + (action,)])
 
             # Setting up for the next iteration
             state_0 = state

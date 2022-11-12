@@ -16,15 +16,20 @@ STATE_BOUNDS = list(zip(env.observation_space.low, env.observation_space.high))
 NUM_TRAIN_EPISODES = 1000
 MAX_TRAIN_T = 500
 
+# Hyper parameters
+DISCOUNT_FACTOR = 0.999
+MIN_LEARNING_RATE = 0.1
+MIN_EXPLORE_RATE = 0.01
 
-def loop(run_settings, hyper_parameters, variables):
+
+def loop(run_settings, variables):
     min_runs, max_runs = run_settings
     episodes = []
     failed_runs = []
     run_number = 0
     while len(episodes) < min_runs and run_number < max_runs:
         run_number += 1
-        episode, solved = train(run_number, hyper_parameters, variables)
+        episode, solved = train(run_number, variables)
         if solved:
             episodes.append(episode)
         else:
@@ -33,22 +38,17 @@ def loop(run_settings, hyper_parameters, variables):
     return results_processing.get_results(episodes), failed_runs
 
 
-def train(run, hyper_parameters, variables):
-
-    # Unpacking hyper parameters
-    discount_factor, min_learning_rate, min_explore_rate = hyper_parameters
+def train(run, variables):
 
     # Unpacking variables
-    num_buckets, num_actions, q_table_settings, termination_penalty, opposite_penalty = variables
+    num_buckets, num_actions, q_table_type, termination_penalty, opposite_penalty = variables
 
     # Instantiating the learning related parameters
-    learning_rate = get_learning_rate(0, min_learning_rate)
-    explore_rate = get_explore_rate(0, min_explore_rate)
+    learning_rate = get_learning_rate(0)
+    explore_rate = get_explore_rate(0)
 
-    q_table_a = np.zeros(num_buckets + (num_actions,)) if q_table_settings[0] == 0 else np.random.randn(
-        *num_buckets, num_actions) * q_table_settings[0] + q_table_settings[1]
-    q_table_b = np.zeros(num_buckets + (num_actions,)) if q_table_settings[0] == 0 else np.random.randn(
-        *num_buckets, num_actions) * q_table_settings[0] + q_table_settings[1]
+    q_table_a = np.random.randn(*num_buckets, num_actions) * q_table_type
+    q_table_b = np.random.randn(*num_buckets, num_actions) * q_table_type
 
     time_steps = [0]
     episodes_to_solve = 0
@@ -76,7 +76,7 @@ def train(run, hyper_parameters, variables):
 
             if terminated:
                 state_information = (state_0, state, action, reward)
-                parameters = (learning_rate, discount_factor, opposite_penalty)
+                parameters = (learning_rate, opposite_penalty)
                 termination = (terminated, termination_penalty)
                 update_q_table(q_table_a, q_table_b, state_information, parameters, termination)
                 time_steps.append(t + time_steps[-1])
@@ -84,7 +84,7 @@ def train(run, hyper_parameters, variables):
 
             # Update the Q based on the result
             state_information = (state_0, state, action, reward)
-            parameters = (learning_rate, discount_factor, opposite_penalty)
+            parameters = (learning_rate, opposite_penalty)
             termination = (terminated, termination_penalty)
             update_q_table(q_table_a, q_table_b, state_information, parameters, termination)
 
@@ -107,8 +107,8 @@ def train(run, hyper_parameters, variables):
             break
 
         # Update parameters
-        learning_rate = get_learning_rate(episode, min_learning_rate)
-        explore_rate = get_explore_rate(episode, min_explore_rate)
+        learning_rate = get_learning_rate(episode)
+        explore_rate = get_explore_rate(episode)
 
     # print(q_table)
     return episodes_to_solve, solved
@@ -116,22 +116,19 @@ def train(run, hyper_parameters, variables):
 
 def update_q_table(q_table_a, q_table_b, state_information, parameters, termination):
     state_0, state, action, reward = state_information
-    learning_rate, discount_factor, opposite_penalty = parameters
+    learning_rate, opposite_penalty = parameters
     terminated, termination_penalty = termination
 
     opposite_action = (action + 1) % 2
     reward = termination_penalty if terminated else reward
 
-    if random.random() < 0.5:
-        # Update A
-        q_table_a[state_0 + (action,)] += learning_rate * (reward + discount_factor * q_table_b[
-            state + (np.argmax(q_table_a[state]),)] - q_table_a[state_0 + (action,)])
-        q_table_a[state_0 + (opposite_action,)] += opposite_penalty
-    else:
-        # Update B
-        q_table_b[state_0 + (action,)] += learning_rate * (reward + discount_factor * q_table_a[
-            state + (np.argmax(q_table_b[state]),)] - q_table_b[state_0 + (action,)])
-        q_table_b[state_0 + (opposite_action,)] += opposite_penalty
+    q_table_all = [q_table_a, q_table_b]
+    q_table_main = q_table_all.pop(random.randint(0, 1))
+    q_table_secondary = q_table_all.pop(0)
+
+    q_table_main[state_0 + (action,)] += learning_rate * (reward + DISCOUNT_FACTOR * q_table_secondary[
+        state + (np.argmax(q_table_main[state]),)] - q_table_main[state_0 + (action,)])
+    q_table_main[state_0 + (opposite_action,)] += opposite_penalty
 
 
 def select_action(state, explore_rate, q_table, num_actions):
@@ -144,12 +141,12 @@ def select_action(state, explore_rate, q_table, num_actions):
     return action
 
 
-def get_explore_rate(t, min_explore_rate):
-    return max(min_explore_rate, min(1.0, 1.0 - math.log10((t + 1) / 25)))
+def get_explore_rate(t):
+    return max(MIN_EXPLORE_RATE, min(1.0, 1.0 - math.log10((t + 1) / 25)))
 
 
-def get_learning_rate(t, min_learning_rate):
-    return max(min_learning_rate, min(0.5, 1.0 - math.log10((t + 1) / 25)))
+def get_learning_rate(t):
+    return max(MIN_LEARNING_RATE, min(0.5, 1.0 - math.log10((t + 1) / 25)))
 
 
 def state_to_bucket(state, num_buckets):
@@ -182,7 +179,7 @@ def random_seed(seed):
     env.reset(seed=seed)
 
 
-def run_simulation(seed_random, run_settings, hyper_parameters, variables):
+def run_simulation(seed_random, run_settings, variables):
     random_seed(seed_random)
-    results, failed = loop(run_settings, hyper_parameters, variables)
+    results, failed = loop(run_settings, variables)
     results_processing.print_results(results, failed)

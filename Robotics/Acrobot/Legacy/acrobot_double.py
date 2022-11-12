@@ -77,14 +77,12 @@ def train(run):
             state = state_to_bucket(obv)
 
             # Update the Q based on the result
-            if random.random() < 0.5:
-                # Update A
-                q_table_a[state_0 + (action,)] += learning_rate * (reward + DISCOUNT_FACTOR * q_table_b[
-                    state + (np.argmax(q_table_a[state]),)] - q_table_a[state_0 + (action,)])
-            else:
-                # Update B
-                q_table_b[state_0 + (action,)] += learning_rate * (reward + DISCOUNT_FACTOR * q_table_a[
-                    state + (np.argmax(q_table_b[state]),)] - q_table_b[state_0 + (action,)])
+            q_table_all = [q_table_a, q_table_b]
+            q_table_main = q_table_all.pop(random.randint(0, 1))
+            q_table_secondary = q_table_all.pop(0)
+
+            q_table_main[state_0 + (action,)] += learning_rate * (reward + DISCOUNT_FACTOR * q_table_secondary[
+                state + (np.argmax(q_table_main[state]),)] - q_table_main[state_0 + (action,)])
 
             # Setting up for the next iteration
             state_0 = state
