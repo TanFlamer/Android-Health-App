@@ -2,35 +2,27 @@ import cartpole_template as cartpole
 
 
 def reward_function(env_information):
+    # Reward function and termination penalty
     obv, reward, terminated = env_information
-    # termination_penalty = 1  # -1.945
-    return reward
+    termination_penalty = reward
+    return reward if not terminated else termination_penalty
 
 
 if __name__ == "__main__":
     # Variables
     num_tables = 1
-
-    num_buckets = (1, 1, 6, 7)  # (1, 1, 6, 3)
-
+    num_buckets = (1, 1, 6, 3)  # (1, 1, 6, 3)
     initial_q_table = 0
-
-    opposite_penalty = 0  # -0.15
-
     opposite_q_learning = False
-
-    variables = (num_tables, num_buckets, initial_q_table, opposite_penalty, opposite_q_learning)
 
     # Discount settings
     fixed_discount_factor = True
-
     min_discount_factor = 0.75
-
     discount_steps = 50
 
-    discount_settings = (fixed_discount_factor, min_discount_factor, discount_steps)
-
     # Run settings
+    variables = (num_tables, num_buckets, initial_q_table, opposite_q_learning)
+    discount_settings = (fixed_discount_factor, min_discount_factor, discount_steps)
     run_settings = (variables, discount_settings)
 
     # Run cartpole

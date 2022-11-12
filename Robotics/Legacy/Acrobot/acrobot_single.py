@@ -1,4 +1,6 @@
 # Adapted from: https://medium.com/@tuzzer/cart-pole-balancing-with-q-learning-b54c6068d947
+from gym.envs.classic_control.acrobot import wrap, bound, rk4
+from numpy import cos, pi, sin
 
 import results_processing
 import math
@@ -13,7 +15,7 @@ env = gym.make('Acrobot-v1')
 NUM_BUCKETS = (1, 1, 1, 1, 10, 10)
 
 # Number of discrete actions
-NUM_ACTIONS = env.action_space.n  # (left, right)
+NUM_ACTIONS = 3
 
 # Bounds for each discrete state
 STATE_BOUNDS = list(zip(env.observation_space.low, env.observation_space.high))
@@ -49,7 +51,10 @@ def train(run):
     learning_rate = get_learning_rate(0)
     explore_rate = get_explore_rate(0)
 
+    # Initial Q-table (Grey out unused)
     q_table = np.zeros(NUM_BUCKETS + (NUM_ACTIONS,))
+    # q_table = np.random.randn(*NUM_BUCKETS, NUM_ACTIONS) * 1
+
     time_steps = [0]
     episodes_to_solve = 0
     solved = False
@@ -62,30 +67,51 @@ def train(run):
         # the initial state
         state_0 = state_to_bucket(obv)
 
+        # Discount factor (Grey out unused line)
+        # discount_factor = min(0.75 + 0.005 * episode, 0.999)  # 0.75, 0.005
+        discount_factor = DISCOUNT_FACTOR
+
         for t in range(1, MAX_TRAIN_T + 1):
             env.render()
 
+            # Save old state
+            old_obv = env.state
+
             # Select an action
             action = select_action(state_0, explore_rate, q_table)
+            opposite_action = NUM_ACTIONS - action - 1
 
             # Execute the action
-            obv, reward, terminated, _, _ = env.step(action)
+            obv, reward, terminated, _, _ = env.step(action if NUM_ACTIONS == 3 else action * 2)
+            opposite_obv, opposite_reward, opposite_terminated, _, _ = step(old_obv, opposite_action)
 
             # Observe the result
             state = state_to_bucket(obv)
+            opposite_state = state_to_bucket(opposite_obv)
 
             # Get best Q value
             best_q = np.amax(q_table[state])
+            opposite_best_q = np.amax(q_table[opposite_state])
 
             if terminated:
                 q_table[state_0 + (action,)] += learning_rate * (
-                        reward + DISCOUNT_FACTOR * best_q - q_table[state_0 + (action,)])
+                        reward + discount_factor * best_q - q_table[state_0 + (action,)])
+
+                # Opposition Q-Learning (Grey out if unused)
+                if action != opposite_action:
+                    q_table[state_0 + (opposite_action,)] += learning_rate * (
+                            opposite_reward + discount_factor * opposite_best_q - q_table[state_0 + (opposite_action,)])
                 time_steps.append(t + time_steps[-1])
                 break
 
             # Update the Q based on the result
             q_table[state_0 + (action,)] += learning_rate * (
-                    reward + DISCOUNT_FACTOR * best_q - q_table[state_0 + (action,)])
+                    reward + discount_factor * best_q - q_table[state_0 + (action,)])
+
+            # Opposition Q-Learning (Grey out if unused)
+            if action != opposite_action:
+                q_table[state_0 + (opposite_action,)] += learning_rate * (
+                        opposite_reward + discount_factor * opposite_best_q - q_table[state_0 + (opposite_action,)])
 
             # Setting up for the next iteration
             state_0 = state
@@ -116,7 +142,7 @@ def train(run):
 def select_action(state, explore_rate, q_table):
     # Select a random action
     if random.random() < explore_rate:
-        action = env.action_space.sample()
+        action = env.action_space.sample() if NUM_ACTIONS == 3 else random.randint(0, 1)
     # Select the action with the highest q
     else:
         action = np.argmax(q_table[state])
@@ -152,6 +178,70 @@ def state_to_bucket(state):
             # to visualize, i.e. num_buckets x percentage in width.
         bucket_indices.append(bucket_index)
     return tuple(bucket_indices)
+
+
+def step(state, action):
+    dt = 0.2
+
+    MAX_VEL_1 = 4 * pi
+    MAX_VEL_2 = 9 * pi
+
+    AVAIL_TORQUE = [-1.0, 0.0, +1]
+    torque = AVAIL_TORQUE[action]
+
+    # Now, augment the state with our force action, so it can be passed to _dsdt
+    s_augmented = np.append(state, torque)
+    ns = rk4(_dsdt, s_augmented, [0, dt])
+
+    ns[0] = wrap(ns[0], -pi, pi)
+    ns[1] = wrap(ns[1], -pi, pi)
+    ns[2] = bound(ns[2], -MAX_VEL_1, MAX_VEL_1)
+    ns[3] = bound(ns[3], -MAX_VEL_2, MAX_VEL_2)
+
+    state = ns
+    terminated = bool(-cos(state[0]) - cos(state[1] + state[0]) > 1.0)
+    reward = -1.0 if not terminated else 0.0
+
+    return np.array([cos(state[0]), sin(state[0]), cos(state[1]), sin(state[1]), state[2], state[3]], dtype=np.float32
+                    ), reward, terminated, False, {}
+
+
+def _dsdt(s_augmented):
+    book_or_nips = "book"
+    m1 = 1.0  #: [kg] mass of link 1
+    m2 = 1.0  #: [kg] mass of link 2
+    l1 = 1.0  # [m]
+    lc1 = 0.5  #: [m] position of the center of mass of link 1
+    lc2 = 0.5  #: [m] position of the center of mass of link 2
+    I1 = 1.0  #: moments of inertia for both links
+    I2 = 1.0  #: moments of inertia for both links
+    g = 9.8
+
+    a = s_augmented[-1]
+    s = s_augmented[:-1]
+
+    theta1 = s[0]
+    theta2 = s[1]
+    dtheta1 = s[2]
+    dtheta2 = s[3]
+
+    d1 = (m1 * lc1 ** 2 + m2 * (l1 ** 2 + lc2 ** 2 + 2 * l1 * lc2 * cos(theta2)) + I1 + I2)
+    d2 = m2 * (lc2 ** 2 + l1 * lc2 * cos(theta2)) + I2
+    phi2 = m2 * lc2 * g * cos(theta1 + theta2 - pi / 2.0)
+    phi1 = (-m2 * l1 * lc2 * dtheta2 ** 2 * sin(theta2) - 2 * m2 * l1 * lc2 * dtheta2 * dtheta1 * sin(theta2)
+            + (m1 * lc1 + m2 * l1) * g * cos(theta1 - pi / 2) + phi2)
+
+    if book_or_nips == "nips":
+        # the following line is consistent with the description in the paper
+        ddtheta2 = (a + d2 / d1 * phi1 - phi2) / (m2 * lc2 ** 2 + I2 - d2 ** 2 / d1)
+    else:
+        # the following line is consistent with the java implementation and the book
+        ddtheta2 = (a + d2 / d1 * phi1 - m2 * l1 * lc2 * dtheta1 ** 2 * sin(theta2) - phi2) / (
+                m2 * lc2 ** 2 + I2 - d2 ** 2 / d1)
+
+    ddtheta1 = -(d2 * ddtheta2 + phi1) / d1
+
+    return dtheta1, dtheta2, ddtheta1, ddtheta2, 0.0
 
 
 def random_seed(seed):

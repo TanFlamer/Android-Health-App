@@ -1,12 +1,10 @@
 # Adapted from: https://medium.com/@tuzzer/cart-pole-balancing-with-q-learning-b54c6068d947
 
+import results_processing
 import math
 import random
-
 import gym
 import numpy as np
-
-import results_processing
 
 # Initialize the "Cart-Pole" environment
 env = gym.make('CartPole-v0')
@@ -53,9 +51,13 @@ def train(run):
     learning_rate = get_learning_rate(0)
     explore_rate = get_explore_rate(0)
 
-    # Initial Q-table (Grey out unused)
-    q_table = np.zeros(NUM_BUCKETS + (NUM_ACTIONS,))
-    # q_table = np.random.randn(*NUM_BUCKETS, NUM_ACTIONS) * 1
+    q_table_a = np.zeros(NUM_BUCKETS + (NUM_ACTIONS,))
+    q_table_b = np.zeros(NUM_BUCKETS + (NUM_ACTIONS,))
+
+    # q_table_a = np.random.randn(*NUM_BUCKETS, NUM_ACTIONS) * 1
+    # q_table_b = np.random.randn(*NUM_BUCKETS, NUM_ACTIONS) * 1
+
+    q_tables = [q_table_a, q_table_b]
 
     time_steps = [0]
     episodes_to_solve = 0
@@ -73,9 +75,6 @@ def train(run):
         # discount_factor = min(0.75 + 0.005 * episode, 0.999)  # 0.75, 0.005
         discount_factor = DISCOUNT_FACTOR
 
-        # Opposition penalty (Default 0)
-        opposite_penalty = 0
-
         for t in range(1, MAX_TRAIN_T + 1):
             env.render()
 
@@ -83,8 +82,16 @@ def train(run):
             old_obv = obv
 
             # Select an action
-            action = select_action(state_0, explore_rate, q_table)
+            action = select_action(state_0, explore_rate, q_table_a + q_table_b)
             opposite_action = 1 - action
+
+            # Get Q table indexes
+            index_main = random.randint(0, 1)
+            index_secondary = random.randint(0, 0)
+            index_secondary += 1 if index_secondary >= index_main else 0
+
+            q_table_main = q_tables[index_main]
+            q_table_secondary = q_tables[index_secondary]
 
             # Execute the action
             obv, reward, terminated, _, _ = env.step(action)
@@ -95,28 +102,26 @@ def train(run):
             opposite_state = state_to_bucket(opposite_obv)
 
             # Get best Q value
-            best_q = np.amax(q_table[state])
-            opposite_best_q = np.amax(q_table[opposite_state])
+            best_q = q_table_secondary[state + (np.argmax(q_table_main[state]),)]
+            opposite_best_q = q_table_secondary[opposite_state + (np.argmax(q_table_main[opposite_state]),)]
 
             if terminated:
-                q_table[state_0 + (action,)] += learning_rate * (
-                        reward + discount_factor * best_q - q_table[state_0 + (action,)])
-                q_table[state_0 + (opposite_action,)] += -opposite_penalty
+                q_table_main[state_0 + (action,)] += learning_rate * (
+                        reward + discount_factor * best_q - q_table_main[state_0 + (action,)])
 
                 # Opposition Q-Learning (Grey out if unused)
-                q_table[state_0 + (opposite_action,)] += learning_rate * (
-                        opposite_reward + discount_factor * opposite_best_q - q_table[state_0 + (opposite_action,)])
+                q_table_main[state_0 + (opposite_action,)] += learning_rate * (
+                        opposite_reward + discount_factor * opposite_best_q - q_table_main[state_0 + (opposite_action,)])
                 time_steps.append(t + time_steps[-1])
                 break
 
             # Update the Q based on the result
-            q_table[state_0 + (action,)] += learning_rate * (
-                    reward + discount_factor * best_q - q_table[state_0 + (action,)])
-            q_table[state_0 + (opposite_action,)] += opposite_penalty
+            q_table_main[state_0 + (action,)] += learning_rate * (
+                    reward + discount_factor * best_q - q_table_main[state_0 + (action,)])
 
             # Opposition Q-Learning (Grey out if unused)
-            q_table[state_0 + (opposite_action,)] += learning_rate * (
-                opposite_reward + discount_factor * opposite_best_q - q_table[state_0 + (opposite_action,)])
+            q_table_main[state_0 + (opposite_action,)] += learning_rate * (
+                    opposite_reward + discount_factor * opposite_best_q - q_table_main[state_0 + (opposite_action,)])
 
             # Setting up for the next iteration
             state_0 = state

@@ -54,7 +54,7 @@ def train(run, run_settings, reward_function):
     variables, discount_settings = run_settings
 
     # Unpacking variables
-    num_tables, num_buckets, initial_q_table, opposite_penalty, opposite_q_learning = variables
+    num_tables, num_buckets, initial_q_table, opposite_q_learning = variables
 
     # Unpacking discount settings
     fixed_discount_factor, min_discount_factor, discount_steps = discount_settings
@@ -90,7 +90,7 @@ def train(run, run_settings, reward_function):
             min_discount_factor + discount_step_size * episode, MAX_DISCOUNT_FACTOR)
 
         # Get parameters
-        parameters = (learning_rate, discount_factor, opposite_penalty)
+        parameters = (learning_rate, discount_factor)
 
         for t in range(1, MAX_TRAIN_T + 1):
             env.render()
@@ -144,7 +144,7 @@ def train(run, run_settings, reward_function):
                 opposite_best_q = q_table_secondary[opposite_state + (np.argmax(q_table_main[opposite_state]),)]
 
             state_information = (state_0, state, action, reward, best_q)
-            opposite_state_information = (opposite_state, opposite_reward, opposite_best_q)
+            opposite_state_information = (opposite_action, opposite_state, opposite_reward, opposite_best_q)
 
             # Termination
             if terminated:
@@ -180,18 +180,16 @@ def train(run, run_settings, reward_function):
 
 def update_q_table(q_table, parameters, state_information, opposite_state_information):
     # Unpacking variables
-    learning_rate, discount_factor, opposite_penalty = parameters
+    learning_rate, discount_factor = parameters
     state_0, state, action, reward, best_q = state_information
-    opposite_action = 1 - action
 
-    # Updating Q tables
+    # Updating Q table
     q_table[state_0 + (action,)] += learning_rate * (
             reward + discount_factor * best_q - q_table[state_0 + (action,)])
 
-    q_table[state_0 + (opposite_action,)] += -opposite_penalty
-
+    # Updating opposite Q table
     if opposite_state_information is not None:
-        opposite_state, opposite_reward, opposite_best_q = opposite_state_information
+        opposite_action, opposite_state, opposite_reward, opposite_best_q = opposite_state_information
         q_table[state_0 + (opposite_action,)] += learning_rate * (
                 opposite_reward + discount_factor * opposite_best_q - q_table[state_0 + (opposite_action,)])
 
