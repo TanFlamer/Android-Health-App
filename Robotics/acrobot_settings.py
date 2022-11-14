@@ -11,7 +11,7 @@ def reward_function(env_information):
 if __name__ == "__main__":
     # Variables
     num_tables = 1
-    num_buckets = (5, 5, 5, 5, 5, 5)
+    num_buckets = (1, 1, 1, 1, 10, 10)  # 6-D for base, 4-D for alternate
     num_actions = 3
     initial_q_table = 0
     opposite_q_learning = False

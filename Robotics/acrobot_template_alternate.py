@@ -8,36 +8,36 @@ import random
 import gym
 import numpy as np
 
-# Initialize the "Cart-Pole" environment
+# Initialize the "Acrobot" environment
 env = gym.make('Acrobot-v1')
 
-# Number of discrete states (bucket) per state dimension
-NUM_BUCKETS = (1, 1, 1, 1, 10, 10)
-
-# Number of discrete actions
-NUM_ACTIONS = 3
+# Random seed
+RANDOM_SEED = 20313854
 
 # Bounds for each discrete state
-STATE_BOUNDS = list(zip(env.observation_space.low, env.observation_space.high))
-
-# Learning related constants
-MIN_EXPLORE_RATE = 0.01
-MIN_LEARNING_RATE = 0.1
-DISCOUNT_FACTOR = 0.999
+STATE_BOUNDS = list(zip([-pi, -pi, -4 * pi, -9 * pi], [pi, pi, 4 * pi, 9 * pi]))
 
 # Defining the simulation related constants
 NUM_TRAIN_EPISODES = 1000
 MAX_TRAIN_T = 500
+
+# Run settings
+MIN_RUNS = 30
 MAX_RUNS = 50
 
+# Hyper parameters
+MAX_DISCOUNT_FACTOR = 0.999
+MIN_LEARNING_RATE = 0.1
+MIN_EXPLORE_RATE = 0.01
 
-def loop(runs):
+
+def loop(run_settings, reward_function):
     episodes = []
     failed_runs = []
     run_number = 0
-    while len(episodes) < runs and run_number < MAX_RUNS:
+    while len(episodes) < MIN_RUNS and run_number < MAX_RUNS:
         run_number += 1
-        episode, solved = train(run_number)
+        episode, solved = train(run_number, run_settings, reward_function)
         if solved:
             episodes.append(episode)
         else:
@@ -46,14 +46,29 @@ def loop(runs):
     return results_processing.get_results(episodes), failed_runs
 
 
-def train(run):
+def train(run, run_settings, reward_function):
+    # Unpacking run settings
+    variables, discount_settings = run_settings
+
+    # Unpacking variables
+    num_tables, num_buckets, num_actions, initial_q_table, opposite_q_learning = variables
+
+    # Unpacking discount settings
+    fixed_discount_factor, min_discount_factor, discount_steps = discount_settings
+
+    # Discount step size
+    discount_step_size = (1 - min_discount_factor) / discount_steps
+
     # Instantiating the learning related parameters
     learning_rate = get_learning_rate(0)
     explore_rate = get_explore_rate(0)
 
-    # Initial Q-table (Grey out unused)
-    q_table = np.zeros(NUM_BUCKETS + (NUM_ACTIONS,))
-    # q_table = np.random.randn(*NUM_BUCKETS, NUM_ACTIONS) * 1
+    # Q-tables list
+    q_tables = []
+
+    for x in range(num_tables):
+        q_tables.append(np.zeros(num_buckets + (
+            num_actions,)) if initial_q_table == 0 else np.random.randn(*num_buckets, num_actions) * initial_q_table)
 
     time_steps = [0]
     episodes_to_solve = 0
@@ -62,49 +77,73 @@ def train(run):
     for episode in range(1, NUM_TRAIN_EPISODES + 1):
 
         # Reset the environment
-        obv, _ = env.reset()
+        env.reset()
 
         # the initial state
-        state_0 = state_to_bucket(obv)
+        state_0 = state_to_bucket(env.state, num_buckets)
 
-        # Discount factor (Grey out unused line)
-        # discount_factor = min(0.75 + 0.005 * episode, 0.999)  # 0.75, 0.005
-        discount_factor = DISCOUNT_FACTOR
-
-        opposition_learning = False
+        # Get discount factor
+        discount_factor = MAX_DISCOUNT_FACTOR if fixed_discount_factor else min(
+            min_discount_factor + discount_step_size * episode, MAX_DISCOUNT_FACTOR)
 
         for t in range(1, MAX_TRAIN_T + 1):
             env.render()
 
-            # Save old state
+            # Old observation for opposite action
             old_obv = env.state
 
             # Select an action
-            action = select_action(state_0, explore_rate, q_table)
-            opposite_action = NUM_ACTIONS - action - 1
-            opposite_q_learning_pass = opposition_learning and action != opposite_action
+            action = select_action(state_0, explore_rate, q_tables, num_actions)
+            opposite_action = num_actions - action - 1
+            opposite_q_learning_pass = opposite_q_learning and action != opposite_action
+
+            # Get Q table indexes
+            index_main = 0
+            index_secondary = 0
+            q_table_length = len(q_tables)
+
+            if q_table_length > 1:
+                index_main = random.randint(0, q_table_length - 1)
+                index_secondary = random.randint(0, q_table_length - 2)
+                index_secondary += 1 if index_secondary >= index_main else 0
+
+            q_table_main = q_tables[index_main]
+            q_table_secondary = q_tables[index_secondary]
 
             # Execute the action
-            obv, reward, terminated, _, _ = env.step(action if NUM_ACTIONS == 3 else action * 2)
+            _, reward, terminated, _, _ = env.step(action if num_actions == 3 else action * 2)
 
             # Observe the result
-            state = state_to_bucket(obv)
+            state = state_to_bucket(env.state, num_buckets)
+
+            # Get reward function
+            reward = reward_function((env.state, reward, terminated))
 
             # Get best Q value
-            best_q = np.amax(q_table[state])
+            best_q = q_table_secondary[state + (np.argmax(q_table_main[state]),)]
 
             if opposite_q_learning_pass:
-                opposite_obv, opposite_reward, opposite_terminated, _, _ = step(
-                    old_obv, opposite_action if NUM_ACTIONS == 3 else opposite_action * 2)
-                opposite_state = state_to_bucket(opposite_obv)
-                opposite_best_q = np.amax(q_table[opposite_state])
-                q_table[state_0 + (opposite_action,)] += learning_rate * (
-                        opposite_reward + discount_factor * opposite_best_q - q_table[state_0 + (opposite_action,)])
+                # Execute opposite action
+                opposite_obv, opposite_reward, opposite_terminated, _, _ = step(old_obv, opposite_action if num_actions == 3 else opposite_action * 2)
 
-            # Update the Q based on the result
-            q_table[state_0 + (action,)] += learning_rate * (
-                    reward + discount_factor * best_q - q_table[state_0 + (action,)])
+                # Observe the result
+                opposite_state = state_to_bucket(opposite_obv, num_buckets)
 
+                # Get reward function
+                opposite_reward = reward_function((opposite_obv, opposite_reward, opposite_terminated))
+
+                # Get best Q value
+                opposite_best_q = q_table_secondary[opposite_state + (np.argmax(q_table_main[opposite_state]),)]
+
+                # Updating opposite Q table
+                q_table_main[state_0 + (opposite_action,)] += learning_rate * (
+                        opposite_reward + discount_factor * opposite_best_q - q_table_main[state_0 + (opposite_action,)])
+
+            # Updating Q table
+            q_table_main[state_0 + (action,)] += learning_rate * (
+                    reward + discount_factor * best_q - q_table_main[state_0 + (action,)])
+
+            # Termination
             if terminated:
                 time_steps.append(t + time_steps[-1])
                 break
@@ -128,20 +167,20 @@ def train(run):
             break
 
         # Update parameters
-        explore_rate = get_explore_rate(episode)
         learning_rate = get_learning_rate(episode)
+        explore_rate = get_explore_rate(episode)
 
     # print(q_table)
     return episodes_to_solve, solved
 
 
-def select_action(state, explore_rate, q_table):
+def select_action(state, explore_rate, q_tables, num_actions):
     # Select a random action
     if random.random() < explore_rate:
-        action = env.action_space.sample() if NUM_ACTIONS == 3 else random.randint(0, 1)
+        action = env.action_space.sample() if num_actions == 3 else random.randint(0, 1)
     # Select the action with the highest q
     else:
-        action = np.argmax(q_table[state])
+        action = np.argmax(sum(q_tables)[state])
     return action
 
 
@@ -153,18 +192,18 @@ def get_learning_rate(t):
     return max(MIN_LEARNING_RATE, min(0.5, 1.0 - math.log10((t + 1) / 25)))
 
 
-def state_to_bucket(state):
+def state_to_bucket(state, num_buckets):
     bucket_indices = []
     for i in range(len(state)):
         if state[i] <= STATE_BOUNDS[i][0]:
             bucket_index = 0
         elif state[i] >= STATE_BOUNDS[i][1]:
-            bucket_index = NUM_BUCKETS[i] - 1
+            bucket_index = num_buckets[i] - 1
         else:
             # Mapping the state bounds to the bucket array
             bound_width = STATE_BOUNDS[i][1] - STATE_BOUNDS[i][0]
-            offset = (NUM_BUCKETS[i] - 1) * STATE_BOUNDS[i][0] / bound_width
-            scaling = (NUM_BUCKETS[i] - 1) / bound_width
+            offset = (num_buckets[i] - 1) * STATE_BOUNDS[i][0] / bound_width
+            scaling = (num_buckets[i] - 1) / bound_width
             bucket_index = int(round(scaling * state[i] - offset))
             # For easier visualization of the above, you might want to use
             # pen and paper and apply some basic algebraic manipulations.
@@ -198,8 +237,7 @@ def step(state, action):
     terminated = bool(-cos(state[0]) - cos(state[1] + state[0]) > 1.0)
     reward = -1.0 if not terminated else 0.0
 
-    return np.array([cos(state[0]), sin(state[0]), cos(state[1]), sin(state[1]), state[2], state[3]], dtype=np.float32
-                    ), reward, terminated, False, {}
+    return np.array([state[0], state[1], state[2], state[3]], dtype=np.float32), reward, terminated, False, {}
 
 
 def _dsdt(s_augmented):
@@ -247,7 +285,7 @@ def random_seed(seed):
     env.reset(seed=seed)
 
 
-if __name__ == "__main__":
-    random_seed(20313854)
-    results, failed = loop(30)
+def run_simulation(run_settings, reward_function):
+    random_seed(RANDOM_SEED)
+    results, failed = loop(run_settings, reward_function)
     results_processing.print_results(results, failed)

@@ -86,9 +86,6 @@ def train(run, run_settings, reward_function):
         discount_factor = MAX_DISCOUNT_FACTOR if fixed_discount_factor else min(
             min_discount_factor + discount_step_size * episode, MAX_DISCOUNT_FACTOR)
 
-        # Get parameters
-        parameters = (learning_rate, discount_factor)
-
         for t in range(1, MAX_TRAIN_T + 1):
             env.render()
 
@@ -118,19 +115,17 @@ def train(run, run_settings, reward_function):
 
             # Observe the result
             state = state_to_bucket(obv, num_buckets)
-            opposite_state = None
 
             # Get reward function
             reward = reward_function((obv, reward, terminated))
-            opposite_reward = None
 
             # Get best Q value
             best_q = q_table_secondary[state + (np.argmax(q_table_main[state]),)]
-            opposite_best_q = None
 
             if opposite_q_learning_pass:
                 # Execute opposite action
-                opposite_obv, opposite_reward, opposite_terminated, _, _ = step(old_obv, opposite_action)
+                opposite_obv, opposite_reward, opposite_terminated, _, _ = step(
+                    old_obv, opposite_action if num_actions == 3 else opposite_action * 2)
 
                 # Observe the result
                 opposite_state = state_to_bucket(opposite_obv, num_buckets)
@@ -141,18 +136,18 @@ def train(run, run_settings, reward_function):
                 # Get best Q value
                 opposite_best_q = q_table_secondary[opposite_state + (np.argmax(q_table_main[opposite_state]),)]
 
-            state_information = (state_0, state, action, reward, best_q)
-            opposite_state_information = (opposite_action, opposite_state, opposite_reward, opposite_best_q)
+                # Updating opposite Q table
+                q_table_main[state_0 + (opposite_action,)] += learning_rate * (
+                        opposite_reward + discount_factor * opposite_best_q - q_table_main[state_0 + (opposite_action,)])
 
+            # Updating Q table
+            q_table_main[state_0 + (action,)] += learning_rate * (
+                    reward + discount_factor * best_q - q_table_main[state_0 + (action,)])
+
+            # Termination
             if terminated:
-                update_q_table(q_table_main, parameters, state_information,
-                               opposite_state_information if opposite_q_learning_pass else None)
                 time_steps.append(t + time_steps[-1])
                 break
-
-            # Update the Q based on the result
-            update_q_table(q_table_main, parameters, state_information,
-                           opposite_state_information if opposite_q_learning_pass else None)
 
             # Setting up for the next iteration
             state_0 = state
@@ -178,22 +173,6 @@ def train(run, run_settings, reward_function):
 
     # print(q_table)
     return episodes_to_solve, solved
-
-
-def update_q_table(q_table, parameters, state_information, opposite_state_information):
-    # Unpacking variables
-    learning_rate, discount_factor = parameters
-    state_0, state, action, reward, best_q = state_information
-
-    # Updating Q table
-    q_table[state_0 + (action,)] += learning_rate * (
-            reward + discount_factor * best_q - q_table[state_0 + (action,)])
-
-    # Updating opposite Q table
-    if opposite_state_information is not None:
-        opposite_action, opposite_state, opposite_reward, opposite_best_q = opposite_state_information
-        q_table[state_0 + (opposite_action,)] += learning_rate * (
-                opposite_reward + discount_factor * opposite_best_q - q_table[state_0 + (opposite_action,)])
 
 
 def select_action(state, explore_rate, q_tables, num_actions):
