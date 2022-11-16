@@ -1,4 +1,4 @@
-package com.example.myapp.databaseFiles.entity;
+package com.example.test.databaseFiles.entity;
 
 import static androidx.room.ForeignKey.CASCADE;
 
@@ -8,7 +8,7 @@ import androidx.room.ForeignKey;
 import androidx.room.PrimaryKey;
 import androidx.room.TypeConverters;
 
-import com.example.myapp.databaseFiles.converter.IDConverter;
+import com.example.test.databaseFiles.converter.IDConverter;
 
 import java.util.List;
 

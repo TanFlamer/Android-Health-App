@@ -1,4 +1,4 @@
-package com.example.myapp.databaseFiles.entity;
+package com.example.test.databaseFiles.entity;
 
 import static androidx.room.ForeignKey.CASCADE;
 

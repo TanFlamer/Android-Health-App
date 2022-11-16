@@ -2,13 +2,10 @@ package com.example.myapp.databaseFiles.repository;
 
 import android.app.Application;
 
-import androidx.lifecycle.LiveData;
-
+import com.example.myapp.databaseFiles.Database;
 import com.example.myapp.databaseFiles.dao.UserDao;
-import com.example.myapp.databaseFiles.database.UserDatabase;
 import com.example.myapp.databaseFiles.entity.User;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -20,7 +17,7 @@ public class UserRepository {
     private List<User> allUsers;
 
     public UserRepository(Application application) {
-        UserDatabase database = UserDatabase.getInstance(application);
+        Database database = Database.getInstance(application);
         userDao = database.getUserDao();
         allUsers = userDao.getAllUsers();
     }

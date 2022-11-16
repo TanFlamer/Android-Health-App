@@ -1,4 +1,4 @@
-package com.example.myapp.databaseFiles;
+package com.example.test.databaseFiles;
 
 import android.content.Context;
 
@@ -7,18 +7,18 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
-import com.example.myapp.databaseFiles.dao.PlaylistDao;
-import com.example.myapp.databaseFiles.dao.SleepDao;
-import com.example.myapp.databaseFiles.dao.SongDao;
-import com.example.myapp.databaseFiles.dao.SportDao;
-import com.example.myapp.databaseFiles.dao.TypeDao;
-import com.example.myapp.databaseFiles.dao.UserDao;
-import com.example.myapp.databaseFiles.entity.Playlist;
-import com.example.myapp.databaseFiles.entity.Sleep;
-import com.example.myapp.databaseFiles.entity.Song;
-import com.example.myapp.databaseFiles.entity.Sport;
-import com.example.myapp.databaseFiles.entity.Type;
-import com.example.myapp.databaseFiles.entity.User;
+import com.example.test.databaseFiles.dao.PlaylistDao;
+import com.example.test.databaseFiles.dao.SleepDao;
+import com.example.test.databaseFiles.dao.SongDao;
+import com.example.test.databaseFiles.dao.SportDao;
+import com.example.test.databaseFiles.dao.TypeDao;
+import com.example.test.databaseFiles.dao.UserDao;
+import com.example.test.databaseFiles.entity.Playlist;
+import com.example.test.databaseFiles.entity.Sleep;
+import com.example.test.databaseFiles.entity.Song;
+import com.example.test.databaseFiles.entity.Sport;
+import com.example.test.databaseFiles.entity.Type;
+import com.example.test.databaseFiles.entity.User;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;

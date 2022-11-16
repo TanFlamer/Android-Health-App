@@ -1,10 +1,11 @@
-package com.example.test;
+package com.example.test.databaseFiles.repository;
 
 import android.app.Application;
 
-import androidx.lifecycle.LiveData;
+import com.example.test.databaseFiles.Database;
+import com.example.test.databaseFiles.dao.UserDao;
+import com.example.test.databaseFiles.entity.User;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -13,10 +14,10 @@ import java.util.concurrent.Executors;
 public class UserRepository {
 
     private UserDao userDao;
-    private LiveData<List<User>> allUsers;
+    private List<User> allUsers;
 
     public UserRepository(Application application) {
-        UserDatabase database = UserDatabase.getInstance(application);
+        Database database = Database.getInstance(application);
         userDao = database.getUserDao();
         allUsers = userDao.getAllUsers();
     }
@@ -33,11 +34,11 @@ public class UserRepository {
         new DeleteUserExecutorTask(userDao).execute(user);
     }
 
-    public List<User> findUser(String username) {
-        return new FindUserExecutorTask(userDao).get(username);
+    public User findUser(int userID) {
+        return new FindUserExecutorTask(userDao).get(userID);
     }
 
-    public LiveData<List<User>> getAllUsers() {
+    public List<User> getAllUsers() {
         return allUsers;
     }
 
@@ -80,13 +81,13 @@ public class UserRepository {
         private FindUserExecutorTask(UserDao userDao) {
             this.userDao = userDao;
         }
-        protected List<User> get(String username) {
+        protected User get(int userID) {
             try {
-                return service.submit(() -> userDao.findUser(username)).get();
+                return service.submit(() -> userDao.findUser(userID)).get();
             } catch (ExecutionException | InterruptedException e) {
                 e.printStackTrace();
             }
-            return new ArrayList<>();
+            return null;
         }
     }
 }

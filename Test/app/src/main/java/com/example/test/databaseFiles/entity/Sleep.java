@@ -1,4 +1,4 @@
-package com.example.myapp.databaseFiles.entity;
+package com.example.test.databaseFiles.entity;
 
 import static androidx.room.ForeignKey.CASCADE;
 
@@ -10,9 +10,9 @@ import androidx.room.ForeignKey;
 import androidx.room.PrimaryKey;
 import androidx.room.TypeConverters;
 
-import com.example.myapp.databaseFiles.converter.DateConverter;
-import com.example.myapp.databaseFiles.converter.DurationConverter;
-import com.example.myapp.databaseFiles.converter.TimeConverter;
+import com.example.test.databaseFiles.converter.DateConverter;
+import com.example.test.databaseFiles.converter.DurationConverter;
+import com.example.test.databaseFiles.converter.TimeConverter;
 
 import java.time.Duration;
 import java.time.LocalDate;

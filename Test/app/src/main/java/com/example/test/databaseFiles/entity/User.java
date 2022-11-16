@@ -1,11 +1,11 @@
-package com.example.myapp.databaseFiles.entity;
+package com.example.test.databaseFiles.entity;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 import androidx.room.TypeConverters;
 
-import com.example.myapp.databaseFiles.converter.IDConverter;
+import com.example.test.databaseFiles.converter.IDConverter;
 
 import java.util.List;
 
