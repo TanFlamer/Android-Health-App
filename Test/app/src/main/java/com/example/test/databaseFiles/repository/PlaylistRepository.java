@@ -34,7 +34,7 @@ public class PlaylistRepository {
         new DeletePlaylistExecutorTask(playlistDao).execute(playlist);
     }
 
-    public Playlist findPlaylist(int playlistID) {
+    public List<Playlist> findPlaylist(int playlistID) {
         return new FindPlaylistExecutorTask(playlistDao).get(playlistID);
     }
 
@@ -81,7 +81,7 @@ public class PlaylistRepository {
         private FindPlaylistExecutorTask(PlaylistDao playlistDao) {
             this.playlistDao = playlistDao;
         }
-        protected Playlist get(int playlistID) {
+        protected List<Playlist> get(int playlistID) {
             try {
                 return service.submit(() -> playlistDao.findPlaylist(playlistID)).get();
             } catch (ExecutionException | InterruptedException e) {

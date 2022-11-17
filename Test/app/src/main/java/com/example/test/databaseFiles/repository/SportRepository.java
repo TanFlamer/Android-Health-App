@@ -23,29 +23,29 @@ public class SportRepository {
     }
 
     public void insert(Sport sport) {
-        new InsertUserExecutorTask(sportDao).execute(sport);
+        new InsertSportExecutorTask(sportDao).execute(sport);
     }
 
     public void update(Sport sport) {
-        new UpdateUserExecutorTask(sportDao).execute(sport);
+        new UpdateSportExecutorTask(sportDao).execute(sport);
     }
 
     public void delete(Sport sport) {
-        new DeleteUserExecutorTask(sportDao).execute(sport);
+        new DeleteSportExecutorTask(sportDao).execute(sport);
     }
 
-    public Sport findSport(int sportID) {
-        return new FindUserExecutorTask(sportDao).get(sportID);
+    public List<Sport> findSport(int sportID) {
+        return new FindSportExecutorTask(sportDao).get(sportID);
     }
 
     public List<Sport> getAllSport() {
         return allSport;
     }
 
-    private static class InsertUserExecutorTask {
+    private static class InsertSportExecutorTask {
         private final ExecutorService service = Executors.newSingleThreadExecutor();
         private SportDao sportDao;
-        private InsertUserExecutorTask(SportDao sportDao) {
+        private InsertSportExecutorTask(SportDao sportDao) {
             this.sportDao = sportDao;
         }
         protected void execute(Sport sport){
@@ -53,10 +53,10 @@ public class SportRepository {
         }
     }
 
-    private static class UpdateUserExecutorTask {
+    private static class UpdateSportExecutorTask {
         private final ExecutorService service = Executors.newSingleThreadExecutor();
         private SportDao sportDao;
-        private UpdateUserExecutorTask(SportDao sportDao) {
+        private UpdateSportExecutorTask(SportDao sportDao) {
             this.sportDao = sportDao;
         }
         protected void execute(Sport sport){
@@ -64,10 +64,10 @@ public class SportRepository {
         }
     }
 
-    private static class DeleteUserExecutorTask {
+    private static class DeleteSportExecutorTask {
         private final ExecutorService service = Executors.newSingleThreadExecutor();
         private SportDao sportDao;
-        private DeleteUserExecutorTask(SportDao sportDao) {
+        private DeleteSportExecutorTask(SportDao sportDao) {
             this.sportDao = sportDao;
         }
         protected void execute(Sport sport){
@@ -75,13 +75,13 @@ public class SportRepository {
         }
     }
 
-    private static class FindUserExecutorTask {
+    private static class FindSportExecutorTask {
         private final ExecutorService service = Executors.newSingleThreadExecutor();
         private SportDao sportDao;
-        private FindUserExecutorTask(SportDao sportDao) {
+        private FindSportExecutorTask(SportDao sportDao) {
             this.sportDao = sportDao;
         }
-        protected Sport get(int sportID) {
+        protected List<Sport> get(int sportID) {
             try {
                 return service.submit(() -> sportDao.findSport(sportID)).get();
             } catch (ExecutionException | InterruptedException e) {

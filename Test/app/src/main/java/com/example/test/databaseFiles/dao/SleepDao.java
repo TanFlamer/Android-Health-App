@@ -23,7 +23,7 @@ public interface SleepDao {
     void delete(Sleep sleep);
 
     @Query("SELECT * FROM Sleep WHERE sleepID=:sleepID")
-    Sleep findSleep(int sleepID);
+    List<Sleep> findSleep(int sleepID);
 
     @Query("SELECT * FROM Sleep")
     List<Sleep> getAllSleep();

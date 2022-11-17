@@ -33,7 +33,7 @@ public class SleepViewModal extends AndroidViewModel {
         sleepRepository.delete(sleep);
     }
 
-    public Sleep findSleep(int sleepID){
+    public List<Sleep> findSleep(int sleepID){
         return sleepRepository.findSleep(sleepID);
     }
 

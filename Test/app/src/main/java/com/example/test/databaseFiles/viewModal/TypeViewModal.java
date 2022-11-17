@@ -33,7 +33,7 @@ public class TypeViewModal extends AndroidViewModel {
         typeRepository.delete(type);
     }
 
-    public Type findType(int typeID){
+    public List<Type> findType(int typeID){
         return typeRepository.findType(typeID);
     }
 

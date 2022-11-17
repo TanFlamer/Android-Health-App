@@ -23,29 +23,29 @@ public class SleepRepository {
     }
 
     public void insert(Sleep sleep) {
-        new InsertUserExecutorTask(sleepDao).execute(sleep);
+        new InsertSleepExecutorTask(sleepDao).execute(sleep);
     }
 
     public void update(Sleep sleep) {
-        new UpdateUserExecutorTask(sleepDao).execute(sleep);
+        new UpdateSleepExecutorTask(sleepDao).execute(sleep);
     }
 
     public void delete(Sleep sleep) {
-        new DeleteUserExecutorTask(sleepDao).execute(sleep);
+        new DeleteSleepExecutorTask(sleepDao).execute(sleep);
     }
 
-    public Sleep findSleep(int sleepID) {
-        return new FindUserExecutorTask(sleepDao).get(sleepID);
+    public List<Sleep> findSleep(int sleepID) {
+        return new FindSleepExecutorTask(sleepDao).get(sleepID);
     }
 
     public List<Sleep> getAllSleep() {
         return allSleep;
     }
 
-    private static class InsertUserExecutorTask {
+    private static class InsertSleepExecutorTask {
         private final ExecutorService service = Executors.newSingleThreadExecutor();
         private SleepDao sleepDao;
-        private InsertUserExecutorTask(SleepDao sleepDao) {
+        private InsertSleepExecutorTask(SleepDao sleepDao) {
             this.sleepDao = sleepDao;
         }
         protected void execute(Sleep sleep){
@@ -53,10 +53,10 @@ public class SleepRepository {
         }
     }
 
-    private static class UpdateUserExecutorTask {
+    private static class UpdateSleepExecutorTask {
         private final ExecutorService service = Executors.newSingleThreadExecutor();
         private SleepDao sleepDao;
-        private UpdateUserExecutorTask(SleepDao sleepDao) {
+        private UpdateSleepExecutorTask(SleepDao sleepDao) {
             this.sleepDao = sleepDao;
         }
         protected void execute(Sleep sleep){
@@ -64,10 +64,10 @@ public class SleepRepository {
         }
     }
 
-    private static class DeleteUserExecutorTask {
+    private static class DeleteSleepExecutorTask {
         private final ExecutorService service = Executors.newSingleThreadExecutor();
         private SleepDao sleepDao;
-        private DeleteUserExecutorTask(SleepDao sleepDao) {
+        private DeleteSleepExecutorTask(SleepDao sleepDao) {
             this.sleepDao = sleepDao;
         }
         protected void execute(Sleep sleep){
@@ -75,13 +75,13 @@ public class SleepRepository {
         }
     }
 
-    private static class FindUserExecutorTask {
+    private static class FindSleepExecutorTask {
         private final ExecutorService service = Executors.newSingleThreadExecutor();
         private SleepDao sleepDao;
-        private FindUserExecutorTask(SleepDao sleepDao) {
+        private FindSleepExecutorTask(SleepDao sleepDao) {
             this.sleepDao = sleepDao;
         }
-        protected Sleep get(int sleepID) {
+        protected List<Sleep> get(int sleepID) {
             try {
                 return service.submit(() -> sleepDao.findSleep(sleepID)).get();
             } catch (ExecutionException | InterruptedException e) {

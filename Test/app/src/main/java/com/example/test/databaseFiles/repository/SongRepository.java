@@ -23,29 +23,29 @@ public class SongRepository {
     }
 
     public void insert(Song song) {
-        new InsertUserExecutorTask(songDao).execute(song);
+        new InsertSongExecutorTask(songDao).execute(song);
     }
 
     public void update(Song song) {
-        new UpdateUserExecutorTask(songDao).execute(song);
+        new UpdateSongExecutorTask(songDao).execute(song);
     }
 
     public void delete(Song song) {
-        new DeleteUserExecutorTask(songDao).execute(song);
+        new DeleteSongExecutorTask(songDao).execute(song);
     }
 
-    public Song findSong(int songID) {
-        return new FindUserExecutorTask(songDao).get(songID);
+    public List<Song> findSong(int songID) {
+        return new FindSongExecutorTask(songDao).get(songID);
     }
 
     public List<Song> getAllSongs() {
         return allSongs;
     }
 
-    private static class InsertUserExecutorTask {
+    private static class InsertSongExecutorTask {
         private final ExecutorService service = Executors.newSingleThreadExecutor();
         private SongDao songDao;
-        private InsertUserExecutorTask(SongDao songDao) {
+        private InsertSongExecutorTask(SongDao songDao) {
             this.songDao = songDao;
         }
         protected void execute(Song song){
@@ -53,10 +53,10 @@ public class SongRepository {
         }
     }
 
-    private static class UpdateUserExecutorTask {
+    private static class UpdateSongExecutorTask {
         private final ExecutorService service = Executors.newSingleThreadExecutor();
         private SongDao songDao;
-        private UpdateUserExecutorTask(SongDao songDao) {
+        private UpdateSongExecutorTask(SongDao songDao) {
             this.songDao = songDao;
         }
         protected void execute(Song song){
@@ -64,10 +64,10 @@ public class SongRepository {
         }
     }
 
-    private static class DeleteUserExecutorTask {
+    private static class DeleteSongExecutorTask {
         private final ExecutorService service = Executors.newSingleThreadExecutor();
         private SongDao songDao;
-        private DeleteUserExecutorTask(SongDao songDao) {
+        private DeleteSongExecutorTask(SongDao songDao) {
             this.songDao = songDao;
         }
         protected void execute(Song song){
@@ -75,13 +75,13 @@ public class SongRepository {
         }
     }
 
-    private static class FindUserExecutorTask {
+    private static class FindSongExecutorTask {
         private final ExecutorService service = Executors.newSingleThreadExecutor();
         private SongDao songDao;
-        private FindUserExecutorTask(SongDao songDao) {
+        private FindSongExecutorTask(SongDao songDao) {
             this.songDao = songDao;
         }
-        protected Song get(int songID) {
+        protected List<Song> get(int songID) {
             try {
                 return service.submit(() -> songDao.findSong(songID)).get();
             } catch (ExecutionException | InterruptedException e) {

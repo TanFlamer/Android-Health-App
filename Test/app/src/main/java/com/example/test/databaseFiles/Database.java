@@ -10,20 +10,24 @@ import androidx.sqlite.db.SupportSQLiteDatabase;
 import com.example.test.databaseFiles.dao.PlaylistDao;
 import com.example.test.databaseFiles.dao.SleepDao;
 import com.example.test.databaseFiles.dao.SongDao;
+import com.example.test.databaseFiles.dao.SongPlaylistDao;
 import com.example.test.databaseFiles.dao.SportDao;
 import com.example.test.databaseFiles.dao.TypeDao;
+import com.example.test.databaseFiles.dao.TypeSportDao;
 import com.example.test.databaseFiles.dao.UserDao;
 import com.example.test.databaseFiles.entity.Playlist;
 import com.example.test.databaseFiles.entity.Sleep;
 import com.example.test.databaseFiles.entity.Song;
+import com.example.test.databaseFiles.entity.SongPlaylist;
 import com.example.test.databaseFiles.entity.Sport;
 import com.example.test.databaseFiles.entity.Type;
+import com.example.test.databaseFiles.entity.TypeSport;
 import com.example.test.databaseFiles.entity.User;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-@androidx.room.Database(entities = { User.class, Playlist.class, Song.class, Sleep.class, Sport.class, Type.class }, version = 1)
+@androidx.room.Database(entities = { User.class, Playlist.class, Song.class, Sleep.class, Sport.class, Type.class, SongPlaylist.class, TypeSport.class }, version = 1)
 public abstract class Database extends RoomDatabase {
 
     private static Database instance;
@@ -33,6 +37,8 @@ public abstract class Database extends RoomDatabase {
     public abstract SleepDao getSleepDao();
     public abstract SportDao getSportDao();
     public abstract TypeDao getTypeDao();
+    public abstract SongPlaylistDao getSongPlaylistDao();
+    public abstract TypeSportDao getTypeSportDao();
 
     public static synchronized Database getInstance(Context context) {
         if (instance == null) {

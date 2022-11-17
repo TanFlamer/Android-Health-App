@@ -33,7 +33,7 @@ public class PlaylistViewModal extends AndroidViewModel {
         playlistRepository.delete(playlist);
     }
 
-    public Playlist findPlaylist(int playlistID){
+    public List<Playlist> findPlaylist(int playlistID){
         return playlistRepository.findPlaylist(playlistID);
     }
 

@@ -23,7 +23,7 @@ public interface TypeDao {
     void delete(Type type);
 
     @Query("SELECT * FROM Types WHERE typeID=:typeID")
-    Type findType(int typeID);
+    List<Type> findType(int typeID);
 
     @Query("SELECT * FROM Types")
     List<Type> getAllTypes();

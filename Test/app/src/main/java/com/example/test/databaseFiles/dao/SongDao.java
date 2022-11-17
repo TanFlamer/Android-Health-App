@@ -23,7 +23,7 @@ public interface SongDao {
     void delete(Song song);
 
     @Query("SELECT * FROM Songs WHERE songID=:songID")
-    Song findSong(int songID);
+    List<Song> findSong(int songID);
 
     @Query("SELECT * FROM Songs")
     List<Song> getAllSongs();

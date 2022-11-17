@@ -7,6 +7,7 @@ import android.os.Build;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
+import androidx.room.Index;
 import androidx.room.PrimaryKey;
 import androidx.room.TypeConverters;
 
@@ -19,28 +20,25 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 @Entity(tableName = "Sleep",
-        foreignKeys = @ForeignKey(entity = User.class, parentColumns = "userID", childColumns = "user-id", onDelete = CASCADE))
+        indices = @Index("userID"),
+        foreignKeys = @ForeignKey(entity = User.class, parentColumns = "userID", childColumns = "userID", onDelete = CASCADE))
 public class Sleep {
+
     @PrimaryKey(autoGenerate = true)
     private Integer sleepID;
 
     @TypeConverters(DateConverter.class)
-    @ColumnInfo(name = "date")
     private LocalDate date;
 
     @TypeConverters(TimeConverter.class)
-    @ColumnInfo(name = "sleep-time")
     private LocalTime sleepTime;
 
     @TypeConverters(TimeConverter.class)
-    @ColumnInfo(name = "wake-time")
     private LocalTime wakeTime;
 
     @TypeConverters(DurationConverter.class)
-    @ColumnInfo(name = "sleep-duration")
     private Duration sleepDuration;
 
-    @ColumnInfo(name = "user-id", index = true)
     private Integer userID;
 
     public Sleep(LocalDate date, LocalTime sleepTime, LocalTime wakeTime, Integer userID) {

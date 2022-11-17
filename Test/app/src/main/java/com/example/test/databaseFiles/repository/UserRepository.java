@@ -2,6 +2,8 @@ package com.example.test.databaseFiles.repository;
 
 import android.app.Application;
 
+import androidx.lifecycle.LiveData;
+
 import com.example.test.databaseFiles.Database;
 import com.example.test.databaseFiles.dao.UserDao;
 import com.example.test.databaseFiles.entity.User;
@@ -14,7 +16,7 @@ import java.util.concurrent.Executors;
 public class UserRepository {
 
     private UserDao userDao;
-    private List<User> allUsers;
+    private LiveData<List<User>> allUsers;
 
     public UserRepository(Application application) {
         Database database = Database.getInstance(application);
@@ -34,11 +36,11 @@ public class UserRepository {
         new DeleteUserExecutorTask(userDao).execute(user);
     }
 
-    public User findUser(int userID) {
+    public List<User> findUser(int userID) {
         return new FindUserExecutorTask(userDao).get(userID);
     }
 
-    public List<User> getAllUsers() {
+    public LiveData<List<User>> getAllUsers() {
         return allUsers;
     }
 
@@ -81,7 +83,7 @@ public class UserRepository {
         private FindUserExecutorTask(UserDao userDao) {
             this.userDao = userDao;
         }
-        protected User get(int userID) {
+        protected List<User> get(int userID) {
             try {
                 return service.submit(() -> userDao.findUser(userID)).get();
             } catch (ExecutionException | InterruptedException e) {

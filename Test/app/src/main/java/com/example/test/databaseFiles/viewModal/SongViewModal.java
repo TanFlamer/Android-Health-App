@@ -33,7 +33,7 @@ public class SongViewModal extends AndroidViewModel {
         songRepository.delete(song);
     }
 
-    public Song findSong(int songID){
+    public List<Song> findSong(int songID){
         return songRepository.findSong(songID);
     }
 

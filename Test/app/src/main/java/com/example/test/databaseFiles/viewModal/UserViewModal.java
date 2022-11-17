@@ -4,6 +4,7 @@ import android.app.Application;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
+import androidx.lifecycle.LiveData;
 
 import com.example.test.databaseFiles.entity.User;
 import com.example.test.databaseFiles.repository.UserRepository;
@@ -13,7 +14,7 @@ import java.util.List;
 public class UserViewModal extends AndroidViewModel {
 
     private UserRepository userRepository;
-    private List<User> allUsers;
+    private LiveData<List<User>> allUsers;
 
     public UserViewModal(@NonNull Application application) {
         super(application);
@@ -33,11 +34,11 @@ public class UserViewModal extends AndroidViewModel {
         userRepository.delete(user);
     }
 
-    public User findUser(int userID){
+    public List<User> findUser(int userID){
         return userRepository.findUser(userID);
     }
 
-    public List<User> getAllUsers() {
+    public LiveData<List<User>> getAllUsers() {
         return allUsers;
     }
 }

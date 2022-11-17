@@ -23,7 +23,7 @@ public interface SportDao {
     void delete(Sport sport);
 
     @Query("SELECT * FROM Sport WHERE sportID=:sportID")
-    Sport findSport(int sportID);
+    List<Sport> findSport(int sportID);
 
     @Query("SELECT * FROM Sport")
     List<Sport> getAllSport();

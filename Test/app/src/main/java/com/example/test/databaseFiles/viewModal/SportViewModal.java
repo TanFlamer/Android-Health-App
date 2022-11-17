@@ -33,7 +33,7 @@ public class SportViewModal extends AndroidViewModel {
         sportRepository.delete(sport);
     }
 
-    public Sport findSport(int sportID){
+    public List<Sport> findSport(int sportID){
         return sportRepository.findSport(sportID);
     }
 
