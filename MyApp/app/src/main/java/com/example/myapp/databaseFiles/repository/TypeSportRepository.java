@@ -1,12 +1,12 @@
-package com.example.test.databaseFiles.repository;
+package com.example.myapp.databaseFiles.repository;
 
 import android.app.Application;
 
 import androidx.lifecycle.LiveData;
 
-import com.example.test.databaseFiles.Database;
-import com.example.test.databaseFiles.dao.TypeSportDao;
-import com.example.test.databaseFiles.entity.TypeSport;
+import com.example.myapp.databaseFiles.Database;
+import com.example.myapp.databaseFiles.dao.TypeSportDao;
+import com.example.myapp.databaseFiles.entity.TypeSport;
 
 import java.util.List;
 import java.util.concurrent.ExecutionException;

@@ -34,8 +34,8 @@ public class UserViewModal extends AndroidViewModel {
         userRepository.delete(user);
     }
 
-    public List<User> findUser(int userID){
-        return userRepository.findUser(userID);
+    public List<User> findUser(String username){
+        return userRepository.findUser(username);
     }
 
     public LiveData<List<User>> getAllUsers() {

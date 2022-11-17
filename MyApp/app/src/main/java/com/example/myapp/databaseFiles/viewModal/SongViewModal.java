@@ -4,6 +4,7 @@ import android.app.Application;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
+import androidx.lifecycle.LiveData;
 
 import com.example.myapp.databaseFiles.entity.Song;
 import com.example.myapp.databaseFiles.repository.SongRepository;
@@ -13,12 +14,12 @@ import java.util.List;
 public class SongViewModal extends AndroidViewModel {
 
     private SongRepository songRepository;
-    private List<Song> allSongs;
+    private LiveData<List<Song>> allSongs;
 
-    public SongViewModal(@NonNull Application application) {
+    public SongViewModal(@NonNull Application application, int userID) {
         super(application);
         songRepository = new SongRepository(application);
-        allSongs = songRepository.getAllSongs();
+        allSongs = songRepository.getAllSongs(userID);
     }
 
     public void insert(Song song) {
@@ -33,11 +34,11 @@ public class SongViewModal extends AndroidViewModel {
         songRepository.delete(song);
     }
 
-    public Song findSong(int songID){
+    public List<Song> findSong(int songID){
         return songRepository.findSong(songID);
     }
 
-    public List<Song> getAllSongs() {
+    public LiveData<List<Song>> getAllSongs() {
         return allSongs;
     }
 }

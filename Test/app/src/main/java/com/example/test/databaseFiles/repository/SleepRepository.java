@@ -2,10 +2,13 @@ package com.example.test.databaseFiles.repository;
 
 import android.app.Application;
 
+import androidx.lifecycle.LiveData;
+
 import com.example.test.databaseFiles.Database;
 import com.example.test.databaseFiles.dao.SleepDao;
 import com.example.test.databaseFiles.entity.Sleep;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -14,12 +17,10 @@ import java.util.concurrent.Executors;
 public class SleepRepository {
 
     private SleepDao sleepDao;
-    private List<Sleep> allSleep;
 
     public SleepRepository(Application application) {
         Database database = Database.getInstance(application);
         sleepDao = database.getSleepDao();
-        allSleep = sleepDao.getAllSleep();
     }
 
     public void insert(Sleep sleep) {
@@ -34,12 +35,12 @@ public class SleepRepository {
         new DeleteSleepExecutorTask(sleepDao).execute(sleep);
     }
 
-    public List<Sleep> findSleep(int sleepID) {
-        return new FindSleepExecutorTask(sleepDao).get(sleepID);
+    public List<Sleep> findSleep(int userID, LocalDate date) {
+        return new FindSleepExecutorTask(sleepDao).get(userID, date);
     }
 
-    public List<Sleep> getAllSleep() {
-        return allSleep;
+    public LiveData<List<Sleep>> getAllSleep(int userID) {
+        return sleepDao.getAllSleep(userID);
     }
 
     private static class InsertSleepExecutorTask {
@@ -81,9 +82,9 @@ public class SleepRepository {
         private FindSleepExecutorTask(SleepDao sleepDao) {
             this.sleepDao = sleepDao;
         }
-        protected List<Sleep> get(int sleepID) {
+        protected List<Sleep> get(int userID, LocalDate date) {
             try {
-                return service.submit(() -> sleepDao.findSleep(sleepID)).get();
+                return service.submit(() -> sleepDao.findSleep(userID, date)).get();
             } catch (ExecutionException | InterruptedException e) {
                 e.printStackTrace();
             }

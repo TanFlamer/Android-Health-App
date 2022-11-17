@@ -2,10 +2,13 @@ package com.example.myapp.databaseFiles.repository;
 
 import android.app.Application;
 
+import androidx.lifecycle.LiveData;
+
 import com.example.myapp.databaseFiles.Database;
 import com.example.myapp.databaseFiles.dao.SleepDao;
 import com.example.myapp.databaseFiles.entity.Sleep;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -14,38 +17,36 @@ import java.util.concurrent.Executors;
 public class SleepRepository {
 
     private SleepDao sleepDao;
-    private List<Sleep> allSleep;
 
     public SleepRepository(Application application) {
         Database database = Database.getInstance(application);
         sleepDao = database.getSleepDao();
-        allSleep = sleepDao.getAllSleep();
     }
 
     public void insert(Sleep sleep) {
-        new InsertUserExecutorTask(sleepDao).execute(sleep);
+        new InsertSleepExecutorTask(sleepDao).execute(sleep);
     }
 
     public void update(Sleep sleep) {
-        new UpdateUserExecutorTask(sleepDao).execute(sleep);
+        new UpdateSleepExecutorTask(sleepDao).execute(sleep);
     }
 
     public void delete(Sleep sleep) {
-        new DeleteUserExecutorTask(sleepDao).execute(sleep);
+        new DeleteSleepExecutorTask(sleepDao).execute(sleep);
     }
 
-    public Sleep findSleep(int sleepID) {
-        return new FindUserExecutorTask(sleepDao).get(sleepID);
+    public List<Sleep> findSleep(int userID, LocalDate date) {
+        return new FindSleepExecutorTask(sleepDao).get(userID, date);
     }
 
-    public List<Sleep> getAllSleep() {
-        return allSleep;
+    public LiveData<List<Sleep>> getAllSleep(int userID) {
+        return sleepDao.getAllSleep(userID);
     }
 
-    private static class InsertUserExecutorTask {
+    private static class InsertSleepExecutorTask {
         private final ExecutorService service = Executors.newSingleThreadExecutor();
         private SleepDao sleepDao;
-        private InsertUserExecutorTask(SleepDao sleepDao) {
+        private InsertSleepExecutorTask(SleepDao sleepDao) {
             this.sleepDao = sleepDao;
         }
         protected void execute(Sleep sleep){
@@ -53,10 +54,10 @@ public class SleepRepository {
         }
     }
 
-    private static class UpdateUserExecutorTask {
+    private static class UpdateSleepExecutorTask {
         private final ExecutorService service = Executors.newSingleThreadExecutor();
         private SleepDao sleepDao;
-        private UpdateUserExecutorTask(SleepDao sleepDao) {
+        private UpdateSleepExecutorTask(SleepDao sleepDao) {
             this.sleepDao = sleepDao;
         }
         protected void execute(Sleep sleep){
@@ -64,10 +65,10 @@ public class SleepRepository {
         }
     }
 
-    private static class DeleteUserExecutorTask {
+    private static class DeleteSleepExecutorTask {
         private final ExecutorService service = Executors.newSingleThreadExecutor();
         private SleepDao sleepDao;
-        private DeleteUserExecutorTask(SleepDao sleepDao) {
+        private DeleteSleepExecutorTask(SleepDao sleepDao) {
             this.sleepDao = sleepDao;
         }
         protected void execute(Sleep sleep){
@@ -75,15 +76,15 @@ public class SleepRepository {
         }
     }
 
-    private static class FindUserExecutorTask {
+    private static class FindSleepExecutorTask {
         private final ExecutorService service = Executors.newSingleThreadExecutor();
         private SleepDao sleepDao;
-        private FindUserExecutorTask(SleepDao sleepDao) {
+        private FindSleepExecutorTask(SleepDao sleepDao) {
             this.sleepDao = sleepDao;
         }
-        protected Sleep get(int sleepID) {
+        protected List<Sleep> get(int userID, LocalDate date) {
             try {
-                return service.submit(() -> sleepDao.findSleep(sleepID)).get();
+                return service.submit(() -> sleepDao.findSleep(userID, date)).get();
             } catch (ExecutionException | InterruptedException e) {
                 e.printStackTrace();
             }

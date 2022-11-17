@@ -2,10 +2,13 @@ package com.example.test.databaseFiles.repository;
 
 import android.app.Application;
 
+import androidx.lifecycle.LiveData;
+
 import com.example.test.databaseFiles.Database;
 import com.example.test.databaseFiles.dao.SportDao;
 import com.example.test.databaseFiles.entity.Sport;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -14,12 +17,10 @@ import java.util.concurrent.Executors;
 public class SportRepository {
 
     private SportDao sportDao;
-    private List<Sport> allSport;
 
     public SportRepository(Application application) {
         Database database = Database.getInstance(application);
         sportDao = database.getSportDao();
-        allSport = sportDao.getAllSport();
     }
 
     public void insert(Sport sport) {
@@ -34,12 +35,12 @@ public class SportRepository {
         new DeleteSportExecutorTask(sportDao).execute(sport);
     }
 
-    public List<Sport> findSport(int sportID) {
-        return new FindSportExecutorTask(sportDao).get(sportID);
+    public List<Sport> findSport(int userID, LocalDate date) {
+        return new FindSportExecutorTask(sportDao).get(userID, date);
     }
 
-    public List<Sport> getAllSport() {
-        return allSport;
+    public LiveData<List<Sport>> getAllSport(int userID) {
+        return sportDao.getAllSport(userID);
     }
 
     private static class InsertSportExecutorTask {
@@ -81,9 +82,9 @@ public class SportRepository {
         private FindSportExecutorTask(SportDao sportDao) {
             this.sportDao = sportDao;
         }
-        protected List<Sport> get(int sportID) {
+        protected List<Sport> get(int userID, LocalDate date) {
             try {
-                return service.submit(() -> sportDao.findSport(sportID)).get();
+                return service.submit(() -> sportDao.findSport(userID, date)).get();
             } catch (ExecutionException | InterruptedException e) {
                 e.printStackTrace();
             }

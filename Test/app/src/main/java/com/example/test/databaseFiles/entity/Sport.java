@@ -2,7 +2,6 @@ package com.example.test.databaseFiles.entity;
 
 import static androidx.room.ForeignKey.CASCADE;
 
-import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
 import androidx.room.Index;
@@ -10,10 +9,8 @@ import androidx.room.PrimaryKey;
 import androidx.room.TypeConverters;
 
 import com.example.test.databaseFiles.converter.DateConverter;
-import com.example.test.databaseFiles.converter.IDConverter;
 
 import java.time.LocalDate;
-import java.util.List;
 
 @Entity(tableName = "Sport",
         indices = @Index("userID"),

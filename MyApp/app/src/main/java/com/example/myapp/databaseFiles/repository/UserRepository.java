@@ -2,6 +2,8 @@ package com.example.myapp.databaseFiles.repository;
 
 import android.app.Application;
 
+import androidx.lifecycle.LiveData;
+
 import com.example.myapp.databaseFiles.Database;
 import com.example.myapp.databaseFiles.dao.UserDao;
 import com.example.myapp.databaseFiles.entity.User;
@@ -14,12 +16,10 @@ import java.util.concurrent.Executors;
 public class UserRepository {
 
     private UserDao userDao;
-    private List<User> allUsers;
 
     public UserRepository(Application application) {
         Database database = Database.getInstance(application);
         userDao = database.getUserDao();
-        allUsers = userDao.getAllUsers();
     }
 
     public void insert(User user) {
@@ -34,12 +34,12 @@ public class UserRepository {
         new DeleteUserExecutorTask(userDao).execute(user);
     }
 
-    public User findUser(int userID) {
-        return new FindUserExecutorTask(userDao).get(userID);
+    public List<User> findUser(String username) {
+        return new FindUserExecutorTask(userDao).get(username);
     }
 
-    public List<User> getAllUsers() {
-        return allUsers;
+    public LiveData<List<User>> getAllUsers() {
+        return userDao.getAllUsers();
     }
 
     private static class InsertUserExecutorTask {
@@ -81,9 +81,9 @@ public class UserRepository {
         private FindUserExecutorTask(UserDao userDao) {
             this.userDao = userDao;
         }
-        protected User get(int userID) {
+        protected List<User> get(String username) {
             try {
-                return service.submit(() -> userDao.findUser(userID)).get();
+                return service.submit(() -> userDao.findUser(username)).get();
             } catch (ExecutionException | InterruptedException e) {
                 e.printStackTrace();
             }

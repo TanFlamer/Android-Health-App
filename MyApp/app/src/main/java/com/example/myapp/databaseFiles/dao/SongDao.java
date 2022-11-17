@@ -1,5 +1,6 @@
 package com.example.myapp.databaseFiles.dao;
 
+import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
@@ -23,8 +24,8 @@ public interface SongDao {
     void delete(Song song);
 
     @Query("SELECT * FROM Songs WHERE songID=:songID")
-    Song findSong(int songID);
+    List<Song> findSong(int songID);
 
-    @Query("SELECT * FROM Songs")
-    List<Song> getAllSongs();
+    @Query("SELECT * FROM Songs WHERE userID=:userID")
+    LiveData<List<Song>> getAllSongs(int userID);
 }

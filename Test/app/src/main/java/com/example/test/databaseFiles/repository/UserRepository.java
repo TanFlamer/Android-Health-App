@@ -16,12 +16,10 @@ import java.util.concurrent.Executors;
 public class UserRepository {
 
     private UserDao userDao;
-    private LiveData<List<User>> allUsers;
 
     public UserRepository(Application application) {
         Database database = Database.getInstance(application);
         userDao = database.getUserDao();
-        allUsers = userDao.getAllUsers();
     }
 
     public void insert(User user) {
@@ -36,12 +34,12 @@ public class UserRepository {
         new DeleteUserExecutorTask(userDao).execute(user);
     }
 
-    public List<User> findUser(int userID) {
-        return new FindUserExecutorTask(userDao).get(userID);
+    public List<User> findUser(String username) {
+        return new FindUserExecutorTask(userDao).get(username);
     }
 
     public LiveData<List<User>> getAllUsers() {
-        return allUsers;
+        return userDao.getAllUsers();
     }
 
     private static class InsertUserExecutorTask {
@@ -83,9 +81,9 @@ public class UserRepository {
         private FindUserExecutorTask(UserDao userDao) {
             this.userDao = userDao;
         }
-        protected List<User> get(int userID) {
+        protected List<User> get(String username) {
             try {
-                return service.submit(() -> userDao.findUser(userID)).get();
+                return service.submit(() -> userDao.findUser(username)).get();
             } catch (ExecutionException | InterruptedException e) {
                 e.printStackTrace();
             }

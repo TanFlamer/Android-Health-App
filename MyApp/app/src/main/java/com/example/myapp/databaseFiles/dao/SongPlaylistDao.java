@@ -1,4 +1,4 @@
-package com.example.test.databaseFiles.dao;
+package com.example.myapp.databaseFiles.dao;
 
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
@@ -7,7 +7,7 @@ import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.Update;
 
-import com.example.test.databaseFiles.entity.SongPlaylist;
+import com.example.myapp.databaseFiles.entity.SongPlaylist;
 
 import java.util.List;
 

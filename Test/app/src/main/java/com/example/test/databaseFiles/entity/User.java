@@ -1,6 +1,8 @@
 package com.example.test.databaseFiles.entity;
 
 import androidx.room.Entity;
+import androidx.room.Ignore;
+import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
 @Entity(tableName = "Users")
@@ -14,6 +16,13 @@ public class User {
     private String password;
 
     public User(String username, String password) {
+        this.username = username;
+        this.password = password;
+    }
+
+    @Ignore
+    public User(Integer userID, String username, String password) {
+        this.userID = userID;
         this.username = username;
         this.password = password;
     }

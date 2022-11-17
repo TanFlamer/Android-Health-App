@@ -1,13 +1,17 @@
 package com.example.test.databaseFiles.dao;
 
+import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
+import androidx.room.TypeConverters;
 import androidx.room.Update;
 
+import com.example.test.databaseFiles.converter.DateConverter;
 import com.example.test.databaseFiles.entity.Sleep;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Dao
@@ -22,9 +26,10 @@ public interface SleepDao {
     @Delete
     void delete(Sleep sleep);
 
-    @Query("SELECT * FROM Sleep WHERE sleepID=:sleepID")
-    List<Sleep> findSleep(int sleepID);
+    @Query("SELECT * FROM Sleep WHERE userID=:userID AND date=:date")
+    @TypeConverters(DateConverter.class)
+    List<Sleep> findSleep(int userID, LocalDate date);
 
-    @Query("SELECT * FROM Sleep")
-    List<Sleep> getAllSleep();
+    @Query("SELECT * FROM Sleep WHERE userID=:userID")
+    LiveData<List<Sleep>> getAllSleep(int userID);
 }

@@ -7,15 +7,10 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.test.databaseFiles.entity.User;
 import com.example.test.databaseFiles.viewModal.UserViewModal;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -34,14 +29,13 @@ public class MainActivity extends AppCompatActivity {
         courseBtn = findViewById(R.id.idBtnSaveCourse);
 
         userViewModal = new ViewModelProvider(this).get(UserViewModal.class);
-        userViewModal.getAllUsers().observe(this, users -> Toast.makeText(this, "Dataset changed", Toast.LENGTH_SHORT).show());
+        userViewModal.getAllUsers().observe(this, users -> Toast.makeText(this, String.valueOf(users.size()), Toast.LENGTH_SHORT).show());
 
-        courseBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Toast.makeText(getApplicationContext(), "test", Toast.LENGTH_SHORT).show();
-                //userViewModal.insert(new User());
-            }
+        courseBtn.setOnClickListener(view -> {
+            userViewModal.delete(new User(Integer.valueOf(courseDurationEdt.getText().toString()), courseNameEdt.getText().toString(), courseDescEdt.getText().toString()));
+            courseNameEdt.getText().clear();
+            courseDurationEdt.getText().clear();
+            courseDescEdt.getText().clear();
         });
 
     }

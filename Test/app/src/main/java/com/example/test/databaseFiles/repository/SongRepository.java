@@ -2,6 +2,8 @@ package com.example.test.databaseFiles.repository;
 
 import android.app.Application;
 
+import androidx.lifecycle.LiveData;
+
 import com.example.test.databaseFiles.Database;
 import com.example.test.databaseFiles.dao.SongDao;
 import com.example.test.databaseFiles.entity.Song;
@@ -14,12 +16,10 @@ import java.util.concurrent.Executors;
 public class SongRepository {
 
     private SongDao songDao;
-    private List<Song> allSongs;
 
     public SongRepository(Application application) {
         Database database = Database.getInstance(application);
         songDao = database.getSongDao();
-        allSongs = songDao.getAllSongs();
     }
 
     public void insert(Song song) {
@@ -38,8 +38,8 @@ public class SongRepository {
         return new FindSongExecutorTask(songDao).get(songID);
     }
 
-    public List<Song> getAllSongs() {
-        return allSongs;
+    public LiveData<List<Song>> getAllSongs(int userID) {
+        return songDao.getAllSongs(userID);
     }
 
     private static class InsertSongExecutorTask {

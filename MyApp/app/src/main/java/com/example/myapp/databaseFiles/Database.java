@@ -10,20 +10,26 @@ import androidx.sqlite.db.SupportSQLiteDatabase;
 import com.example.myapp.databaseFiles.dao.PlaylistDao;
 import com.example.myapp.databaseFiles.dao.SleepDao;
 import com.example.myapp.databaseFiles.dao.SongDao;
+import com.example.myapp.databaseFiles.dao.SongPlaylistDao;
 import com.example.myapp.databaseFiles.dao.SportDao;
 import com.example.myapp.databaseFiles.dao.TypeDao;
+import com.example.myapp.databaseFiles.dao.TypeSportDao;
 import com.example.myapp.databaseFiles.dao.UserDao;
 import com.example.myapp.databaseFiles.entity.Playlist;
 import com.example.myapp.databaseFiles.entity.Sleep;
 import com.example.myapp.databaseFiles.entity.Song;
+import com.example.myapp.databaseFiles.entity.SongPlaylist;
 import com.example.myapp.databaseFiles.entity.Sport;
 import com.example.myapp.databaseFiles.entity.Type;
+import com.example.myapp.databaseFiles.entity.TypeSport;
 import com.example.myapp.databaseFiles.entity.User;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-@androidx.room.Database(entities = { User.class, Playlist.class, Song.class, Sleep.class, Sport.class, Type.class }, version = 1)
+@androidx.room.Database(entities = { User.class, Playlist.class, Song.class, Sleep.class, Sport.class, Type.class, SongPlaylist.class, TypeSport.class },
+                        version = 1,
+                        exportSchema = false)
 public abstract class Database extends RoomDatabase {
 
     private static Database instance;
@@ -33,6 +39,8 @@ public abstract class Database extends RoomDatabase {
     public abstract SleepDao getSleepDao();
     public abstract SportDao getSportDao();
     public abstract TypeDao getTypeDao();
+    public abstract SongPlaylistDao getSongPlaylistDao();
+    public abstract TypeSportDao getTypeSportDao();
 
     public static synchronized Database getInstance(Context context) {
         if (instance == null) {

@@ -23,8 +23,8 @@ public interface UserDao {
     @Delete
     void delete(User user);
 
-    @Query("SELECT * FROM Users WHERE userID=:userID")
-    List<User> findUser(int userID);
+    @Query("SELECT * FROM Users WHERE username=:username")
+    List<User> findUser(String username);
 
     @Query("SELECT * FROM Users")
     LiveData<List<User>> getAllUsers();

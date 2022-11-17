@@ -4,6 +4,7 @@ import android.app.Application;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
+import androidx.lifecycle.LiveData;
 
 import com.example.test.databaseFiles.entity.Playlist;
 import com.example.test.databaseFiles.repository.PlaylistRepository;
@@ -13,12 +14,12 @@ import java.util.List;
 public class PlaylistViewModal extends AndroidViewModel {
 
     private PlaylistRepository playlistRepository;
-    private List<Playlist> allPlaylists;
+    private LiveData<List<Playlist>> allPlaylists;
 
-    public PlaylistViewModal(@NonNull Application application) {
+    public PlaylistViewModal(@NonNull Application application, int userID) {
         super(application);
         playlistRepository = new PlaylistRepository(application);
-        allPlaylists = playlistRepository.getAllPlaylists();
+        allPlaylists = playlistRepository.getAllPlaylists(userID);
     }
 
     public void insert(Playlist playlist) {
@@ -37,7 +38,7 @@ public class PlaylistViewModal extends AndroidViewModel {
         return playlistRepository.findPlaylist(playlistID);
     }
 
-    public List<Playlist> getAllPlaylists() {
+    public LiveData<List<Playlist>> getAllPlaylists() {
         return allPlaylists;
     }
 }

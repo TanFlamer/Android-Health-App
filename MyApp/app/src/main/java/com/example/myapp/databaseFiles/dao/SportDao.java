@@ -1,13 +1,17 @@
 package com.example.myapp.databaseFiles.dao;
 
+import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
+import androidx.room.TypeConverters;
 import androidx.room.Update;
 
+import com.example.myapp.databaseFiles.converter.DateConverter;
 import com.example.myapp.databaseFiles.entity.Sport;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Dao
@@ -22,9 +26,10 @@ public interface SportDao {
     @Delete
     void delete(Sport sport);
 
-    @Query("SELECT * FROM Sport WHERE sportID=:sportID")
-    Sport findSport(int sportID);
+    @Query("SELECT * FROM Sport WHERE userID=:userID AND date=:date")
+    @TypeConverters(DateConverter.class)
+    List<Sport> findSport(int userID, LocalDate date);
 
-    @Query("SELECT * FROM Sport")
-    List<Sport> getAllSport();
+    @Query("SELECT * FROM Sport WHERE userID=:userID")
+    LiveData<List<Sport>> getAllSport(int userID);
 }

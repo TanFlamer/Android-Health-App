@@ -4,21 +4,23 @@ import android.app.Application;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
+import androidx.lifecycle.LiveData;
 
 import com.example.myapp.databaseFiles.entity.Sport;
 import com.example.myapp.databaseFiles.repository.SportRepository;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public class SportViewModal extends AndroidViewModel {
 
     private SportRepository sportRepository;
-    private List<Sport> allSport;
+    private LiveData<List<Sport>> allSport;
 
-    public SportViewModal(@NonNull Application application) {
+    public SportViewModal(@NonNull Application application, int userID) {
         super(application);
         sportRepository = new SportRepository(application);
-        allSport = sportRepository.getAllSport();
+        allSport = sportRepository.getAllSport(userID);
     }
 
     public void insert(Sport sport) {
@@ -33,11 +35,11 @@ public class SportViewModal extends AndroidViewModel {
         sportRepository.delete(sport);
     }
 
-    public Sport findSport(int sportID){
-        return sportRepository.findSport(sportID);
+    public List<Sport> findSport(int userID, LocalDate date){
+        return sportRepository.findSport(userID, date);
     }
 
-    public List<Sport> getAllSport() {
+    public LiveData<List<Sport>> getAllSport() {
         return allSport;
     }
 }

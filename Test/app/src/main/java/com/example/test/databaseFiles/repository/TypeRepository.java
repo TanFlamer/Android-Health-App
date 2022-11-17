@@ -2,6 +2,8 @@ package com.example.test.databaseFiles.repository;
 
 import android.app.Application;
 
+import androidx.lifecycle.LiveData;
+
 import com.example.test.databaseFiles.Database;
 import com.example.test.databaseFiles.dao.TypeDao;
 import com.example.test.databaseFiles.entity.Type;
@@ -14,12 +16,10 @@ import java.util.concurrent.Executors;
 public class TypeRepository {
 
     private TypeDao typeDao;
-    private List<Type> allTypes;
 
     public TypeRepository(Application application) {
         Database database = Database.getInstance(application);
         typeDao = database.getTypeDao();
-        allTypes = typeDao.getAllTypes();
     }
 
     public void insert(Type type) {
@@ -38,8 +38,8 @@ public class TypeRepository {
         return new FindTypeExecutorTask(typeDao).get(typeID);
     }
 
-    public List<Type> getAllTypes() {
-        return allTypes;
+    public LiveData<List<Type>> getAllTypes(int userID) {
+        return typeDao.getAllTypes(userID);
     }
 
     private static class InsertTypeExecutorTask {
