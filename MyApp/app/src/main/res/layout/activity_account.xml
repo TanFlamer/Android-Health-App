@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -9,15 +8,16 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical">
 
         <TextView
+            android:id="@+id/titleText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="Welcome User"
+            android:text="@string/welcome_user"
             android:textSize="34sp"
             android:textStyle="bold" />
 
@@ -45,10 +45,11 @@
                     android:orientation="vertical">
 
                     <TextView
+                        android:id="@+id/accountCreationTitle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center"
-                        android:text="Account Creation"
+                        android:text="@string/account_creation"
                         android:textSize="24sp"
                         android:textStyle="bold" />
 
@@ -64,46 +65,53 @@
                     android:id="@+id/layoutCreationHidden"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:animateLayoutChanges="true"
                     android:orientation="vertical">
 
-                    <LinearLayout
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/newUsernameInput"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
+                        android:layout_height="wrap_content">
 
                         <EditText
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="3"
+                            android:id="@+id/newUsername"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
                             android:ems="10"
-                            android:inputType="textPersonName"
-                            android:hint="Username"
-                            tools:ignore="TouchTargetSizeCheck" />
+                            android:hint="@string/username"
+                            android:inputType="text"
+                            tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck" />
+                    </com.google.android.material.textfield.TextInputLayout>
 
-                        <Button
-                            android:id="@+id/button2"
-                            android:layout_width="wrap_content"
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/newPasswordInput">
+
+                        <EditText
+                            android:id="@+id/newPassword"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="Check" />
+                            android:ems="10"
+                            android:hint="@string/password"
+                            android:inputType="textPassword"
+                            tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck" />
+                    </com.google.android.material.textfield.TextInputLayout>
 
-                    </LinearLayout>
-
-                    <EditText
+                    <com.google.android.material.textfield.TextInputLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:ems="10"
-                        android:inputType="textPersonName"
-                        android:hint="Password"
-                        tools:ignore="TouchTargetSizeCheck" />
+                        android:id="@+id/newPasswordConfirmInput">
 
-                    <EditText
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:ems="10"
-                        android:inputType="textPersonName"
-                        android:hint="Confirm Password"
-                        tools:ignore="TouchTargetSizeCheck" />
+                        <EditText
+                            android:id="@+id/newPasswordConfirm"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:ems="10"
+                            android:hint="@string/confirm_password"
+                            android:inputType="textPassword"
+                            tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck" />
+                    </com.google.android.material.textfield.TextInputLayout>
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -116,10 +124,12 @@
                             android:layout_weight="1" />
 
                         <Button
+                            android:id="@+id/newUserButton"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Create" />
+                            android:enabled="false"
+                            android:text="@string/create" />
 
                         <Space
                             android:layout_width="0dp"
@@ -156,10 +166,11 @@
                     android:orientation="vertical">
 
                     <TextView
+                        android:id="@+id/changeUsernameTitle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center"
-                        android:text="Change Username"
+                        android:text="@string/change_username"
                         android:textSize="24sp"
                         android:textStyle="bold" />
 
@@ -174,29 +185,23 @@
                     android:id="@+id/layoutUsernameHidden"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:animateLayoutChanges="true"
                     android:orientation="vertical">
 
-                    <LinearLayout
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/changeUsernameInput"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
+                        android:layout_height="wrap_content">
 
                         <EditText
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="3"
+                            android:id="@+id/changeUsername"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
                             android:ems="10"
-                            android:inputType="textPersonName"
-                            android:hint="Username"
-                            tools:ignore="TouchTargetSizeCheck" />
-
-                        <Button
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="Check" />
-
-                    </LinearLayout>
+                            android:hint="@string/username"
+                            android:inputType="text"
+                            tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck" />
+                    </com.google.android.material.textfield.TextInputLayout>
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -209,10 +214,12 @@
                             android:layout_weight="1" />
 
                         <Button
+                            android:id="@+id/changeUsernameButton"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Change" />
+                            android:enabled="false"
+                            android:text="@string/change" />
 
                         <Space
                             android:layout_width="0dp"
@@ -248,10 +255,11 @@
                     android:orientation="vertical">
 
                     <TextView
+                        android:id="@+id/changePasswordTitle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center"
-                        android:text="Change Password"
+                        android:text="@string/change_password"
                         android:textSize="24sp"
                         android:textStyle="bold" />
 
@@ -266,23 +274,38 @@
                     android:id="@+id/layoutPasswordHidden"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:animateLayoutChanges="true"
                     android:orientation="vertical">
 
-                    <EditText
+                    <com.google.android.material.textfield.TextInputLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:ems="10"
-                        android:inputType="textPersonName"
-                        android:hint="Password"
-                        tools:ignore="TouchTargetSizeCheck" />
+                        android:id="@+id/changePasswordInput">
 
-                    <EditText
+                        <EditText
+                            android:id="@+id/changePassword"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:ems="10"
+                            android:hint="@string/password"
+                            android:inputType="textPassword"
+                            tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:ems="10"
-                        android:inputType="textPersonName"
-                        android:hint="Confirm Password"
-                        tools:ignore="TouchTargetSizeCheck" />
+                        android:id="@+id/changePasswordConfirmInput">
+
+                        <EditText
+                            android:id="@+id/changePasswordConfirm"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:ems="10"
+                            android:hint="@string/confirm_password"
+                            android:inputType="textPersonName"
+                            tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck" />
+                    </com.google.android.material.textfield.TextInputLayout>
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -295,10 +318,12 @@
                             android:layout_weight="1" />
 
                         <Button
+                            android:id="@+id/changePasswordButton"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Change" />
+                            android:enabled="false"
+                            android:text="@string/change" />
 
                         <Space
                             android:layout_width="0dp"
@@ -334,10 +359,11 @@
                     android:orientation="vertical">
 
                     <TextView
+                        android:id="@+id/accountDeletionTitle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center"
-                        android:text="Account Deletion"
+                        android:text="@string/account_deletion"
                         android:textSize="24sp"
                         android:textStyle="bold" />
 
@@ -352,7 +378,38 @@
                     android:id="@+id/layoutDeletionHidden"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:animateLayoutChanges="true"
                     android:orientation="vertical">
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/deletePasswordInput">
+
+                        <EditText
+                            android:id="@+id/deletePassword"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:ems="10"
+                            android:hint="@string/password"
+                            android:inputType="textPassword"
+                            tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/deletePasswordConfirmInput">
+
+                        <EditText
+                            android:id="@+id/deletePasswordConfirm"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:ems="10"
+                            android:hint="@string/confirm_password"
+                            android:inputType="textPassword"
+                            tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck" />
+                    </com.google.android.material.textfield.TextInputLayout>
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -365,11 +422,12 @@
                             android:layout_weight="1" />
 
                         <Button
-                            android:id="@+id/buttonDelete"
+                            android:id="@+id/deleteUserButton"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Delete" />
+                            android:enabled="false"
+                            android:text="@string/delete" />
 
                         <Space
                             android:layout_width="0dp"
@@ -399,11 +457,12 @@
                 android:layout_weight="1" />
 
             <Button
-                android:id="@+id/buttonLogin"
+                android:id="@+id/loginButton"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="2"
-                android:text="Login" />
+                android:enabled="false"
+                android:text="@string/login" />
 
             <Space
                 android:layout_width="0dp"

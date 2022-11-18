@@ -9,6 +9,7 @@ import com.example.myapp.databaseFiles.dao.UserDao;
 import com.example.myapp.databaseFiles.entity.User;
 
 import java.util.List;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -22,8 +23,8 @@ public class UserRepository {
         userDao = database.getUserDao();
     }
 
-    public void insert(User user) {
-        new InsertUserExecutorTask(userDao).execute(user);
+    public long insert(User user) {
+        return new InsertUserExecutorTask(userDao).execute(user);
     }
 
     public void update(User user) {
@@ -48,8 +49,13 @@ public class UserRepository {
         private InsertUserExecutorTask(UserDao userDao) {
             this.userDao = userDao;
         }
-        protected void execute(User user){
-            service.execute(() -> userDao.insert(user));
+        protected long execute(User user) {
+            try{
+                return (long) service.submit((Callable<Object>) () -> userDao.insert(user)).get();
+            } catch (ExecutionException | InterruptedException e) {
+                e.printStackTrace();
+            }
+            return 0;
         }
     }
 
