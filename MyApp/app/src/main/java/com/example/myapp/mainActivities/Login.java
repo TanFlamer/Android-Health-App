@@ -71,8 +71,7 @@ public class Login extends AppCompatActivity {
                 Toast.makeText(this, "Login Successful", Toast.LENGTH_SHORT).show();
                 startActivity(intent);
             }
-            username.getText().clear();
-            password.getText().clear();
+            clearTextFields();
         });
     }
 
@@ -80,9 +79,10 @@ public class Login extends AppCompatActivity {
         buttonNew = findViewById(R.id.buttonNew);
         buttonNew.setOnClickListener(v -> {
             Intent intent = new Intent(getApplicationContext(), Account.class);
-            User user = new User(0, "User", null);
+            User user = new User(-1, "User", null);
             sendUserData(intent, user);
             startActivity(intent);
+            clearTextFields();
         });
     }
 
@@ -93,9 +93,10 @@ public class Login extends AppCompatActivity {
                 .setMessage("Are you sure you want to login as guest? Any changes made will not be saved.")
                 .setPositiveButton("Yes", (dialogInterface, i) -> {
                     Intent intent = new Intent(getApplicationContext(), Account.class);
-                    User user = new User(-1, "Guest", null);
+                    User user = new User(0, "Guest", null);
                     sendUserData(intent, user);
                     startActivity(intent);
+                    clearTextFields();
                 })
                 .setNegativeButton("No", null)
                 .create()
@@ -108,9 +109,20 @@ public class Login extends AppCompatActivity {
         intent.putExtra("password", user.getPassword());
     }
 
+    public void clearTextFields(){
+        username.getText().clear();
+        password.getText().clear();
+    }
+
     public boolean validateInput(TextInputLayout textInputLayout, EditText editText){
-        boolean emptyText = editText.getText().toString().isEmpty();
-        textInputLayout.setError(emptyText && editText.hasFocus() ? "Field cannot be empty" : null);
+        String text = editText.getText().toString();
+        boolean hasFocus = editText.hasFocus();
+        boolean emptyText = text.isEmpty();
+
+        if(!(hasFocus && emptyText))
+            textInputLayout.setErrorEnabled(false);
+        else
+            textInputLayout.setError("Field cannot be empty");
         return emptyText;
     }
 

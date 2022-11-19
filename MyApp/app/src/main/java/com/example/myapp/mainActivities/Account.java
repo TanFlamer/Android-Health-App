@@ -53,13 +53,13 @@ public class Account extends AppCompatActivity {
         setContentView(R.layout.activity_account);
 
         accountViewModal = new ViewModelProvider(this).get(AccountViewModal.class);
-        initialiseAll();
         loadUserData(getIntent().getExtras());
+        initialiseAll();
         reloadPage();
     }
 
     public void loadUserData(Bundle extras){
-        accountViewModal.createUser(extras.getInt("userID"), extras.getString("username"), extras.getString("password"));
+        accountViewModal.loadUser(extras.getInt("userID"), extras.getString("username"), extras.getString("password"));
     }
 
     public void initialiseAll(){
@@ -83,12 +83,15 @@ public class Account extends AppCompatActivity {
         layoutCreationVisible = findViewById(R.id.layoutCreationVisible);
         layoutCreationHidden = findViewById(R.id.layoutCreationHidden);
         setupLayouts(layoutCreationVisible, layoutCreationHidden);
+
         layoutUsernameVisible = findViewById(R.id.layoutUsernameVisible);
         layoutUsernameHidden = findViewById(R.id.layoutUsernameHidden);
         setupLayouts(layoutUsernameVisible, layoutUsernameHidden);
+
         layoutPasswordVisible = findViewById(R.id.layoutPasswordVisible);
         layoutPasswordHidden = findViewById(R.id.layoutPasswordHidden);
         setupLayouts(layoutPasswordVisible, layoutPasswordHidden);
+
         layoutDeletionVisible = findViewById(R.id.layoutDeletionVisible);
         layoutDeletionHidden = findViewById(R.id.layoutDeletionHidden);
         setupLayouts(layoutDeletionVisible, layoutDeletionHidden);
@@ -145,27 +148,23 @@ public class Account extends AppCompatActivity {
         User user = accountViewModal.getUser();
         int userID = user.getUserID();
         titleText.setText("Welcome " + user.getUsername());
-        loginButton.setEnabled(userID != 0);
+        loginButton.setEnabled(userID >= 0);
+        clearTextFields();
         hideLayouts(userID);
     }
 
     public void hideLayouts(int userID){
-        hideLayout(layoutCreationVisible, layoutCreationHidden, accountCreationTitle, userID == 0);
-        hideLayout(layoutUsernameVisible, layoutUsernameHidden, changeUsernameTitle, userID > 0);
-        hideLayout(layoutPasswordVisible, layoutPasswordHidden, changePasswordTitle, userID > 0);
-        hideLayout(layoutDeletionVisible, layoutDeletionHidden, accountDeletionTitle, userID > 0);
+        hideLayout(layoutCreationVisible, layoutCreationHidden, accountCreationTitle, userID < 0);
+        hideLayout(layoutUsernameVisible, layoutUsernameHidden, changeUsernameTitle, userID >= 0);
+        hideLayout(layoutPasswordVisible, layoutPasswordHidden, changePasswordTitle, userID >= 0);
+        hideLayout(layoutDeletionVisible, layoutDeletionHidden, accountDeletionTitle, userID >= 0);
     }
 
     public void hideLayout(LinearLayout layoutVisible, LinearLayout layoutHidden, TextView title, boolean clickable){
         layoutHidden.setVisibility(View.GONE);
-        if(clickable){
-            layoutVisible.setEnabled(true);
-            title.setPaintFlags(title.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
-        }
-        else{
-            layoutVisible.setEnabled(false);
-            title.setPaintFlags(title.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-        }
+        layoutVisible.setEnabled(clickable);
+        int paintFlags = clickable ? title.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG) : title.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG;
+        title.setPaintFlags(paintFlags);
     }
 
     public void initialiseCreateButton(){
@@ -174,9 +173,6 @@ public class Account extends AppCompatActivity {
             String usernameText = newUsername.getText().toString();
             String passwordText = newPassword.getText().toString();
             accountViewModal.insert(new User(usernameText, passwordText));
-            newUsername.getText().clear();
-            newPassword.getText().clear();
-            newPasswordConfirm.getText().clear();
             Toast.makeText(getApplicationContext(), "New account created", Toast.LENGTH_SHORT).show();
             reloadPage();
         });
@@ -187,7 +183,6 @@ public class Account extends AppCompatActivity {
         changeUsernameButton.setOnClickListener(v -> {
             String usernameText = changeUsername.getText().toString();
             accountViewModal.changeUsername(usernameText);
-            changeUsername.getText().clear();
             Toast.makeText(getApplicationContext(), "Username changed", Toast.LENGTH_SHORT).show();
             reloadPage();
         });
@@ -198,8 +193,6 @@ public class Account extends AppCompatActivity {
         changePasswordButton.setOnClickListener(v -> {
             String passwordText = changePassword.getText().toString();
             accountViewModal.changePassword(passwordText);
-            changePassword.getText().clear();
-            changePasswordConfirm.getText().clear();
             Toast.makeText(getApplicationContext(), "Password changed", Toast.LENGTH_SHORT).show();
             reloadPage();
         });
@@ -212,8 +205,6 @@ public class Account extends AppCompatActivity {
                 .setMessage("Are you sure you want to delete your account? There is no way to recover your account once deleted.")
                 .setPositiveButton("Yes", (dialog, which) -> {
                     accountViewModal.delete();
-                    deletePassword.getText().clear();
-                    deletePasswordConfirm.getText().clear();
                     Toast.makeText(getApplicationContext(), "Account deleted", Toast.LENGTH_SHORT).show();
                     reloadPage();
                 })
@@ -226,7 +217,7 @@ public class Account extends AppCompatActivity {
         loginButton = findViewById(R.id.loginButton);
         loginButton.setOnClickListener(v -> {
             startActivity(new Intent(getApplicationContext(), Music.class));
-            Toast.makeText(getApplicationContext(), "Welcome", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "Welcome " + accountViewModal.getUser().getUsername(), Toast.LENGTH_SHORT).show();
         });
     }
 
@@ -235,10 +226,10 @@ public class Account extends AppCompatActivity {
         newUsername.setOnFocusChangeListener((v, hasFocus) -> validateUsername(newUsernameInput, newUsername));
 
         newPassword.addTextChangedListener(newUserTextWatcher);
-        newPassword.setOnFocusChangeListener((v, hasFocus) -> validatePassword(newPasswordInput, newPassword, newPasswordConfirm));
+        newPassword.setOnFocusChangeListener((v, hasFocus) -> validatePassword(newPasswordInput, newPassword, newPasswordConfirm, null));
 
         newPasswordConfirm.addTextChangedListener(newUserTextWatcher);
-        newPasswordConfirm.setOnFocusChangeListener((v, hasFocus) -> validatePassword(newPasswordConfirmInput, newPasswordConfirm, newPassword));
+        newPasswordConfirm.setOnFocusChangeListener((v, hasFocus) -> validatePassword(newPasswordConfirmInput, newPasswordConfirm, newPassword, null));
     }
 
     public void initialiseChangeUsername(){
@@ -248,45 +239,65 @@ public class Account extends AppCompatActivity {
 
     public void initialiseChangePassword(){
         changePassword.addTextChangedListener(changePasswordTextWatcher);
-        validatePassword(changePasswordInput, changePassword, changePasswordConfirm);
+        changePassword.setOnFocusChangeListener((v, hasFocus) -> validatePassword(changePasswordInput, changePassword, changePasswordConfirm, false));
 
         changePasswordConfirm.addTextChangedListener(changePasswordTextWatcher);
-        validatePassword(changePasswordConfirmInput, changePasswordConfirm, changePassword);
+        changePasswordConfirm.setOnFocusChangeListener((v, hasFocus) -> validatePassword(changePasswordConfirmInput, changePasswordConfirm, changePassword, false));
     }
 
     public void initialiseDeleteUser(){
-        changePassword.addTextChangedListener(deleteUserTextWatcher);
-        validatePassword(deletePasswordInput, deletePassword, deletePasswordConfirm);
+        deletePassword.addTextChangedListener(deleteUserTextWatcher);
+        deletePassword.setOnFocusChangeListener((v, hasFocus) -> validatePassword(deletePasswordInput, deletePassword, deletePasswordConfirm, true));
 
-        changePasswordConfirm.addTextChangedListener(deleteUserTextWatcher);
-        validatePassword(deletePasswordConfirmInput, deletePasswordConfirm, deletePassword);
+        deletePasswordConfirm.addTextChangedListener(deleteUserTextWatcher);
+        deletePasswordConfirm.setOnFocusChangeListener((v, hasFocus) -> validatePassword(deletePasswordConfirmInput, deletePasswordConfirm, deletePassword, true));
+    }
+
+    public void clearTextFields(){
+        newUsername.getText().clear();
+        newPassword.getText().clear();
+        newPasswordConfirm.getText().clear();
+        changeUsername.getText().clear();
+        changePassword.getText().clear();
+        changePasswordConfirm.getText().clear();
+        deletePassword.getText().clear();
+        deletePasswordConfirm.getText().clear();
     }
 
     public boolean validateUsername(TextInputLayout textInputLayout, EditText editText){
-        String emptyUsernameError = "Username cannot be empty";
-        String sameUsernameError = "Username already taken";
-
         String usernameText = editText.getText().toString();
+        boolean hasFocus = editText.hasFocus();
         boolean emptyUsername = usernameText.isEmpty();
         boolean validUsername = !emptyUsername && accountViewModal.validateUsername(usernameText);
 
-        String usernameError = editText.hasFocus() ? (emptyUsername ? emptyUsernameError : (!validUsername ? sameUsernameError : null)) : null;
-        textInputLayout.setError(usernameError);
+        if(!hasFocus || validUsername)
+            textInputLayout.setErrorEnabled(false);
+        else if(emptyUsername)
+            textInputLayout.setError("Username cannot be empty");
+        else
+            textInputLayout.setError("Username already taken");
         return validUsername;
     }
 
-    public boolean validatePassword(TextInputLayout textInputLayout, EditText editText1, EditText editText2){
-        String emptyPasswordError = "Password cannot be empty";
-        String differentPasswordError = "Both passwords must match";
-
+    public boolean validatePassword(TextInputLayout textInputLayout, EditText editText1, EditText editText2, Boolean equal){
+        String oldPassword = accountViewModal.getUser().getPassword();
         String newPasswordText = editText1.getText().toString();
         String newPasswordConfirmText = editText2.getText().toString();
+
+        boolean hasFocus = editText1.hasFocus();
         boolean emptyPassword = newPasswordText.isEmpty();
         boolean validPassword = !emptyPassword && newPasswordText.equals(newPasswordConfirmText);
+        boolean equalPassword = equal == null || equal == newPasswordText.equals(oldPassword);
 
-        String passwordError = editText1.hasFocus() ? (emptyPassword ? emptyPasswordError : (!validPassword ? differentPasswordError : null)) : null;
-        textInputLayout.setError(passwordError);
-        return validPassword;
+        if(!hasFocus || (validPassword && equalPassword))
+            textInputLayout.setErrorEnabled(false);
+        else if(emptyPassword)
+            textInputLayout.setError("Password cannot be empty");
+        else if(!validPassword)
+            textInputLayout.setError("Both passwords must match");
+        else
+            textInputLayout.setError("Password must " + (equal ? "" : "not ") + "match old password");
+        return validPassword && equalPassword;
     }
 
     private final TextWatcher newUserTextWatcher = new TextWatcher() {
@@ -298,8 +309,8 @@ public class Account extends AppCompatActivity {
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
             boolean validUsername = validateUsername(newUsernameInput, newUsername);
-            boolean validPassword = validatePassword(newPasswordInput, newPassword, newPasswordConfirm);
-            boolean validPasswordConfirm = validatePassword(newPasswordConfirmInput, newPasswordConfirm, newPassword);
+            boolean validPassword = validatePassword(newPasswordInput, newPassword, newPasswordConfirm, null);
+            boolean validPasswordConfirm = validatePassword(newPasswordConfirmInput, newPasswordConfirm, newPassword, null);
             newUserButton.setEnabled(validUsername && validPassword && validPasswordConfirm);
         }
 
@@ -335,8 +346,8 @@ public class Account extends AppCompatActivity {
 
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
-            boolean validPassword = validatePassword(changePasswordInput, changePassword, changePasswordConfirm);
-            boolean validPasswordConfirm = validatePassword(changePasswordConfirmInput, changePasswordConfirm, changePassword);
+            boolean validPassword = validatePassword(changePasswordInput, changePassword, changePasswordConfirm, false);
+            boolean validPasswordConfirm = validatePassword(changePasswordConfirmInput, changePasswordConfirm, changePassword, false);
             changePasswordButton.setEnabled(validPassword && validPasswordConfirm);
         }
 
@@ -354,8 +365,8 @@ public class Account extends AppCompatActivity {
 
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
-            boolean validPassword = validatePassword(deletePasswordInput, deletePassword, deletePasswordConfirm);
-            boolean validPasswordConfirm = validatePassword(deletePasswordConfirmInput, deletePasswordConfirm, deletePassword);
+            boolean validPassword = validatePassword(deletePasswordInput, deletePassword, deletePasswordConfirm, true);
+            boolean validPasswordConfirm = validatePassword(deletePasswordConfirmInput, deletePasswordConfirm, deletePassword, true);
             deleteUserButton.setEnabled(validPassword && validPasswordConfirm);
         }
 

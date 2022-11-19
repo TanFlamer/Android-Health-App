@@ -18,10 +18,10 @@ public class AccountViewModal extends AndroidViewModel {
     public AccountViewModal(@NonNull Application application) {
         super(application);
         userRepository = new UserRepository(application);
-        user = null;
+        user = new User(-1, "User", null);
     }
 
-    public void createUser(Integer userID, String username, String password){
+    public void loadUser(Integer userID, String username, String password){
         user = new User(userID, username, password);
     }
 
@@ -33,7 +33,7 @@ public class AccountViewModal extends AndroidViewModel {
 
     public void delete(){
         userRepository.delete(user);
-        user = new User(0, null, null);
+        user = new User(-1, "User", null);
     }
 
     public void changeUsername(String newUsername){
