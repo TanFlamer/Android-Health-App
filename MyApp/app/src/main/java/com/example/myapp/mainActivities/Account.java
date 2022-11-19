@@ -1,7 +1,11 @@
 package com.example.myapp.mainActivities;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.text.Editable;
@@ -15,20 +19,25 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.example.myapp.MainApplication;
 import com.example.myapp.R;
 import com.example.myapp.databaseFiles.entity.User;
-import com.example.myapp.databaseFiles.viewModal.AccountViewModal;
+import com.example.myapp.databaseFiles.viewModal.AccountViewModel;
 import com.google.android.material.textfield.TextInputLayout;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
 public class Account extends AppCompatActivity {
 
     Map<LinearLayout, Boolean> linearLayoutBooleanMap = new HashMap<>();
-    AccountViewModal accountViewModal;
+
+    AccountViewModel accountViewModel;
 
     LinearLayout layoutCreationVisible, layoutUsernameVisible, layoutPasswordVisible, layoutDeletionVisible;
     LinearLayout layoutCreationHidden, layoutUsernameHidden, layoutPasswordHidden, layoutDeletionHidden;
@@ -52,14 +61,14 @@ public class Account extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_account);
 
-        accountViewModal = new ViewModelProvider(this).get(AccountViewModal.class);
+        accountViewModel = new ViewModelProvider(this).get(AccountViewModel.class);
         loadUserData(getIntent().getExtras());
         initialiseAll();
         reloadPage();
     }
 
     public void loadUserData(Bundle extras){
-        accountViewModal.loadUser(extras.getInt("userID"), extras.getString("username"), extras.getString("password"));
+        accountViewModel.loadUser(extras.getInt("userID"), extras.getString("username"), extras.getString("password"));
     }
 
     public void initialiseAll(){
@@ -145,19 +154,20 @@ public class Account extends AppCompatActivity {
 
     @SuppressLint("SetTextI18n")
     public void reloadPage(){
-        User user = accountViewModal.getUser();
+        User user = accountViewModel.getUser();
         int userID = user.getUserID();
         titleText.setText("Welcome " + user.getUsername());
         loginButton.setEnabled(userID >= 0);
         clearTextFields();
+        clearFocus();
         hideLayouts(userID);
     }
 
     public void hideLayouts(int userID){
         hideLayout(layoutCreationVisible, layoutCreationHidden, accountCreationTitle, userID < 0);
-        hideLayout(layoutUsernameVisible, layoutUsernameHidden, changeUsernameTitle, userID >= 0);
-        hideLayout(layoutPasswordVisible, layoutPasswordHidden, changePasswordTitle, userID >= 0);
-        hideLayout(layoutDeletionVisible, layoutDeletionHidden, accountDeletionTitle, userID >= 0);
+        hideLayout(layoutUsernameVisible, layoutUsernameHidden, changeUsernameTitle, userID > 0);
+        hideLayout(layoutPasswordVisible, layoutPasswordHidden, changePasswordTitle, userID > 0);
+        hideLayout(layoutDeletionVisible, layoutDeletionHidden, accountDeletionTitle, userID > 0);
     }
 
     public void hideLayout(LinearLayout layoutVisible, LinearLayout layoutHidden, TextView title, boolean clickable){
@@ -172,7 +182,8 @@ public class Account extends AppCompatActivity {
         newUserButton.setOnClickListener(v -> {
             String usernameText = newUsername.getText().toString();
             String passwordText = newPassword.getText().toString();
-            accountViewModal.insert(new User(usernameText, passwordText));
+            accountViewModel.insert(new User(usernameText, passwordText));
+            createNewFolder();
             Toast.makeText(getApplicationContext(), "New account created", Toast.LENGTH_SHORT).show();
             reloadPage();
         });
@@ -182,7 +193,7 @@ public class Account extends AppCompatActivity {
         changeUsernameButton = findViewById(R.id.changeUsernameButton);
         changeUsernameButton.setOnClickListener(v -> {
             String usernameText = changeUsername.getText().toString();
-            accountViewModal.changeUsername(usernameText);
+            accountViewModel.changeUsername(usernameText);
             Toast.makeText(getApplicationContext(), "Username changed", Toast.LENGTH_SHORT).show();
             reloadPage();
         });
@@ -192,7 +203,7 @@ public class Account extends AppCompatActivity {
         changePasswordButton = findViewById(R.id.changePasswordButton);
         changePasswordButton.setOnClickListener(v -> {
             String passwordText = changePassword.getText().toString();
-            accountViewModal.changePassword(passwordText);
+            accountViewModel.changePassword(passwordText);
             Toast.makeText(getApplicationContext(), "Password changed", Toast.LENGTH_SHORT).show();
             reloadPage();
         });
@@ -204,7 +215,8 @@ public class Account extends AppCompatActivity {
                 .setTitle("Account Deletion")
                 .setMessage("Are you sure you want to delete your account? There is no way to recover your account once deleted.")
                 .setPositiveButton("Yes", (dialog, which) -> {
-                    accountViewModal.delete();
+                    int userID = accountViewModel.delete();
+                    deleteFolder(userID);
                     Toast.makeText(getApplicationContext(), "Account deleted", Toast.LENGTH_SHORT).show();
                     reloadPage();
                 })
@@ -216,9 +228,32 @@ public class Account extends AppCompatActivity {
     public void initialiseLoginButton(){
         loginButton = findViewById(R.id.loginButton);
         loginButton.setOnClickListener(v -> {
+            saveUserID(accountViewModel.getUser().getUserID());
             startActivity(new Intent(getApplicationContext(), Music.class));
-            Toast.makeText(getApplicationContext(), "Welcome " + accountViewModal.getUser().getUsername(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "Welcome " + accountViewModel.getUser().getUsername(), Toast.LENGTH_SHORT).show();
         });
+    }
+
+    public void createNewFolder(){
+        String newFolderPath = accountViewModel.getFilePath() + accountViewModel.getUser().getUserID();
+        File newFolder = new File(newFolderPath);
+        boolean folderCreation = newFolder.mkdirs();
+        Toast.makeText(getApplicationContext(), "Folder creation " + (folderCreation ? "successful" : "failed"), Toast.LENGTH_SHORT).show();
+    }
+
+    public void deleteFolder(int userID){
+        String newFolderPath = accountViewModel.getFilePath() + userID;
+        File newFolder = new File(newFolderPath);
+        System.out.println(newFolder);
+        if(newFolder.isDirectory()){
+            String[] children = newFolder.list();
+            for (String child : children) {
+                System.out.println(child);
+                new File(newFolder, child).delete();
+            }
+        }
+        boolean folderDeletion = newFolder.delete();
+        Toast.makeText(getApplicationContext(), "Folder deletion " + (folderDeletion ? "successful" : "failed"), Toast.LENGTH_SHORT).show();
     }
 
     public void initialiseNewUser(){
@@ -253,6 +288,11 @@ public class Account extends AppCompatActivity {
         deletePasswordConfirm.setOnFocusChangeListener((v, hasFocus) -> validatePassword(deletePasswordConfirmInput, deletePasswordConfirm, deletePassword, true));
     }
 
+    public void saveUserID(int userID){
+        MainApplication appState = (MainApplication) this.getApplication();
+        appState.setUserID(userID);
+    }
+
     public void clearTextFields(){
         newUsername.getText().clear();
         newPassword.getText().clear();
@@ -264,11 +304,22 @@ public class Account extends AppCompatActivity {
         deletePasswordConfirm.getText().clear();
     }
 
+    public void clearFocus(){
+        newUsername.clearFocus();
+        newPassword.clearFocus();
+        newPasswordConfirm.clearFocus();
+        changeUsername.clearFocus();
+        changePassword.clearFocus();
+        changePasswordConfirm.clearFocus();
+        deletePassword.clearFocus();
+        deletePasswordConfirm.clearFocus();
+    }
+
     public boolean validateUsername(TextInputLayout textInputLayout, EditText editText){
         String usernameText = editText.getText().toString();
         boolean hasFocus = editText.hasFocus();
         boolean emptyUsername = usernameText.isEmpty();
-        boolean validUsername = !emptyUsername && accountViewModal.validateUsername(usernameText);
+        boolean validUsername = !emptyUsername && accountViewModel.validateUsername(usernameText);
 
         if(!hasFocus || validUsername)
             textInputLayout.setErrorEnabled(false);
@@ -280,7 +331,7 @@ public class Account extends AppCompatActivity {
     }
 
     public boolean validatePassword(TextInputLayout textInputLayout, EditText editText1, EditText editText2, Boolean equal){
-        String oldPassword = accountViewModal.getUser().getPassword();
+        String oldPassword = accountViewModel.getUser().getPassword();
         String newPasswordText = editText1.getText().toString();
         String newPasswordConfirmText = editText2.getText().toString();
 

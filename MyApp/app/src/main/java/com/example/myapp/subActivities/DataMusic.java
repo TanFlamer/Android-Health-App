@@ -8,8 +8,6 @@ import android.view.MenuItem;
 import android.widget.ListView;
 
 import com.example.myapp.R;
-import com.example.myapp.fragmentsMusic.listMusic.MusicListAdapter;
-import com.example.myapp.fragmentsMusic.listMusic.MusicListItem;
 import com.example.myapp.subActivities.listMusicData.MusicDataListAdapter;
 import com.example.myapp.subActivities.listMusicData.MusicDataListItem;
 

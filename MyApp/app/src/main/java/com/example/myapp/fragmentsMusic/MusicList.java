@@ -1,23 +1,35 @@
 package com.example.myapp.fragmentsMusic;
 
-import android.content.Intent;
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.example.myapp.R;
+import com.example.myapp.databaseFiles.entity.Song;
+import com.example.myapp.databaseFiles.viewModal.MusicListViewModel;
 import com.example.myapp.fragmentsMusic.listMusic.MusicListAdapter;
-import com.example.myapp.fragmentsMusic.listMusic.MusicListItem;
-import com.example.myapp.subActivities.DataMusic;
-import com.example.myapp.subActivities.DataSleep;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -59,6 +71,8 @@ public class MusicList extends Fragment {
         return fragment;
     }
 
+    MusicListViewModel musicListViewModel;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,6 +80,8 @@ public class MusicList extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        musicListViewModel = new ViewModelProvider(this).get(MusicListViewModel.class);
+        checkFolderExists();
     }
 
     @Override
@@ -80,18 +96,59 @@ public class MusicList extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         ListView listView = requireView().findViewById(R.id.musicListView);
-        List<MusicListItem> musicListItemList = new ArrayList<>();
+        List<Song> songList = new ArrayList<>();
 
-        musicListItemList.add(new MusicListItem("test", 0));
-        musicListItemList.add(new MusicListItem("test1", 1));
+        songList.add(new Song("test", Duration.ofMinutes(2), musicListViewModel.getUserID()));
+        songList.add(new Song("test1", Duration.ofMinutes(1), musicListViewModel.getUserID()));
 
-        MusicListAdapter musicListAdapter = new MusicListAdapter(getContext(), R.layout.music_list_item, musicListItemList);
+        MusicListAdapter musicListAdapter = new MusicListAdapter(getContext(), R.layout.music_list_item, songList);
         listView.setAdapter(musicListAdapter);
 
         FloatingActionButton floatingActionButton = requireView().findViewById(R.id.buttonFloating);
-        floatingActionButton.setOnClickListener(view1 -> {
-            startActivity(new Intent(getContext(), DataMusic.class));
-            getActivity().overridePendingTransition(0, 0);
-        });
+        floatingActionButton.setOnClickListener(view1 -> getMusicFile());
     }
+
+    public void getMusicFile(){
+        if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED)
+            mGetContent.launch("audio/*");
+        else
+            requestPermissionLauncher.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+    }
+
+    public void checkFolderExists(){
+        File newFolder = new File(musicListViewModel.getFilePath());
+        if(!newFolder.exists()){
+            boolean folderCreation = newFolder.mkdirs();
+            Toast.makeText(getContext(), "Folder creation " + (folderCreation ? "successful" : "failed"), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private final ActivityResultLauncher<String> mGetContent = registerForActivityResult(new ActivityResultContracts.GetMultipleContents(),
+            uri -> {
+                if(uri.size() != 0){
+                    for(int i = 0; i < uri.size(); i++){
+                        String oldFilePath = uri.get(i).getPath().split(":")[1];
+                        Path source = Paths.get(oldFilePath);
+                        Path dest = Paths.get(musicListViewModel.getFilePath(), new File(oldFilePath).getName());
+                        try {
+                            Files.copy(source, dest, StandardCopyOption.REPLACE_EXISTING);
+                        }
+                        catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+                else
+                    Toast.makeText(getContext(), "No file selected", Toast.LENGTH_SHORT).show();
+            });
+
+    private final ActivityResultLauncher<String> requestPermissionLauncher =
+            registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
+                if (isGranted) {
+                    mGetContent.launch("audio/*");
+                }
+                else {
+                    Toast.makeText(getContext(), "Permission not granted to move files", Toast.LENGTH_SHORT).show();
+                }
+            });
 }

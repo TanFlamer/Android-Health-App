@@ -14,12 +14,12 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.myapp.R;
 import com.example.myapp.databaseFiles.entity.User;
-import com.example.myapp.databaseFiles.viewModal.LoginViewModal;
+import com.example.myapp.databaseFiles.viewModal.LoginViewModel;
 import com.google.android.material.textfield.TextInputLayout;
 
 public class Login extends AppCompatActivity {
 
-    LoginViewModal loginViewModal;
+    LoginViewModel loginViewModel;
     EditText username, password;
     Button buttonLogin, buttonNew, buttonGuest;
     TextInputLayout usernameInput, passwordInput;
@@ -29,7 +29,7 @@ public class Login extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        loginViewModal = new ViewModelProvider(this).get(LoginViewModal.class);
+        loginViewModel = new ViewModelProvider(this).get(LoginViewModel.class);
         initialiseAll();
     }
 
@@ -62,7 +62,7 @@ public class Login extends AppCompatActivity {
     public void initialiseLoginButton(){
         buttonLogin = findViewById(R.id.buttonLogin);
         buttonLogin.setOnClickListener(view -> {
-            User user = loginViewModal.validateUser(username.getText().toString(), password.getText().toString());
+            User user = loginViewModel.validateUser(username.getText().toString(), password.getText().toString());
             if(user == null)
                 Toast.makeText(this, "Invalid Login Credentials", Toast.LENGTH_SHORT).show();
             else {
@@ -111,7 +111,9 @@ public class Login extends AppCompatActivity {
 
     public void clearTextFields(){
         username.getText().clear();
+        username.clearFocus();
         password.getText().clear();
+        password.clearFocus();
     }
 
     public boolean validateInput(TextInputLayout textInputLayout, EditText editText){

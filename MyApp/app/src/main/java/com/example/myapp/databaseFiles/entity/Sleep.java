@@ -2,8 +2,6 @@ package com.example.myapp.databaseFiles.entity;
 
 import static androidx.room.ForeignKey.CASCADE;
 
-import android.os.Build;
-
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
 import androidx.room.Index;
@@ -44,9 +42,7 @@ public class Sleep {
         this.date = date;
         this.sleepTime = sleepTime;
         this.wakeTime = wakeTime;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            this.sleepDuration = Duration.between(sleepTime, wakeTime);
-        }
+        this.sleepDuration = Duration.between(sleepTime, wakeTime);
         this.userID = userID;
     }
 

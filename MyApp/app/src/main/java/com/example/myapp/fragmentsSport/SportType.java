@@ -1,7 +1,6 @@
 package com.example.myapp.fragmentsSport;
 
 import android.app.Dialog;
-import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -15,11 +14,8 @@ import android.view.Window;
 import android.widget.ListView;
 
 import com.example.myapp.R;
-import com.example.myapp.fragmentsMusic.listMusic.MusicListAdapter;
-import com.example.myapp.fragmentsMusic.listMusic.MusicListItem;
 import com.example.myapp.fragmentsSport.listSport.SportListAdapter;
 import com.example.myapp.fragmentsSport.listSport.SportListItem;
-import com.example.myapp.subActivities.DataSport;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;

@@ -39,10 +39,6 @@ public class UserRepository {
         return new FindUserExecutorTask(userDao).get(username);
     }
 
-    public LiveData<List<User>> getAllUsers() {
-        return userDao.getAllUsers();
-    }
-
     private static class InsertUserExecutorTask {
         private final ExecutorService service = Executors.newSingleThreadExecutor();
         private UserDao userDao;

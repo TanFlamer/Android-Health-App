@@ -34,8 +34,8 @@ public class SongRepository {
         new DeleteSongExecutorTask(songDao).execute(song);
     }
 
-    public List<Song> findSong(int songID) {
-        return new FindSongExecutorTask(songDao).get(songID);
+    public List<Song> findSong(int userID, String songName) {
+        return new FindSongExecutorTask(songDao).get(userID, songName);
     }
 
     public LiveData<List<Song>> getAllSongs(int userID) {
@@ -81,9 +81,9 @@ public class SongRepository {
         private FindSongExecutorTask(SongDao songDao) {
             this.songDao = songDao;
         }
-        protected List<Song> get(int songID) {
+        protected List<Song> get(int userID, String songName) {
             try {
-                return service.submit(() -> songDao.findSong(songID)).get();
+                return service.submit(() -> songDao.findSong(userID, songName)).get();
             } catch (ExecutionException | InterruptedException e) {
                 e.printStackTrace();
             }

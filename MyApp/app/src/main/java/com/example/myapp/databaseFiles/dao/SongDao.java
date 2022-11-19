@@ -23,8 +23,8 @@ public interface SongDao {
     @Delete
     void delete(Song song);
 
-    @Query("SELECT * FROM Songs WHERE songID=:songID")
-    List<Song> findSong(int songID);
+    @Query("SELECT * FROM Songs WHERE userID=:userID AND songName=:songName")
+    List<Song> findSong(int userID, String songName);
 
     @Query("SELECT * FROM Songs WHERE userID=:userID")
     LiveData<List<Song>> getAllSongs(int userID);

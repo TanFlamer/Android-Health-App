@@ -1,5 +1,6 @@
 package com.example.myapp.fragmentsMusic.listMusic;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
@@ -15,18 +16,21 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 
 import com.example.myapp.R;
+import com.example.myapp.databaseFiles.entity.Song;
 import com.example.myapp.mainActivities.Music;
 import com.example.myapp.subActivities.DataMusic;
 import com.example.myapp.subActivities.DataSport;
 
+import java.time.Duration;
 import java.util.List;
 
-public class MusicListAdapter extends ArrayAdapter<MusicListItem> {
+public class MusicListAdapter extends ArrayAdapter<Song> {
 
-    public MusicListAdapter(@NonNull Context context, int resource, List<MusicListItem> musicListItemList) {
-        super(context, resource, musicListItemList);
+    public MusicListAdapter(@NonNull Context context, int resource, List<Song> songList) {
+        super(context, resource, songList);
     }
 
+    @SuppressLint("SetTextI18n")
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
@@ -35,13 +39,15 @@ public class MusicListAdapter extends ArrayAdapter<MusicListItem> {
         if(currentItemView == null)
             currentItemView = LayoutInflater.from(getContext()).inflate(R.layout.music_list_item, parent, false);
 
-        MusicListItem musicListItem = getItem(position);
+        Song song = getItem(position);
 
         TextView nameView = currentItemView.findViewById(R.id.musicName);
         TextView lengthView = currentItemView.findViewById(R.id.musicLength);
 
-        nameView.setText(musicListItem.getName());
-        lengthView.setText(String.valueOf(musicListItem.getLength()));
+        Duration duration = song.getSongDuration();
+
+        nameView.setText(song.getSongName());
+        lengthView.setText(duration.toString());
 
         ImageView clickDelete = currentItemView.findViewById(R.id.clickDelete);
         clickDelete.setOnClickListener(view -> new AlertDialog.Builder(getContext())

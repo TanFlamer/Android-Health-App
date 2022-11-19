@@ -10,14 +10,16 @@ import com.example.myapp.databaseFiles.repository.UserRepository;
 
 import java.util.List;
 
-public class AccountViewModal extends AndroidViewModel {
+public class AccountViewModel extends AndroidViewModel {
 
     private UserRepository userRepository;
+    private String filePath;
     private User user;
 
-    public AccountViewModal(@NonNull Application application) {
+    public AccountViewModel(@NonNull Application application) {
         super(application);
         userRepository = new UserRepository(application);
+        filePath = getApplication().getFilesDir() + "/music/";
         user = new User(-1, "User", null);
     }
 
@@ -28,12 +30,13 @@ public class AccountViewModal extends AndroidViewModel {
     public void insert(User newUser) {
         long userID = userRepository.insert(newUser);
         user = new User((int) userID, newUser.getUsername(), newUser.getPassword());
-        System.out.println(user.getUserID() + " " + user.getUsername() + " " + user.getPassword());
     }
 
-    public void delete(){
+    public int delete(){
+        int userID = user.getUserID();
         userRepository.delete(user);
         user = new User(-1, "User", null);
+        return userID;
     }
 
     public void changeUsername(String newUsername){
@@ -50,11 +53,19 @@ public class AccountViewModal extends AndroidViewModel {
         return findUser(username).size() == 0;
     }
 
-    public List<User>findUser(String username){
+    public List<User> findUser(String username){
         return userRepository.findUser(username);
     }
 
     public User getUser() {
         return user;
+    }
+
+    public String getFilePath() {
+        return filePath;
+    }
+
+    public void setFilePath(String filePath) {
+        this.filePath = filePath;
     }
 }
