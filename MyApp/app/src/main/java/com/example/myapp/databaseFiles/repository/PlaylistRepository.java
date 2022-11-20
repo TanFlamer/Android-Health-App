@@ -34,7 +34,7 @@ public class PlaylistRepository {
         new DeletePlaylistExecutorTask(playlistDao).execute(playlist);
     }
 
-    public List<Playlist> findPlaylist(int playlistID) {
+    public List<Playlist> getPlaylist(int playlistID) {
         return new FindPlaylistExecutorTask(playlistDao).get(playlistID);
     }
 
@@ -83,7 +83,7 @@ public class PlaylistRepository {
         }
         protected List<Playlist> get(int playlistID) {
             try {
-                return service.submit(() -> playlistDao.findPlaylist(playlistID)).get();
+                return service.submit(() -> playlistDao.getPlaylist(playlistID)).get();
             } catch (ExecutionException | InterruptedException e) {
                 e.printStackTrace();
             }

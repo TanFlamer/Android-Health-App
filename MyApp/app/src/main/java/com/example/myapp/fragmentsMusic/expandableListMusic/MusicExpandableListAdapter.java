@@ -9,6 +9,7 @@ import android.widget.BaseExpandableListAdapter;
 import android.widget.TextView;
 
 import com.example.myapp.R;
+import com.example.myapp.fragmentsSport.expandableListSport.SportExpandableListItem;
 
 import java.util.List;
 
@@ -91,5 +92,11 @@ public class MusicExpandableListAdapter extends BaseExpandableListAdapter {
     @Override
     public boolean isChildSelectable(int i, int i1) {
         return true;
+    }
+
+    public void updateMusicPlaylists(List<MusicExpandableListItem> newMusicExpandableListItemList){
+        musicExpandableListItemList.clear();
+        musicExpandableListItemList.addAll(newMusicExpandableListItemList);
+        notifyDataSetChanged();
     }
 }

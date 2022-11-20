@@ -2,24 +2,27 @@ package com.example.myapp.fragmentsSport;
 
 import android.app.Dialog;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.AbsListView;
+import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Spinner;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.example.myapp.R;
-import com.example.myapp.fragmentsSport.listSport.SportListAdapter;
-import com.example.myapp.fragmentsSport.listSport.SportListItem;
+import com.example.myapp.databaseFiles.entity.Type;
+import com.example.myapp.databaseFiles.viewModal.SportTypeViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -59,6 +62,11 @@ public class SportType extends Fragment {
         return fragment;
     }
 
+    SportTypeViewModel sportTypeViewModel;
+    FloatingActionButton floatingActionButton;
+    Spinner dataSpinner, orderSpinner;
+    ListView listView;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,6 +74,7 @@ public class SportType extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        sportTypeViewModel = new ViewModelProvider(this).get(SportTypeViewModel.class);
     }
 
     @Override
@@ -78,17 +87,67 @@ public class SportType extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        initialiseAll();
+    }
 
-        ListView listView = requireView().findViewById(R.id.sportListView);
-        List<SportListItem> sportListItemList = new ArrayList<>();
+    public void initialiseAll(){
+        initialiseListView();
+        initialiseSpinners();
+        initialiseFloatingButton();
+    }
 
-        sportListItemList.add(new SportListItem("test", 0));
-        sportListItemList.add(new SportListItem("test1", 1));
+    public void initialiseListView(){
+        listView = requireView().findViewById(R.id.sportListView);
+        listView.setChoiceMode(AbsListView.CHOICE_MODE_MULTIPLE);
+        listView.setOnItemClickListener(onItemClickListener);
+        listView.setOnItemLongClickListener(onItemLongClickListener);
+        listView.setOnItemSelectedListener(onItemSelectedListener);
 
-        SportListAdapter sportListAdapter = new SportListAdapter(getContext(), R.layout.music_list_item, sportListItemList);
+        SportListAdapter sportListAdapter = new SportListAdapter(requireContext(), 0, new ArrayList<>());
         listView.setAdapter(sportListAdapter);
+        sportTypeViewModel.getTypeList().observe(getViewLifecycleOwner(), typeList -> {
+            Toast.makeText(getContext(), "Dataset changed", Toast.LENGTH_SHORT).show();
+            sportListAdapter.updateTypeList(typeList);
+        });
+    }
 
-        FloatingActionButton floatingActionButton = requireView().findViewById(R.id.buttonFloating);
+    public AdapterView.OnItemClickListener onItemClickListener = new AdapterView.OnItemClickListener() {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            Type type = (Type) listView.getItemAtPosition(position);
+            Toast.makeText(getContext(), type.getName() + " clicked", Toast.LENGTH_SHORT).show();
+        }
+    };
+
+    public AdapterView.OnItemLongClickListener onItemLongClickListener = new AdapterView.OnItemLongClickListener() {
+        @Override
+        public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+            Type type = (Type) listView.getItemAtPosition(position);
+            Toast.makeText(getContext(), type.getName()  + " long clicked", Toast.LENGTH_SHORT).show();
+            return true;
+        }
+    };
+
+    public AdapterView.OnItemSelectedListener onItemSelectedListener = new AdapterView.OnItemSelectedListener() {
+        @Override
+        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+            Type type = (Type) listView.getItemAtPosition(position);
+            Toast.makeText(getContext(), type.getName()  + " selected", Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        public void onNothingSelected(AdapterView<?> parent) {
+            Toast.makeText(getContext(), "Item unselected", Toast.LENGTH_SHORT).show();
+        }
+    };
+
+    public void initialiseSpinners(){
+        dataSpinner = requireView().findViewById(R.id.dataSpinner);
+        orderSpinner = requireView().findViewById(R.id.orderSpinner);
+    }
+
+    public void initialiseFloatingButton(){
+        floatingActionButton = requireView().findViewById(R.id.buttonFloating);
         floatingActionButton.setOnClickListener(view1 -> {
             Dialog dialog = new Dialog(getContext());
             dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);

@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.example.myapp.R;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public class SportExpandableListAdapter extends BaseExpandableListAdapter {
@@ -60,13 +61,13 @@ public class SportExpandableListAdapter extends BaseExpandableListAdapter {
     @SuppressLint("InflateParams")
     @Override
     public View getGroupView(int i, boolean b, View view, ViewGroup viewGroup) {
-        String sportDate = sportExpandableListItemList.get(i).getDate();
+        LocalDate sportDate = sportExpandableListItemList.get(i).getDate();
 
         if(view == null)
             view = LayoutInflater.from(context).inflate(R.layout.sport_expandable_list_item, null);
 
         TextView dateView = view.findViewById(R.id.sportDate);
-        dateView.setText(sportDate);
+        dateView.setText(sportDate.toString());
 
         return view;
     }
@@ -93,5 +94,11 @@ public class SportExpandableListAdapter extends BaseExpandableListAdapter {
     @Override
     public boolean isChildSelectable(int i, int i1) {
         return true;
+    }
+
+    public void updateSportList(List<SportExpandableListItem> newSportExpandableListItemList){
+        sportExpandableListItemList.clear();
+        sportExpandableListItemList.addAll(newSportExpandableListItemList);
+        notifyDataSetChanged();
     }
 }

@@ -38,8 +38,12 @@ public class TypeSportRepository {
         return new FindTypeSportExecutorTask(typeSportDao).get(sportID, typeID);
     }
 
-    public LiveData<List<TypeSport>> getAllTypeSport(int sportID) {
-        return typeSportDao.getAllTypeSport(sportID);
+    public LiveData<List<TypeSport>> getTypeSport(int sportID) {
+        return typeSportDao.getTypeSport(sportID);
+    }
+
+    public LiveData<List<TypeSport>> getAllTypeSport(int userID) {
+        return typeSportDao.getAllTypeSport(userID);
     }
 
     private static class InsertTypeSportExecutorTask {

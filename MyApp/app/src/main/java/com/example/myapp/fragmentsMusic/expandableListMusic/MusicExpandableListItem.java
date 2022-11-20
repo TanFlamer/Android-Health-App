@@ -1,5 +1,7 @@
 package com.example.myapp.fragmentsMusic.expandableListMusic;
 
+import com.example.myapp.databaseFiles.entity.Playlist;
+
 import java.util.List;
 
 public class MusicExpandableListItem {
@@ -23,8 +25,8 @@ public class MusicExpandableListItem {
     String playlistName;
     List<MusicExpandableListData> musicExpandableListDataList;
 
-    public MusicExpandableListItem(String playlistName, List<MusicExpandableListData> musicExpandableListDataList){
-        this.playlistName = playlistName;
+    public MusicExpandableListItem(Playlist playlist, List<MusicExpandableListData> musicExpandableListDataList){
+        this.playlistName = playlist.getPlaylistName();
         this.musicExpandableListDataList = musicExpandableListDataList;
     }
 }

@@ -6,11 +6,6 @@ import androidx.room.Entity;
 import androidx.room.ForeignKey;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
-import androidx.room.TypeConverters;
-
-import com.example.myapp.databaseFiles.converter.DurationConverter;
-
-import java.time.Duration;
 
 @Entity(tableName = "Songs",
         indices = @Index("userID"),
@@ -22,12 +17,11 @@ public class Song {
 
     private String songName;
 
-    @TypeConverters(DurationConverter.class)
-    private Duration songDuration;
+    private Integer songDuration;
 
     private Integer userID;
 
-    public Song(String songName, Duration songDuration, Integer userID) {
+    public Song(String songName, Integer songDuration, Integer userID) {
         this.songName = songName;
         this.songDuration = songDuration;
         this.userID = userID;
@@ -49,11 +43,11 @@ public class Song {
         this.songName = songName;
     }
 
-    public Duration getSongDuration() {
+    public Integer getSongDuration() {
         return songDuration;
     }
 
-    public void setSongDuration(Duration songDuration) {
+    public void setSongDuration(Integer songDuration) {
         this.songDuration = songDuration;
     }
 

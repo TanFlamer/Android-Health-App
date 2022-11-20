@@ -5,11 +5,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import com.example.myapp.R;
-import com.example.myapp.fragmentsSport.listSport.SportListItem;
 import com.example.myapp.mainActivities.listSave.SaveListAdapter;
 import com.example.myapp.mainActivities.listSave.SaveListItem;
 import com.google.android.material.bottomnavigation.BottomNavigationView;

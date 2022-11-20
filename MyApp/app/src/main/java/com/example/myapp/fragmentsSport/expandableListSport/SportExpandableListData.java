@@ -1,5 +1,9 @@
 package com.example.myapp.fragmentsSport.expandableListSport;
 
+import com.example.myapp.databaseFiles.entity.Type;
+
+import java.time.Duration;
+
 public class SportExpandableListData {
 
     public String getName() {
@@ -10,29 +14,29 @@ public class SportExpandableListData {
         this.name = name;
     }
 
-    public int getDuration() {
+    public Duration getDuration() {
         return duration;
     }
 
-    public void setDuration(int duration) {
+    public void setDuration(Duration duration) {
         this.duration = duration;
     }
 
-    public int getCalories() {
+    public double getCalories() {
         return calories;
     }
 
-    public void setCalories(int calories) {
+    public void setCalories(double calories) {
         this.calories = calories;
     }
 
     String name;
-    int duration;
-    int calories;
+    Duration duration;
+    double calories;
 
-    public SportExpandableListData(String name, int duration, int calories){
-        this.name = name;
+    public SportExpandableListData(Type type, Duration duration){
+        this.name = type.getName();
         this.duration = duration;
-        this.calories = calories;
+        this.calories = type.getCaloriePerMinute() * duration.toMinutes();
     }
 }

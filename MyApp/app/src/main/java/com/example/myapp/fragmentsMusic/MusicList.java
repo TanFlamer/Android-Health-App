@@ -2,11 +2,15 @@ package com.example.myapp.fragmentsMusic;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
+import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -20,18 +24,16 @@ import androidx.lifecycle.ViewModelProvider;
 import com.example.myapp.R;
 import com.example.myapp.databaseFiles.entity.Song;
 import com.example.myapp.databaseFiles.viewModal.MusicListViewModel;
-import com.example.myapp.fragmentsMusic.listMusic.MusicListAdapter;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.time.Duration;
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -72,6 +74,9 @@ public class MusicList extends Fragment {
     }
 
     MusicListViewModel musicListViewModel;
+    FloatingActionButton floatingActionButton;
+    Spinner dataSpinner, orderSpinner;
+    ListView listView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -94,25 +99,75 @@ public class MusicList extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        initialiseAll();
+    }
 
-        ListView listView = requireView().findViewById(R.id.musicListView);
-        List<Song> songList = new ArrayList<>();
+    public void initialiseAll(){
+        initialiseListView();
+        initialiseSpinners();
+        initialiseFloatingButton();
+    }
 
-        songList.add(new Song("test", Duration.ofMinutes(2), musicListViewModel.getUserID()));
-        songList.add(new Song("test1", Duration.ofMinutes(1), musicListViewModel.getUserID()));
+    public void initialiseListView(){
+        listView = requireView().findViewById(R.id.musicListView);
+        listView.setChoiceMode(AbsListView.CHOICE_MODE_MULTIPLE);
+        listView.setOnItemClickListener(onItemClickListener);
+        listView.setOnItemLongClickListener(onItemLongClickListener);
+        listView.setOnItemSelectedListener(onItemSelectedListener);
 
-        MusicListAdapter musicListAdapter = new MusicListAdapter(getContext(), R.layout.music_list_item, songList);
+        MusicListAdapter musicListAdapter = new MusicListAdapter(requireContext(), 0, new ArrayList<>());
         listView.setAdapter(musicListAdapter);
+        musicListViewModel.getSongList().observe(getViewLifecycleOwner(), songList -> {
+            Toast.makeText(getContext(), "Dataset changed", Toast.LENGTH_SHORT).show();
+            musicListAdapter.updateSongList(songList);
+        });
+    }
 
-        FloatingActionButton floatingActionButton = requireView().findViewById(R.id.buttonFloating);
+    public AdapterView.OnItemClickListener onItemClickListener = new AdapterView.OnItemClickListener() {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            Song song = (Song) listView.getItemAtPosition(position);
+            Toast.makeText(getContext(), song.getSongName() + " clicked", Toast.LENGTH_SHORT).show();
+        }
+    };
+
+    public AdapterView.OnItemLongClickListener onItemLongClickListener = new AdapterView.OnItemLongClickListener() {
+        @Override
+        public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+            Song song = (Song) listView.getItemAtPosition(position);
+            Toast.makeText(getContext(), song.getSongName() + " long clicked", Toast.LENGTH_SHORT).show();
+            return true;
+        }
+    };
+
+    public AdapterView.OnItemSelectedListener onItemSelectedListener = new AdapterView.OnItemSelectedListener() {
+        @Override
+        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+            Song song = (Song) listView.getItemAtPosition(position);
+            Toast.makeText(getContext(), song.getSongName() + " selected", Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        public void onNothingSelected(AdapterView<?> parent) {
+            Toast.makeText(getContext(), "Item unselected", Toast.LENGTH_SHORT).show();
+        }
+    };
+
+    public void initialiseSpinners(){
+        dataSpinner = requireView().findViewById(R.id.dataSpinner);
+        orderSpinner = requireView().findViewById(R.id.orderSpinner);
+    }
+
+    public void initialiseFloatingButton(){
+        floatingActionButton = requireView().findViewById(R.id.buttonFloating);
         floatingActionButton.setOnClickListener(view1 -> getMusicFile());
     }
 
     public void getMusicFile(){
-        if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED)
+        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED)
             mGetContent.launch("audio/*");
         else
-            requestPermissionLauncher.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+            requestPermissionLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE);
     }
 
     public void checkFolderExists(){
@@ -127,11 +182,14 @@ public class MusicList extends Fragment {
             uri -> {
                 if(uri.size() != 0){
                     for(int i = 0; i < uri.size(); i++){
-                        String oldFilePath = uri.get(i).getPath().split(":")[1];
-                        Path source = Paths.get(oldFilePath);
-                        Path dest = Paths.get(musicListViewModel.getFilePath(), new File(oldFilePath).getName());
+                        Uri currentUri = uri.get(i);
                         try {
+                            InputStream source = requireActivity().getContentResolver().openInputStream(currentUri);
+                            String fileName = new File(currentUri.getPath()).getName();
+                            Path dest = Paths.get(musicListViewModel.getFilePath(), fileName);
                             Files.copy(source, dest, StandardCopyOption.REPLACE_EXISTING);
+                            musicListViewModel.processFile(fileName, currentUri);
+                            Toast.makeText(getContext(), fileName + " copied successfully", Toast.LENGTH_SHORT).show();
                         }
                         catch (IOException e) {
                             e.printStackTrace();
@@ -148,7 +206,7 @@ public class MusicList extends Fragment {
                     mGetContent.launch("audio/*");
                 }
                 else {
-                    Toast.makeText(getContext(), "Permission not granted to move files", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Permission not granted to copy files", Toast.LENGTH_SHORT).show();
                 }
             });
 }

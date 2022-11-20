@@ -34,7 +34,11 @@ public class TypeRepository {
         new DeleteTypeExecutorTask(typeDao).execute(type);
     }
 
-    public List<Type> findType(int typeID) {
+    public List<Type> findType(int userID, String typeName) {
+        return new FindTypeExecutorTask(typeDao).find(userID, typeName);
+    }
+
+    public List<Type> getType(int typeID) {
         return new FindTypeExecutorTask(typeDao).get(typeID);
     }
 
@@ -81,9 +85,17 @@ public class TypeRepository {
         private FindTypeExecutorTask(TypeDao typeDao) {
             this.typeDao = typeDao;
         }
+        protected List<Type> find(int userID, String typeName) {
+            try {
+                return service.submit(() -> typeDao.findType(userID, typeName)).get();
+            } catch (ExecutionException | InterruptedException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
         protected List<Type> get(int typeID) {
             try {
-                return service.submit(() -> typeDao.findType(typeID)).get();
+                return service.submit(() -> typeDao.getType(typeID)).get();
             } catch (ExecutionException | InterruptedException e) {
                 e.printStackTrace();
             }

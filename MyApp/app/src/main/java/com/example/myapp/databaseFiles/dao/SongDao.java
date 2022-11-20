@@ -23,6 +23,9 @@ public interface SongDao {
     @Delete
     void delete(Song song);
 
+    @Query("SELECT * FROM Songs WHERE songID=:songID")
+    List<Song> getSong(int songID);
+
     @Query("SELECT * FROM Songs WHERE userID=:userID AND songName=:songName")
     List<Song> findSong(int userID, String songName);
 

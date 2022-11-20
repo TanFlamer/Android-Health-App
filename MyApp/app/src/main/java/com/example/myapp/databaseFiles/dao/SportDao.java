@@ -26,6 +26,9 @@ public interface SportDao {
     @Delete
     void delete(Sport sport);
 
+    @Query("SELECT * FROM Sport WHERE sportID=:sportID")
+    List<Sport> getSport(int sportID);
+
     @Query("SELECT * FROM Sport WHERE userID=:userID AND date=:date")
     @TypeConverters(DateConverter.class)
     List<Sport> findSport(int userID, LocalDate date);

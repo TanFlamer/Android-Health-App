@@ -1,11 +1,7 @@
 package com.example.myapp.mainActivities;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.text.Editable;
@@ -19,8 +15,6 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.myapp.MainApplication;
@@ -65,6 +59,8 @@ public class Account extends AppCompatActivity {
         loadUserData(getIntent().getExtras());
         initialiseAll();
         reloadPage();
+        User user = new User(0, "Guest", "");
+        accountViewModel.insert(user);
     }
 
     public void loadUserData(Bundle extras){
@@ -244,7 +240,6 @@ public class Account extends AppCompatActivity {
     public void deleteFolder(int userID){
         String newFolderPath = accountViewModel.getFilePath() + userID;
         File newFolder = new File(newFolderPath);
-        System.out.println(newFolder);
         if(newFolder.isDirectory()){
             String[] children = newFolder.list();
             for (String child : children) {

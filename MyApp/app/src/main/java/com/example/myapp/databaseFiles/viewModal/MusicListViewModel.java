@@ -1,6 +1,8 @@
 package com.example.myapp.databaseFiles.viewModal;
 
 import android.app.Application;
+import android.media.MediaMetadataRetriever;
+import android.net.Uri;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -15,30 +17,32 @@ import java.util.List;
 
 public class MusicListViewModel extends AndroidViewModel {
 
+    private final MediaMetadataRetriever mediaMetadataRetriever;
     private SongRepository songRepository;
     private LiveData<List<Song>> songList;
-    private String filePath;
+    private final String filePath;
     private int userID;
 
     public MusicListViewModel(@NonNull Application application) {
         super(application);
+        mediaMetadataRetriever = new MediaMetadataRetriever();
         songRepository = new SongRepository(application);
-        songList = songRepository.getAllSongs(userID);
         userID = loadUserID();
+        songList = songRepository.getAllSongs(userID);
         filePath = getApplication().getFilesDir() + "/music/" + userID;
     }
 
     public int loadUserID(){
-        MainApplication appState = (MainApplication) this.getApplication();
+        MainApplication appState = this.getApplication();
         return appState.getUserID();
     }
 
-    public void insert(Song newSong){
-        songRepository.insert(newSong);
-    }
-
-    public void update(Song newSong){
-        songRepository.update(newSong);
+    public void processFile(String fileName, Uri uri){
+        List<Song> songList = findSong(userID, fileName);
+        if(songList.size() == 0)
+            songRepository.insert(new Song(fileName, getSongDuration(uri), userID));
+        else
+            songRepository.update(songList.get(0));
     }
 
     public void delete(Song song){
@@ -57,15 +61,13 @@ public class MusicListViewModel extends AndroidViewModel {
         return userID;
     }
 
-    public void setUserID(int userID) {
-        this.userID = userID;
-    }
-
     public String getFilePath() {
         return filePath;
     }
 
-    public void setFilePath(String filePath) {
-        this.filePath = filePath;
+    public int getSongDuration(Uri uri){
+        mediaMetadataRetriever.setDataSource(getApplication(), uri);
+        String duration = mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
+        return Integer.parseInt(duration) / 1000;
     }
 }

@@ -5,22 +5,22 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Spinner;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.myapp.R;
-import com.example.myapp.fragmentsSleep.recyclerSleep.SleepRecyclerItem;
-import com.example.myapp.fragmentsSleep.recyclerSleep.SleepRecyclerAdapter;
-import com.example.myapp.mainActivities.Account;
+import com.example.myapp.databaseFiles.viewModal.SleepListViewModel;
 import com.example.myapp.subActivities.DataSleep;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -60,6 +60,11 @@ public class SleepList extends Fragment {
         return fragment;
     }
 
+    SleepListViewModel sleepListViewModel;
+    FloatingActionButton floatingActionButton;
+    Spinner dataSpinner, orderSpinner;
+    RecyclerView recyclerView;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,6 +72,7 @@ public class SleepList extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        sleepListViewModel = new ViewModelProvider(this).get(SleepListViewModel.class);
     }
 
     @Override
@@ -79,24 +85,34 @@ public class SleepList extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        initialiseAll();
+    }
 
-        RecyclerView recyclerView = requireView().findViewById(R.id.sleepRecyclerView);
-        List<SleepRecyclerItem> sleepRecyclerItemList = new ArrayList<>();
+    public void initialiseAll(){
+        initialiseRecyclerView();
+        initialiseSpinners();
+        initialiseFloatingButton();
+    }
 
-        sleepRecyclerItemList.add(new SleepRecyclerItem("test", "test","test", 0));
-        sleepRecyclerItemList.add(new SleepRecyclerItem( "test1", "test1","test1", 1));
-        sleepRecyclerItemList.add(new SleepRecyclerItem("test", "test","test", 0));
-        sleepRecyclerItemList.add(new SleepRecyclerItem( "test1", "test1","test1", 1));
-
-        SleepRecyclerAdapter sleepRecyclerAdapter = new SleepRecyclerAdapter(getContext(), sleepRecyclerItemList);
+    public void initialiseRecyclerView(){
+        recyclerView = requireView().findViewById(R.id.sleepRecyclerView);
+        SleepRecyclerAdapter sleepRecyclerAdapter = new SleepRecyclerAdapter(requireContext(), new ArrayList<>());
         recyclerView.setAdapter(sleepRecyclerAdapter);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-
-        FloatingActionButton floatingActionButton = requireView().findViewById(R.id.buttonFloating);
-        floatingActionButton.setOnClickListener(view1 -> {
-            startActivity(new Intent(getContext(), DataSleep.class));
-            getActivity().overridePendingTransition(0, 0);
+        sleepListViewModel.getSleepList().observe(getViewLifecycleOwner(), songList -> {
+            Toast.makeText(getContext(), "Dataset changed", Toast.LENGTH_SHORT).show();
+            sleepRecyclerAdapter.updateSleepList(songList);
         });
+    }
+
+    public void initialiseSpinners(){
+        dataSpinner = requireView().findViewById(R.id.dataSpinner);
+        orderSpinner = requireView().findViewById(R.id.orderSpinner);
+    }
+
+    public void initialiseFloatingButton(){
+        floatingActionButton = requireView().findViewById(R.id.buttonFloating);
+        floatingActionButton.setOnClickListener(view1 -> startActivity(new Intent(getContext(), DataSleep.class)));
     }
 }

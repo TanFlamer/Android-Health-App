@@ -9,9 +9,10 @@ import androidx.room.Index;
 
 @Entity(tableName = "SongPlaylist",
         primaryKeys = { "playlistID", "songID" },
-        indices = { @Index("playlistID"), @Index("songID") },
+        indices = { @Index("playlistID"), @Index("songID"), @Index("userID") },
         foreignKeys = { @ForeignKey(entity = Playlist.class, parentColumns = "playlistID", childColumns = "playlistID", onDelete = CASCADE),
-                        @ForeignKey(entity = Song.class, parentColumns = "songID", childColumns = "songID", onDelete = CASCADE) })
+                        @ForeignKey(entity = Song.class, parentColumns = "songID", childColumns = "songID", onDelete = CASCADE),
+                        @ForeignKey(entity = User.class, parentColumns = "userID", childColumns = "userID", onDelete = CASCADE) })
 public class SongPlaylist {
 
     @NonNull
@@ -20,9 +21,13 @@ public class SongPlaylist {
     @NonNull
     private Integer songID;
 
-    public SongPlaylist(@NonNull Integer playlistID, @NonNull Integer songID){
+    @NonNull
+    private Integer userID;
+
+    public SongPlaylist(@NonNull Integer playlistID, @NonNull Integer songID, @NonNull Integer userID){
         this.playlistID = playlistID;
         this.songID = songID;
+        this.userID = userID;
     }
 
     @NonNull
@@ -41,5 +46,14 @@ public class SongPlaylist {
 
     public void setSongID(@NonNull Integer songID) {
         this.songID = songID;
+    }
+
+    @NonNull
+    public Integer getUserID() {
+        return userID;
+    }
+
+    public void setUserID(@NonNull Integer userID) {
+        this.userID = userID;
     }
 }

@@ -50,11 +50,7 @@ public class AccountViewModel extends AndroidViewModel {
     }
 
     public boolean validateUsername(String username){
-        return findUser(username).size() == 0;
-    }
-
-    public List<User> findUser(String username){
-        return userRepository.findUser(username);
+        return userRepository.findUser(username).size() == 0;
     }
 
     public User getUser() {
@@ -63,9 +59,5 @@ public class AccountViewModel extends AndroidViewModel {
 
     public String getFilePath() {
         return filePath;
-    }
-
-    public void setFilePath(String filePath) {
-        this.filePath = filePath;
     }
 }

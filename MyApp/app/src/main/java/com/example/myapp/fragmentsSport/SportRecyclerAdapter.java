@@ -1,5 +1,6 @@
-package com.example.myapp.fragmentsSport.recyclerSport;
+package com.example.myapp.fragmentsSport;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,19 +12,22 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.myapp.R;
+import com.example.myapp.databaseFiles.entity.Sport;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class SportRecyclerAdapter extends RecyclerView.Adapter<SportRecyclerAdapter.SportRecyclerItemViewHolder> {
 
     Context context;
-    List<SportRecyclerItem> sportRecyclerItemList;
+    List<Sport> sportList;
+    HashMap<Sport, Boolean> visibilityMap;
 
-    public SportRecyclerAdapter(Context context, List<SportRecyclerItem> sportRecyclerItemList){
+    public SportRecyclerAdapter(Context context, List<Sport> sportList){
         this.context = context;
-        this.sportRecyclerItemList = sportRecyclerItemList;
+        this.sportList = sportList;
+        visibilityMap = new HashMap<>();
+        for(Sport sport : sportList) visibilityMap.put(sport, false);
     }
 
     @NonNull
@@ -33,29 +37,34 @@ public class SportRecyclerAdapter extends RecyclerView.Adapter<SportRecyclerAdap
         return new SportRecyclerItemViewHolder(view);
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull SportRecyclerItemViewHolder holder, int position) {
-        SportRecyclerItem sportRecyclerItem = sportRecyclerItemList.get(position);
-
-        holder.titleView.setText(sportRecyclerItem.getTitle());
-        holder.nameView.setText(sportRecyclerItem.getName());
-        holder.totalTimeView.setText(String.valueOf(sportRecyclerItem.getTotalTime()));
-        holder.totalCalorieView.setText(String.valueOf(sportRecyclerItem.getTotalCalorie()));
-        holder.totalDaysView.setText(String.valueOf(sportRecyclerItem.getTotalDays()));
-        holder.averageTimeView.setText(String.valueOf(sportRecyclerItem.getAverageTime()));
-        holder.averageCalorieView.setText(String.valueOf(sportRecyclerItem.getAverageCalorie()));
-        holder.longestTimeView.setText(String.valueOf(sportRecyclerItem.getLongestTime()));
-        holder.shortestTimeView.setText(String.valueOf(sportRecyclerItem.getShortestTime()));
-        holder.mostCalorieView.setText(String.valueOf(sportRecyclerItem.getMostCalorie()));
-        holder.leastCalorieView.setText(String.valueOf(sportRecyclerItem.getLeastCalorie()));
-
-        boolean isShown = sportRecyclerItemList.get(position).isShown();
-        holder.layoutHidden.setVisibility(isShown ? View.VISIBLE : View.GONE);
+        Sport sport = sportList.get(position);
+        holder.titleView.setText("sport.getTitle()");
+        holder.nameView.setText("sport.getName()");
+        holder.totalTimeView.setText("String.valueOf(sport.getTotalTime())");
+        holder.totalCalorieView.setText("String.valueOf(sport.getTotalCalorie())");
+        holder.totalDaysView.setText("String.valueOf(sport.getTotalDays())");
+        holder.averageTimeView.setText("String.valueOf(sport.getAverageTime())");
+        holder.averageCalorieView.setText("String.valueOf(sport.getAverageCalorie())");
+        holder.longestTimeView.setText("String.valueOf(sport.getLongestTime())");
+        holder.shortestTimeView.setText("String.valueOf(sport.getShortestTime())");
+        holder.mostCalorieView.setText("String.valueOf(sport.getMostCalorie())");
+        holder.leastCalorieView.setText("String.valueOf(sport.getLeastCalorie())");
+        holder.layoutHidden.setVisibility(Boolean.TRUE.equals(visibilityMap.get(sport)) ? View.VISIBLE : View.GONE);
     }
 
     @Override
     public int getItemCount() {
-        return sportRecyclerItemList.size();
+        return sportList.size();
+    }
+
+    public void updateSportList(List<Sport> newSportList){
+        sportList.clear();
+        sportList.addAll(newSportList);
+        visibilityMap.clear();
+        for(Sport sport : sportList) visibilityMap.put(sport, false);
     }
 
     public class SportRecyclerItemViewHolder extends RecyclerView.ViewHolder{
@@ -82,8 +91,8 @@ public class SportRecyclerAdapter extends RecyclerView.Adapter<SportRecyclerAdap
             layoutHidden = itemView.findViewById(R.id.sportLayoutHidden);
 
             layoutVisible.setOnClickListener(view -> {
-                SportRecyclerItem sportRecyclerItem = sportRecyclerItemList.get(getAdapterPosition());
-                sportRecyclerItem.setShown(!sportRecyclerItem.isShown());
+                Sport sport = sportList.get(getAdapterPosition());
+                visibilityMap.put(sport, Boolean.FALSE.equals(visibilityMap.get(sport)));
                 notifyItemChanged(getAdapterPosition());
             });
         }

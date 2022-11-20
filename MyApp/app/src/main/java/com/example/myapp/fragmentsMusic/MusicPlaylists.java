@@ -6,14 +6,20 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
+import android.widget.AdapterView;
 import android.widget.ExpandableListView;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.myapp.R;
+import com.example.myapp.databaseFiles.viewModal.MusicPlaylistsViewModel;
+import com.example.myapp.databaseFiles.viewModal.SportListViewModel;
 import com.example.myapp.fragmentsMusic.expandableListMusic.MusicExpandableListAdapter;
 import com.example.myapp.fragmentsMusic.expandableListMusic.MusicExpandableListData;
 import com.example.myapp.fragmentsMusic.expandableListMusic.MusicExpandableListItem;
@@ -21,6 +27,7 @@ import com.example.myapp.fragmentsSport.expandableListSport.SportExpandableListA
 import com.example.myapp.fragmentsSport.expandableListSport.SportExpandableListData;
 import com.example.myapp.fragmentsSport.expandableListSport.SportExpandableListItem;
 import com.example.myapp.subActivities.DataMusic;
+import com.example.myapp.subActivities.DataSport;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
@@ -64,6 +71,11 @@ public class MusicPlaylists extends Fragment {
         return fragment;
     }
 
+    MusicPlaylistsViewModel musicPlaylistsViewModel;
+    FloatingActionButton floatingActionButton;
+    Spinner dataSpinner, orderSpinner;
+    ExpandableListView expandableListView;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,6 +83,7 @@ public class MusicPlaylists extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        musicPlaylistsViewModel = new ViewModelProvider(this).get(MusicPlaylistsViewModel.class);
     }
 
     @Override
@@ -83,25 +96,29 @@ public class MusicPlaylists extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        initialiseAll();
+    }
 
-        List<MusicExpandableListItem> musicExpandableListItemList = new ArrayList<>();
+    public void initialiseAll(){
+        initialiseListView();
+        initialiseSpinners();
+        initialiseFloatingButton();
+    }
 
-        List<MusicExpandableListData> musicExpandableListDataList = new ArrayList<>();
-        List<MusicExpandableListData> musicExpandableListDataList1 = new ArrayList<>();
+    public void initialiseListView(){
+        expandableListView = requireView().findViewById(R.id.musicExpandableListView);
+        expandableListView.setChoiceMode(AbsListView.CHOICE_MODE_MULTIPLE);
+        expandableListView.setOnItemClickListener(onItemClickListener);
+        expandableListView.setOnItemLongClickListener(onItemLongClickListener);
+        expandableListView.setOnItemSelectedListener(onItemSelectedListener);
 
-        musicExpandableListDataList.add(new MusicExpandableListData("lol", 0));
-        musicExpandableListDataList.add(new MusicExpandableListData("lol", 0));
-
-        musicExpandableListDataList1.add(new MusicExpandableListData("lol1", 0));
-        musicExpandableListDataList1.add(new MusicExpandableListData("lol1", 0));
-
-        musicExpandableListItemList.add(new MusicExpandableListItem("test", musicExpandableListDataList));
-        musicExpandableListItemList.add(new MusicExpandableListItem("test1", musicExpandableListDataList1));
-
-        ExpandableListView expandableListView = requireView().findViewById(R.id.musicExpandableListView);
-        MusicExpandableListAdapter musicExpandableListAdapter = new MusicExpandableListAdapter(getContext(), musicExpandableListItemList);
+        MusicExpandableListAdapter musicExpandableListAdapter = new MusicExpandableListAdapter(requireContext(), new ArrayList<>());
         expandableListView.setAdapter(musicExpandableListAdapter);
+        musicPlaylistsViewModel.getSongPlaylistList().observe(getViewLifecycleOwner(), songPlaylists -> musicExpandableListAdapter.updateMusicPlaylists(musicPlaylistsViewModel.updateMusicPlaylists()));
+        setListeners(musicExpandableListAdapter);
+    }
 
+    public void setListeners(MusicExpandableListAdapter musicExpandableListAdapter){
         expandableListView.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
             int lastExpandedPosition = -1;
             @Override
@@ -118,11 +135,45 @@ public class MusicPlaylists extends Fragment {
             Toast.makeText(getContext(), selected, Toast.LENGTH_SHORT).show();
             return true;
         });
+    }
 
-        FloatingActionButton floatingActionButton = requireView().findViewById(R.id.buttonFloating);
-        floatingActionButton.setOnClickListener(view1 -> {
-            startActivity(new Intent(getContext(), DataMusic.class));
-            getActivity().overridePendingTransition(0, 0);
-        });
+    public AdapterView.OnItemClickListener onItemClickListener = new AdapterView.OnItemClickListener() {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            SportExpandableListData expandableListData = (SportExpandableListData) expandableListView.getItemAtPosition(position);
+            Toast.makeText(getContext(), expandableListData.getName() + " clicked", Toast.LENGTH_SHORT).show();
+        }
+    };
+
+    public AdapterView.OnItemLongClickListener onItemLongClickListener = new AdapterView.OnItemLongClickListener() {
+        @Override
+        public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+            SportExpandableListData expandableListData = (SportExpandableListData) expandableListView.getItemAtPosition(position);
+            Toast.makeText(getContext(), expandableListData.getName() + " long clicked", Toast.LENGTH_SHORT).show();
+            return true;
+        }
+    };
+
+    public AdapterView.OnItemSelectedListener onItemSelectedListener = new AdapterView.OnItemSelectedListener() {
+        @Override
+        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+            SportExpandableListData expandableListData = (SportExpandableListData) expandableListView.getItemAtPosition(position);
+            Toast.makeText(getContext(), expandableListData.getName() + " selected", Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        public void onNothingSelected(AdapterView<?> parent) {
+            Toast.makeText(getContext(), "Item unselected", Toast.LENGTH_SHORT).show();
+        }
+    };
+
+    public void initialiseSpinners(){
+        dataSpinner = requireView().findViewById(R.id.dataSpinner);
+        orderSpinner = requireView().findViewById(R.id.orderSpinner);
+    }
+
+    public void initialiseFloatingButton(){
+        floatingActionButton = requireView().findViewById(R.id.buttonFloating);
+        floatingActionButton.setOnClickListener(view1 -> startActivity(new Intent(getContext(), DataMusic.class)));
     }
 }

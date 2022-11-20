@@ -11,7 +11,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.example.myapp.R;
-import com.example.myapp.fragmentsSport.listSport.SportListItem;
 
 import java.util.List;
 

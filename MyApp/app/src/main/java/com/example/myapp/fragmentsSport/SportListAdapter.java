@@ -1,4 +1,4 @@
-package com.example.myapp.fragmentsSport.listSport;
+package com.example.myapp.fragmentsSport;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -16,15 +16,20 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 
 import com.example.myapp.R;
+import com.example.myapp.databaseFiles.entity.Song;
+import com.example.myapp.databaseFiles.entity.Type;
 import com.example.myapp.mainActivities.Account;
 import com.example.myapp.subActivities.DataSport;
 
 import java.util.List;
 
-public class SportListAdapter extends ArrayAdapter<SportListItem> {
+public class SportListAdapter extends ArrayAdapter<Type> {
 
-    public SportListAdapter(@NonNull Context context, int resource, List<SportListItem> sportListItemList) {
-        super(context, resource, sportListItemList);
+    private List<Type> typeList;
+
+    public SportListAdapter(@NonNull Context context, int resource, List<Type> typeList) {
+        super(context, resource, typeList);
+        this.typeList = typeList;
     }
 
     @NonNull
@@ -35,14 +40,22 @@ public class SportListAdapter extends ArrayAdapter<SportListItem> {
         if(currentItemView == null)
             currentItemView = LayoutInflater.from(getContext()).inflate(R.layout.sport_list_item, parent, false);
 
-        SportListItem sportListItem = getItem(position);
+        Type type = typeList.get(position);
+        initialiseData(currentItemView, type);
+        initialiseEditButton(currentItemView);
+        initialiseDeleteButton(currentItemView);
+        return currentItemView;
+    }
 
+    public void initialiseData(View currentItemView, Type type){
         TextView typeView = currentItemView.findViewById(R.id.sportType);
         TextView energyView = currentItemView.findViewById(R.id.sportEnergy);
 
-        typeView.setText(sportListItem.getType());
-        energyView.setText(String.valueOf(sportListItem.getCaloriePerMinute()));
+        typeView.setText(type.getName());
+        energyView.setText(String.valueOf(type.getCaloriePerMinute()));
+    }
 
+    public void initialiseEditButton(View currentItemView){
         ImageView clickEdit = currentItemView.findViewById(R.id.clickEdit);
         clickEdit.setOnClickListener(v -> {
             Dialog dialog = new Dialog(getContext());
@@ -51,7 +64,9 @@ public class SportListAdapter extends ArrayAdapter<SportListItem> {
             dialog.setContentView(R.layout.dialog_sport);
             dialog.show();
         });
+    }
 
+    public void initialiseDeleteButton(View currentItemView){
         ImageView clickDelete = currentItemView.findViewById(R.id.clickDelete);
         clickDelete.setOnClickListener(view -> new AlertDialog.Builder(getContext())
                 .setTitle("Delete Item")
@@ -60,7 +75,11 @@ public class SportListAdapter extends ArrayAdapter<SportListItem> {
                 .setNegativeButton("No", null)
                 .create()
                 .show());
+    }
 
-        return currentItemView;
+    public void updateTypeList(List<Type> newTypeList){
+        typeList.clear();
+        typeList.addAll(newTypeList);
+        notifyDataSetChanged();
     }
 }

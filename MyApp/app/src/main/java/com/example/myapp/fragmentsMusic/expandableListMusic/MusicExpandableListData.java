@@ -1,5 +1,7 @@
 package com.example.myapp.fragmentsMusic.expandableListMusic;
 
+import com.example.myapp.databaseFiles.entity.Song;
+
 public class MusicExpandableListData {
 
     public String getName() {
@@ -21,8 +23,8 @@ public class MusicExpandableListData {
     String name;
     int length;
 
-    public MusicExpandableListData(String name, int length){
-        this.name = name;
-        this.length = length;
+    public MusicExpandableListData(Song song){
+        this.name = song.getSongName();
+        this.length = song.getSongDuration();
     }
 }

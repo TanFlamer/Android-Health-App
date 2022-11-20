@@ -38,8 +38,12 @@ public class SongPlaylistRepository {
         return new FindSongPlaylistExecutorTask(songPlaylistDao).get(playlistID, songID);
     }
 
-    public LiveData<List<SongPlaylist>> getAllSongPlaylist(int playlistID) {
-        return songPlaylistDao.getAllSongPlaylist(playlistID);
+    public LiveData<List<SongPlaylist>> getSongPlaylist(int playlistID) {
+        return songPlaylistDao.getSongPlaylist(playlistID);
+    }
+
+    public LiveData<List<SongPlaylist>> getAllSongPlaylist(int userID) {
+        return songPlaylistDao.getAllSongPlaylist(userID);
     }
 
     private static class InsertSongPlaylistExecutorTask {

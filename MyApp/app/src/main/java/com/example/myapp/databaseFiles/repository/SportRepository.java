@@ -36,7 +36,11 @@ public class SportRepository {
     }
 
     public List<Sport> findSport(int userID, LocalDate date) {
-        return new FindSportExecutorTask(sportDao).get(userID, date);
+        return new FindSportExecutorTask(sportDao).find(userID, date);
+    }
+
+    public List<Sport> getSport(int sportID) {
+        return new FindSportExecutorTask(sportDao).get(sportID);
     }
 
     public LiveData<List<Sport>> getAllSport(int userID) {
@@ -82,9 +86,17 @@ public class SportRepository {
         private FindSportExecutorTask(SportDao sportDao) {
             this.sportDao = sportDao;
         }
-        protected List<Sport> get(int userID, LocalDate date) {
+        protected List<Sport> find(int userID, LocalDate date) {
             try {
                 return service.submit(() -> sportDao.findSport(userID, date)).get();
+            } catch (ExecutionException | InterruptedException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+        protected List<Sport> get(int sportID) {
+            try {
+                return service.submit(() -> sportDao.getSport(sportID)).get();
             } catch (ExecutionException | InterruptedException e) {
                 e.printStackTrace();
             }

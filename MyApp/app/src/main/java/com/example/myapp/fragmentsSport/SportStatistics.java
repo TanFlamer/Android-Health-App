@@ -5,20 +5,20 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.example.myapp.R;
-import com.example.myapp.fragmentsSleep.recyclerSleep.SleepRecyclerItem;
-import com.example.myapp.fragmentsSport.recyclerSport.SportRecyclerAdapter;
-import com.example.myapp.fragmentsSport.recyclerSport.SportRecyclerItem;
+import com.example.myapp.databaseFiles.viewModal.SportStatisticsViewModel;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -58,6 +58,10 @@ public class SportStatistics extends Fragment {
         return fragment;
     }
 
+    SportStatisticsViewModel sportStatisticsViewModel;
+    Spinner dataSpinner, orderSpinner;
+    RecyclerView recyclerView;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,6 +69,7 @@ public class SportStatistics extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        sportStatisticsViewModel = new ViewModelProvider(this).get(SportStatisticsViewModel.class);
     }
 
     @Override
@@ -77,18 +82,28 @@ public class SportStatistics extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        initialiseAll();
+    }
 
-        RecyclerView recyclerView = requireView().findViewById(R.id.sportRecyclerView);
-        List<SportRecyclerItem> sportRecyclerItemList = new ArrayList<>();
+    public void initialiseAll(){
+        initialiseRecyclerView();
+        initialiseSpinners();
+    }
 
-        sportRecyclerItemList.add(new SportRecyclerItem("test",1,1,1,1,1,1,1));
-        sportRecyclerItemList.add(new SportRecyclerItem("test1", 2, 2, 2, 2, 2, 2, 2));
-        sportRecyclerItemList.add(new SportRecyclerItem("test",1,1,1,1,1,1,1));
-        sportRecyclerItemList.add(new SportRecyclerItem("test1", 2, 2, 2, 2, 2, 2, 2));
-
-        SportRecyclerAdapter sportRecyclerAdapter = new SportRecyclerAdapter(getContext(), sportRecyclerItemList);
+    public void initialiseRecyclerView(){
+        recyclerView = requireView().findViewById(R.id.sportRecyclerView);
+        SportRecyclerAdapter sportRecyclerAdapter = new SportRecyclerAdapter(requireContext(), new ArrayList<>());
         recyclerView.setAdapter(sportRecyclerAdapter);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        sportStatisticsViewModel.getSportList().observe(getViewLifecycleOwner(), songList -> {
+            Toast.makeText(getContext(), "Dataset changed", Toast.LENGTH_SHORT).show();
+            sportRecyclerAdapter.updateSportList(songList);
+        });
+    }
+
+    public void initialiseSpinners(){
+        dataSpinner = requireView().findViewById(R.id.dataSpinner);
+        orderSpinner = requireView().findViewById(R.id.orderSpinner);
     }
 }

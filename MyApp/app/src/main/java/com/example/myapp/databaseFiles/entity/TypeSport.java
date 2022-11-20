@@ -14,9 +14,10 @@ import java.time.Duration;
 
 @Entity(tableName = "TypeSport",
         primaryKeys = { "sportID", "typeID" },
-        indices = { @Index("sportID"), @Index("typeID") },
+        indices = { @Index("sportID"), @Index("typeID"), @Index("userID") },
         foreignKeys = { @ForeignKey(entity = Sport.class, parentColumns = "sportID", childColumns = "sportID", onDelete = CASCADE),
-                        @ForeignKey(entity = Type.class, parentColumns = "typeID", childColumns = "typeID", onDelete = CASCADE) })
+                        @ForeignKey(entity = Type.class, parentColumns = "typeID", childColumns = "typeID", onDelete = CASCADE),
+                        @ForeignKey(entity = User.class, parentColumns = "userID", childColumns = "userID", onDelete = CASCADE) })
 public class TypeSport {
 
     @NonNull
@@ -28,10 +29,14 @@ public class TypeSport {
     @TypeConverters(DurationConverter.class)
     private Duration duration;
 
-    public TypeSport(@NonNull Integer sportID, @NonNull Integer typeID, Duration duration){
+    @NonNull
+    private Integer userID;
+
+    public TypeSport(@NonNull Integer sportID, @NonNull Integer typeID, Duration duration, @NonNull Integer userID){
         this.sportID = sportID;
         this.typeID = typeID;
         this.duration = duration;
+        this.userID = userID;
     }
 
     @NonNull
@@ -58,5 +63,14 @@ public class TypeSport {
 
     public void setDuration(Duration duration) {
         this.duration = duration;
+    }
+
+    @NonNull
+    public Integer getUserID() {
+        return userID;
+    }
+
+    public void setUserID(@NonNull Integer userID) {
+        this.userID = userID;
     }
 }

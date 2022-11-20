@@ -24,7 +24,10 @@ public interface TypeDao {
     void delete(Type type);
 
     @Query("SELECT * FROM Types WHERE typeID=:typeID")
-    List<Type> findType(int typeID);
+    List<Type> getType(int typeID);
+
+    @Query("SELECT * FROM Types WHERE userID=:userID AND name=:typeName")
+    List<Type> findType(int userID, String typeName);
 
     @Query("SELECT * FROM Types WHERE userID=:userID")
     LiveData<List<Type>> getAllTypes(int userID);
