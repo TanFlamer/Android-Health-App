@@ -8,6 +8,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.myapp.R;
@@ -53,10 +54,13 @@ public class SleepRecyclerAdapter extends RecyclerView.Adapter<SleepRecyclerAdap
     }
 
     public void updateSleepList(List<Sleep> newSleepList){
+        final SleepRecyclerDiffCallback diffCallback = new SleepRecyclerDiffCallback(sleepList, newSleepList);
+        final DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(diffCallback);
         sleepList.clear();
         sleepList.addAll(newSleepList);
         visibilityMap.clear();
         for(Sleep sleep : sleepList) visibilityMap.put(sleep, false);
+        diffResult.dispatchUpdatesTo(this);
     }
 
     public class SleepRecyclerItemViewHolder extends RecyclerView.ViewHolder {

@@ -13,12 +13,11 @@ import com.example.myapp.databaseFiles.entity.SongPlaylist;
 import com.example.myapp.databaseFiles.repository.PlaylistRepository;
 import com.example.myapp.databaseFiles.repository.SongPlaylistRepository;
 import com.example.myapp.databaseFiles.repository.SongRepository;
-import com.example.myapp.fragmentsMusic.expandableListMusic.MusicExpandableListData;
-import com.example.myapp.fragmentsMusic.expandableListMusic.MusicExpandableListItem;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 public class MusicPlaylistsViewModel extends AndroidViewModel {
 
@@ -28,18 +27,18 @@ public class MusicPlaylistsViewModel extends AndroidViewModel {
     private LiveData<List<SongPlaylist>> songPlaylistList;
     private int userID;
 
+    private HashMap<Integer, Playlist> playlistList;
+    private HashMap<Integer, Song> songList;
+
     public MusicPlaylistsViewModel(@NonNull Application application) {
         super(application);
         playlistRepository = new PlaylistRepository(application);
         songRepository = new SongRepository(application);
         songPlaylistRepository = new SongPlaylistRepository(application);
-        userID = loadUserID();
+        userID = ((MainApplication) getApplication()).getUserID();
         songPlaylistList = songPlaylistRepository.getAllSongPlaylist(userID);
-    }
-
-    public int loadUserID(){
-        MainApplication appState = this.getApplication();
-        return appState.getUserID();
+        playlistList = new HashMap<>();
+        songList = new HashMap<>();
     }
 
     public void insert(SongPlaylist songPlaylist){
@@ -58,35 +57,25 @@ public class MusicPlaylistsViewModel extends AndroidViewModel {
         return songPlaylistRepository.findSongPlaylist(playlistID, songID);
     }
 
-    public List<MusicExpandableListItem> updateMusicPlaylists(){
-        if(songPlaylistList.getValue() == null) return new ArrayList<>();
-        HashMap<Integer, List<Integer>> playlistMap = new HashMap<>();
-        for(SongPlaylist songPlaylist : songPlaylistList.getValue()){
+    public HashMap<Playlist, List<Song>> updateMusicPlaylists(List<SongPlaylist> songPlaylists){
+
+        if(songPlaylists.size() == 0) return new HashMap<>();
+        HashMap<Playlist, List<Song>> newSongPlaylist = new HashMap<>();
+
+        for(SongPlaylist songPlaylist : songPlaylists){
             int playlistID = songPlaylist.getPlaylistID();
             int songID = songPlaylist.getSongID();
-            playlistMap.putIfAbsent(playlistID, new ArrayList<>());
-            playlistMap.get(playlistID).add(songID);
-        }
-        return convertParentData(playlistMap);
-    }
 
-    public List<MusicExpandableListItem> convertParentData(HashMap<Integer, List<Integer>> playlistMap){
-        List<MusicExpandableListItem> parentList = new ArrayList<>();
-        playlistMap.forEach((playlistID, songIDList) -> {
-            Playlist playlist = playlistRepository.getPlaylist(playlistID).get(0);
-            List<MusicExpandableListData> childList = convertChildData(songIDList);
-            parentList.add(new MusicExpandableListItem(playlist, childList));
-        });
-        return parentList;
-    }
+            Playlist playlist = playlistList.containsKey(playlistID) ? playlistList.get(playlistID) : playlistRepository.getPlaylist(playlistID).get(0);
+            playlistList.putIfAbsent(playlistID, playlist);
 
-    public List<MusicExpandableListData> convertChildData(List<Integer> typeIDList){
-        List<MusicExpandableListData> childList = new ArrayList<>();
-        for(Integer typeID : typeIDList){
-            Song song = songRepository.getSong(typeID).get(0);
-            childList.add(new MusicExpandableListData(song));
+            Song song = songList.containsKey(songID) ? songList.get(songID) : songRepository.getSong(songID).get(0);
+            songList.putIfAbsent(songID, song);
+
+            newSongPlaylist.putIfAbsent(playlist, new ArrayList<>());
+            Objects.requireNonNull(newSongPlaylist.get(playlist)).add(song);
         }
-        return childList;
+        return newSongPlaylist;
     }
 
     public LiveData<List<SongPlaylist>> getSongPlaylistList() {

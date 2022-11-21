@@ -5,6 +5,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +13,8 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import com.example.myapp.R;
+import com.example.myapp.databaseFiles.viewModal.SleepStatisticsViewModel;
+import com.example.myapp.databaseFiles.viewModal.SportStatisticsViewModel;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -54,6 +57,8 @@ public class SleepStatistics extends Fragment {
         return fragment;
     }
 
+    SleepStatisticsViewModel sleepStatisticsViewModel;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,6 +66,7 @@ public class SleepStatistics extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        sleepStatisticsViewModel = new ViewModelProvider(this).get(SleepStatisticsViewModel.class);
     }
 
     @Override

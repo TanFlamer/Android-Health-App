@@ -18,20 +18,12 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.myapp.R;
+import com.example.myapp.databaseFiles.entity.Song;
 import com.example.myapp.databaseFiles.viewModal.MusicPlaylistsViewModel;
-import com.example.myapp.databaseFiles.viewModal.SportListViewModel;
-import com.example.myapp.fragmentsMusic.expandableListMusic.MusicExpandableListAdapter;
-import com.example.myapp.fragmentsMusic.expandableListMusic.MusicExpandableListData;
-import com.example.myapp.fragmentsMusic.expandableListMusic.MusicExpandableListItem;
-import com.example.myapp.fragmentsSport.expandableListSport.SportExpandableListAdapter;
-import com.example.myapp.fragmentsSport.expandableListSport.SportExpandableListData;
-import com.example.myapp.fragmentsSport.expandableListSport.SportExpandableListItem;
 import com.example.myapp.subActivities.DataMusic;
-import com.example.myapp.subActivities.DataSport;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -112,9 +104,9 @@ public class MusicPlaylists extends Fragment {
         expandableListView.setOnItemLongClickListener(onItemLongClickListener);
         expandableListView.setOnItemSelectedListener(onItemSelectedListener);
 
-        MusicExpandableListAdapter musicExpandableListAdapter = new MusicExpandableListAdapter(requireContext(), new ArrayList<>());
+        MusicExpandableListAdapter musicExpandableListAdapter = new MusicExpandableListAdapter(requireContext(), new HashMap<>());
         expandableListView.setAdapter(musicExpandableListAdapter);
-        musicPlaylistsViewModel.getSongPlaylistList().observe(getViewLifecycleOwner(), songPlaylists -> musicExpandableListAdapter.updateMusicPlaylists(musicPlaylistsViewModel.updateMusicPlaylists()));
+        musicPlaylistsViewModel.getSongPlaylistList().observe(getViewLifecycleOwner(), songPlaylists -> musicExpandableListAdapter.updateMusicPlaylists(musicPlaylistsViewModel.updateMusicPlaylists(songPlaylists)));
         setListeners(musicExpandableListAdapter);
     }
 
@@ -140,16 +132,16 @@ public class MusicPlaylists extends Fragment {
     public AdapterView.OnItemClickListener onItemClickListener = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            SportExpandableListData expandableListData = (SportExpandableListData) expandableListView.getItemAtPosition(position);
-            Toast.makeText(getContext(), expandableListData.getName() + " clicked", Toast.LENGTH_SHORT).show();
+            Song song = (Song) expandableListView.getItemAtPosition(position);
+            Toast.makeText(getContext(), song.getSongName() + " clicked", Toast.LENGTH_SHORT).show();
         }
     };
 
     public AdapterView.OnItemLongClickListener onItemLongClickListener = new AdapterView.OnItemLongClickListener() {
         @Override
         public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-            SportExpandableListData expandableListData = (SportExpandableListData) expandableListView.getItemAtPosition(position);
-            Toast.makeText(getContext(), expandableListData.getName() + " long clicked", Toast.LENGTH_SHORT).show();
+            Song song = (Song) expandableListView.getItemAtPosition(position);
+            Toast.makeText(getContext(), song.getSongName() + " long clicked", Toast.LENGTH_SHORT).show();
             return true;
         }
     };
@@ -157,8 +149,8 @@ public class MusicPlaylists extends Fragment {
     public AdapterView.OnItemSelectedListener onItemSelectedListener = new AdapterView.OnItemSelectedListener() {
         @Override
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-            SportExpandableListData expandableListData = (SportExpandableListData) expandableListView.getItemAtPosition(position);
-            Toast.makeText(getContext(), expandableListData.getName() + " selected", Toast.LENGTH_SHORT).show();
+            Song song = (Song) expandableListView.getItemAtPosition(position);
+            Toast.makeText(getContext(), song.getSongName() + " selected", Toast.LENGTH_SHORT).show();
         }
 
         @Override

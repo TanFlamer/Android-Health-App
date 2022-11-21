@@ -6,6 +6,7 @@ import android.graphics.Paint;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Pair;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -24,6 +25,8 @@ import com.example.myapp.databaseFiles.viewModal.AccountViewModel;
 import com.google.android.material.textfield.TextInputLayout;
 
 import java.io.File;
+import java.time.LocalTime;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -59,8 +62,8 @@ public class Account extends AppCompatActivity {
         loadUserData(getIntent().getExtras());
         initialiseAll();
         reloadPage();
-        User user = new User(0, "Guest", "");
-        accountViewModel.insert(user);
+        //User user = new User(0, "Guest", "");
+        //accountViewModel.insert(user);
     }
 
     public void loadUserData(Bundle extras){
@@ -180,8 +183,8 @@ public class Account extends AppCompatActivity {
             String passwordText = newPassword.getText().toString();
             accountViewModel.insert(new User(usernameText, passwordText));
             createNewFolder();
-            Toast.makeText(getApplicationContext(), "New account created", Toast.LENGTH_SHORT).show();
             reloadPage();
+            accountViewModel.updateSaveLogs(new Pair<>(usernameText + "account created", LocalTime.now()));
         });
     }
 
@@ -192,6 +195,7 @@ public class Account extends AppCompatActivity {
             accountViewModel.changeUsername(usernameText);
             Toast.makeText(getApplicationContext(), "Username changed", Toast.LENGTH_SHORT).show();
             reloadPage();
+            accountViewModel.updateSaveLogs(new Pair<>("Username changed", LocalTime.now()));
         });
     }
 
@@ -213,8 +217,8 @@ public class Account extends AppCompatActivity {
                 .setPositiveButton("Yes", (dialog, which) -> {
                     int userID = accountViewModel.delete();
                     deleteFolder(userID);
-                    Toast.makeText(getApplicationContext(), "Account deleted", Toast.LENGTH_SHORT).show();
                     reloadPage();
+                    accountViewModel.updateSaveLogs(new Pair<>("Account deleted", LocalTime.now()));
                 })
                 .setNegativeButton("No", null)
                 .create()

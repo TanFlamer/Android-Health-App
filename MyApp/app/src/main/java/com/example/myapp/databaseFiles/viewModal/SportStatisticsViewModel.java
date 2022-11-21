@@ -21,13 +21,8 @@ public class SportStatisticsViewModel extends AndroidViewModel {
     public SportStatisticsViewModel(@NonNull Application application) {
         super(application);
         sportRepository = new SportRepository(application);
-        userID = loadUserID();
+        userID = ((MainApplication) getApplication()).getUserID();
         sportList = sportRepository.getAllSport(userID);
-    }
-
-    public int loadUserID(){
-        MainApplication appState = this.getApplication();
-        return appState.getUserID();
     }
 
     public LiveData<List<Sport>> getSportList(){

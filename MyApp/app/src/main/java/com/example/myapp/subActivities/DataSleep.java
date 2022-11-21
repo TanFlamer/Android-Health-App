@@ -22,7 +22,7 @@ public class DataSleep extends AppCompatActivity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.data_sleep);
+        setContentView(R.layout.dialog_sleep);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 

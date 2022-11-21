@@ -6,6 +6,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +16,8 @@ import android.widget.CalendarView;
 import android.widget.Toast;
 
 import com.example.myapp.R;
+import com.example.myapp.databaseFiles.viewModal.SleepCalendarViewModel;
+import com.example.myapp.databaseFiles.viewModal.SportChartViewModel;
 import com.example.myapp.subActivities.DataSleep;
 import com.example.myapp.subActivities.DataSport;
 
@@ -56,6 +59,8 @@ public class SleepCalendar extends Fragment {
         return fragment;
     }
 
+    SleepCalendarViewModel sleepCalendarViewModel;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,6 +68,7 @@ public class SleepCalendar extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        sleepCalendarViewModel = new ViewModelProvider(this).get(SleepCalendarViewModel.class);
     }
 
     @Override

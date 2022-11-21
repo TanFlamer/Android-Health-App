@@ -5,41 +5,37 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.ListView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.example.myapp.R;
-import com.example.myapp.subActivities.listSportData.SportDataListAdapter;
-import com.example.myapp.subActivities.listSportData.SportDataListItem;
+import com.example.myapp.databaseFiles.viewModal.DataSportViewModel;
 
-import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
 
 public class DataSport extends AppCompatActivity {
 
+    DataSportViewModel dataSportViewModel;
+    ListView listView;
+    Button buttonDate;
     int year, month, day;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.data_sport);
+        dataSportViewModel = new ViewModelProvider(this).get(DataSportViewModel.class);
 
-        ListView listView = findViewById(R.id.sportDataListView);
-        List<SportDataListItem> sportDataListItemList = new ArrayList<>();
+        //get date from intent
 
-        sportDataListItemList.add(new SportDataListItem("test", 0, 0));
-        sportDataListItemList.add(new SportDataListItem("test1", 1, 1));
-        sportDataListItemList.add(new SportDataListItem("test", 0, 0));
-        sportDataListItemList.add(new SportDataListItem("test1", 1, 1));
-        sportDataListItemList.add(new SportDataListItem("test", 0, 0));
-        sportDataListItemList.add(new SportDataListItem("test1", 1, 1));
+        listView = findViewById(R.id.sportDataListView);
 
-        SportDataListAdapter sportDataListAdapter = new SportDataListAdapter(this, R.layout.data_sport_list_item, sportDataListItemList);
+        SportDataListAdapter sportDataListAdapter = new SportDataListAdapter(this, new ArrayList<>());
         listView.setAdapter(sportDataListAdapter);
+        dataSportViewModel.getTypeSportList().observeForever(typeSportList -> sportDataListAdapter.updateSportDataList(dataSportViewModel.processData(typeSportList)));
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -49,7 +45,7 @@ public class DataSport extends AppCompatActivity {
         month = currentDate.get(Calendar.MONTH);
         day = currentDate.get(Calendar.DAY_OF_MONTH);
 
-        Button buttonDate = findViewById(R.id.buttonDate);
+        buttonDate = findViewById(R.id.buttonDate);
         buttonDate.setOnClickListener(view -> new DatePickerDialog(this, (datePicker, i, i1, i2) -> {
             year = i;
             month = i1;

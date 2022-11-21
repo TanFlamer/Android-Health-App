@@ -2,38 +2,27 @@ package com.example.myapp.fragmentsSport;
 
 import android.content.Intent;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ExpandableListView;
-import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
+
 import com.example.myapp.R;
-import com.example.myapp.databaseFiles.entity.Song;
-import com.example.myapp.databaseFiles.entity.TypeSport;
-import com.example.myapp.databaseFiles.viewModal.MusicListViewModel;
+import com.example.myapp.databaseFiles.entity.Type;
 import com.example.myapp.databaseFiles.viewModal.SportListViewModel;
-import com.example.myapp.fragmentsMusic.MusicListAdapter;
-import com.example.myapp.fragmentsSport.expandableListSport.SportExpandableListData;
-import com.example.myapp.fragmentsSport.expandableListSport.SportExpandableListAdapter;
-import com.example.myapp.fragmentsSport.expandableListSport.SportExpandableListItem;
-import com.example.myapp.subActivities.DataSleep;
 import com.example.myapp.subActivities.DataSport;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -114,9 +103,9 @@ public class SportList extends Fragment {
         expandableListView.setOnItemLongClickListener(onItemLongClickListener);
         expandableListView.setOnItemSelectedListener(onItemSelectedListener);
 
-        SportExpandableListAdapter sportExpandableListAdapter = new SportExpandableListAdapter(requireContext(), new ArrayList<>());
+        SportExpandableListAdapter sportExpandableListAdapter = new SportExpandableListAdapter(requireContext(), new HashMap<>());
         expandableListView.setAdapter(sportExpandableListAdapter);
-        sportListViewModel.getTypeSportList().observe(getViewLifecycleOwner(), typeSports -> sportExpandableListAdapter.updateSportList(sportListViewModel.updateSportList()));
+        sportListViewModel.getTypeSportList().observe(getViewLifecycleOwner(), typeSports -> sportExpandableListAdapter.updateSportList(sportListViewModel.updateSportList(typeSports)));
         setListeners(sportExpandableListAdapter);
     }
 
@@ -142,16 +131,16 @@ public class SportList extends Fragment {
     public AdapterView.OnItemClickListener onItemClickListener = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            SportExpandableListData expandableListData = (SportExpandableListData) expandableListView.getItemAtPosition(position);
-            Toast.makeText(getContext(), expandableListData.getName() + " clicked", Toast.LENGTH_SHORT).show();
+            Type type = (Type) expandableListView.getItemAtPosition(position);
+            Toast.makeText(getContext(), type.getName() + " clicked", Toast.LENGTH_SHORT).show();
         }
     };
 
     public AdapterView.OnItemLongClickListener onItemLongClickListener = new AdapterView.OnItemLongClickListener() {
         @Override
         public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-            SportExpandableListData expandableListData = (SportExpandableListData) expandableListView.getItemAtPosition(position);
-            Toast.makeText(getContext(), expandableListData.getName() + " long clicked", Toast.LENGTH_SHORT).show();
+            Type type = (Type) expandableListView.getItemAtPosition(position);
+            Toast.makeText(getContext(), type.getName() + " long clicked", Toast.LENGTH_SHORT).show();
             return true;
         }
     };
@@ -159,8 +148,8 @@ public class SportList extends Fragment {
     public AdapterView.OnItemSelectedListener onItemSelectedListener = new AdapterView.OnItemSelectedListener() {
         @Override
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-            SportExpandableListData expandableListData = (SportExpandableListData) expandableListView.getItemAtPosition(position);
-            Toast.makeText(getContext(), expandableListData.getName() + " selected", Toast.LENGTH_SHORT).show();
+            Type type = (Type) expandableListView.getItemAtPosition(position);
+            Toast.makeText(getContext(), type.getName() + " selected", Toast.LENGTH_SHORT).show();
         }
 
         @Override

@@ -5,6 +5,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +13,8 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import com.example.myapp.R;
+import com.example.myapp.databaseFiles.viewModal.MusicStatisticsViewModel;
+import com.example.myapp.databaseFiles.viewModal.SaveViewModel;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -54,6 +57,8 @@ public class MusicStatistics extends Fragment {
         return fragment;
     }
 
+    MusicStatisticsViewModel musicStatisticsViewModel;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,6 +66,7 @@ public class MusicStatistics extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        musicStatisticsViewModel = new ViewModelProvider(this).get(MusicStatisticsViewModel.class);
     }
 
     @Override

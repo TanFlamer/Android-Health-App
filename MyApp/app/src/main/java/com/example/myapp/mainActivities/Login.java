@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Pair;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -16,6 +17,8 @@ import com.example.myapp.R;
 import com.example.myapp.databaseFiles.entity.User;
 import com.example.myapp.databaseFiles.viewModal.LoginViewModel;
 import com.google.android.material.textfield.TextInputLayout;
+
+import java.time.LocalTime;
 
 public class Login extends AppCompatActivity {
 
@@ -31,6 +34,7 @@ public class Login extends AppCompatActivity {
 
         loginViewModel = new ViewModelProvider(this).get(LoginViewModel.class);
         initialiseAll();
+        loginViewModel.updateSaveLogs(new Pair<>("Entered Login screen.", LocalTime.now()));
     }
 
     public void initialiseAll(){
@@ -41,7 +45,7 @@ public class Login extends AppCompatActivity {
 
     public void initialiseUsername(){
         username = findViewById(R.id.username);
-        usernameInput = findViewById(R.id.usernameInput);
+        usernameInput = findViewById(R.id.playlistNameInput);
         username.addTextChangedListener(loginTextWatcher);
         username.setOnFocusChangeListener((v, hasFocus) -> validateInput(usernameInput, username));
     }

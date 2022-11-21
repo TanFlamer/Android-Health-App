@@ -1,16 +1,20 @@
 package com.example.myapp.mainActivities;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 
 import com.example.myapp.R;
+import com.example.myapp.databaseFiles.viewModal.InfoViewModel;
+import com.example.myapp.databaseFiles.viewModal.SaveViewModel;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class Info extends AppCompatActivity {
 
+    InfoViewModel infoViewModel;
     BottomNavigationView bottomNavigation;
 
     @SuppressLint("NonConstantResourceId")
@@ -18,6 +22,7 @@ public class Info extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_info);
+        infoViewModel = new ViewModelProvider(this).get(InfoViewModel.class);
 
         //Initialization
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigator);

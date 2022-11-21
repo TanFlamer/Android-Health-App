@@ -38,6 +38,10 @@ public class PlaylistRepository {
         return new FindPlaylistExecutorTask(playlistDao).get(playlistID);
     }
 
+    public List<Playlist> findPlaylist(String playlistName) {
+        return new FindPlaylistExecutorTask(playlistDao).find(playlistName);
+    }
+
     public LiveData<List<Playlist>> getAllPlaylists(int userID) {
         return playlistDao.getAllPlaylists(userID);
     }
@@ -84,6 +88,14 @@ public class PlaylistRepository {
         protected List<Playlist> get(int playlistID) {
             try {
                 return service.submit(() -> playlistDao.getPlaylist(playlistID)).get();
+            } catch (ExecutionException | InterruptedException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+        protected List<Playlist> find(String playlistName) {
+            try {
+                return service.submit(() -> playlistDao.findPlaylist(playlistName)).get();
             } catch (ExecutionException | InterruptedException e) {
                 e.printStackTrace();
             }

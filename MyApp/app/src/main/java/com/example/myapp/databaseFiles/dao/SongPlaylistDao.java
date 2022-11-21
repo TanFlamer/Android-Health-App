@@ -27,7 +27,7 @@ public interface SongPlaylistDao {
     List<SongPlaylist> findSongPlaylist(int playlistID, int songID);
 
     @Query("SELECT * FROM SongPlaylist WHERE playlistID=:playlistID")
-    LiveData<List<SongPlaylist>> getSongPlaylist(int playlistID);
+    List<SongPlaylist> getSongPlaylist(int playlistID);
 
     @Query("SELECT * FROM SongPlaylist WHERE userID=:userID")
     LiveData<List<SongPlaylist>> getAllSongPlaylist(int userID);

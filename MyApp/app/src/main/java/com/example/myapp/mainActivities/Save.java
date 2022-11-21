@@ -1,39 +1,44 @@
 package com.example.myapp.mainActivities;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ListView;
 
 import com.example.myapp.R;
-import com.example.myapp.mainActivities.listSave.SaveListAdapter;
-import com.example.myapp.mainActivities.listSave.SaveListItem;
+import com.example.myapp.databaseFiles.viewModal.SaveViewModel;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class Save extends AppCompatActivity {
 
+    SaveViewModel saveViewModel;
     BottomNavigationView bottomNavigation;
+    ListView listView;
 
-    @SuppressLint("NonConstantResourceId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_save);
+        saveViewModel = new ViewModelProvider(this).get(SaveViewModel.class);
+        initialiseBottomNavigator();
+        initialiseListView();
+    }
 
-        //Initialization
-        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigator);
-        bottomNavigation = bottomNavigationView;
+    public void initialiseListView(){
+        listView = findViewById(R.id.saveListView);
+        SaveListAdapter saveListAdapter = new SaveListAdapter(this, R.layout.save_list_item, new ArrayList<>());
+        listView.setAdapter(saveListAdapter);
+        saveViewModel.getSaveLogs().observeForever(saveListAdapter::updateSaveLogs);
+    }
 
-        //Select MP3 as default
-        bottomNavigationView.setSelectedItemId(R.id.save);
-
-        //Item Selected Listener
-        bottomNavigationView.setOnItemSelectedListener(item -> {
+    public void initialiseBottomNavigator(){
+        bottomNavigation = findViewById(R.id.bottom_navigator);
+        bottomNavigation.setSelectedItemId(R.id.save);
+        bottomNavigation.setOnItemSelectedListener(item -> {
             switch (item.getItemId()){
                 case R.id.save:
                     return true;
@@ -60,19 +65,6 @@ public class Save extends AppCompatActivity {
             }
             return false;
         });
-
-        ListView listView = findViewById(R.id.saveListView);
-        List<SaveListItem> saveListItemList = new ArrayList<>();
-
-        saveListItemList.add(new SaveListItem("test", 0));
-        saveListItemList.add(new SaveListItem("test1", 1));
-        saveListItemList.add(new SaveListItem("test2", 0));
-        saveListItemList.add(new SaveListItem("test3", 1));
-        saveListItemList.add(new SaveListItem("test4", 0));
-        saveListItemList.add(new SaveListItem("test5", 1));
-
-        SaveListAdapter saveListAdapter = new SaveListAdapter(this, R.layout.save_list_item, saveListItemList);
-        listView.setAdapter(saveListAdapter);
     }
 
     @Override

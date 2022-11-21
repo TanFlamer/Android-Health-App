@@ -1,10 +1,12 @@
 package com.example.myapp.fragmentsSleep;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -113,6 +115,13 @@ public class SleepList extends Fragment {
 
     public void initialiseFloatingButton(){
         floatingActionButton = requireView().findViewById(R.id.buttonFloating);
-        floatingActionButton.setOnClickListener(view1 -> startActivity(new Intent(getContext(), DataSleep.class)));
+        floatingActionButton.setOnClickListener(v -> {
+            Dialog dialog = new Dialog(getContext());
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            dialog.setCancelable(true);
+            dialog.setContentView(R.layout.dialog_sleep);
+            dialog.show();
+        });
+        //floatingActionButton.setOnClickListener(view1 -> startActivity(new Intent(getContext(), DataSleep.class)));
     }
 }

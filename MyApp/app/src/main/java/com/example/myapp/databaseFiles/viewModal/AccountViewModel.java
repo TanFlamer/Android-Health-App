@@ -1,19 +1,25 @@
 package com.example.myapp.databaseFiles.viewModal;
 
 import android.app.Application;
+import android.util.Pair;
 
+import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MediatorLiveData;
+import androidx.lifecycle.Observer;
 
+import com.example.myapp.MainApplication;
 import com.example.myapp.databaseFiles.entity.User;
 import com.example.myapp.databaseFiles.repository.UserRepository;
 
-import java.util.List;
+import java.time.LocalTime;
 
 public class AccountViewModel extends AndroidViewModel {
 
-    private UserRepository userRepository;
-    private String filePath;
+    private final UserRepository userRepository;
+    private final String filePath;
     private User user;
 
     public AccountViewModel(@NonNull Application application) {
@@ -59,5 +65,9 @@ public class AccountViewModel extends AndroidViewModel {
 
     public String getFilePath() {
         return filePath;
+    }
+
+    public void updateSaveLogs(Pair<String, LocalTime> newSaveLog){
+        ((MainApplication) getApplication()).updateSaveLogs(newSaveLog);
     }
 }

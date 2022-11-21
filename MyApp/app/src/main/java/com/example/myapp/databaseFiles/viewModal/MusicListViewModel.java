@@ -18,7 +18,7 @@ import java.util.List;
 public class MusicListViewModel extends AndroidViewModel {
 
     private final MediaMetadataRetriever mediaMetadataRetriever;
-    private SongRepository songRepository;
+    private final SongRepository songRepository;
     private LiveData<List<Song>> songList;
     private final String filePath;
     private int userID;
@@ -27,14 +27,9 @@ public class MusicListViewModel extends AndroidViewModel {
         super(application);
         mediaMetadataRetriever = new MediaMetadataRetriever();
         songRepository = new SongRepository(application);
-        userID = loadUserID();
+        userID = ((MainApplication) getApplication()).getUserID();
         songList = songRepository.getAllSongs(userID);
         filePath = getApplication().getFilesDir() + "/music/" + userID;
-    }
-
-    public int loadUserID(){
-        MainApplication appState = this.getApplication();
-        return appState.getUserID();
     }
 
     public void processFile(String fileName, Uri uri){

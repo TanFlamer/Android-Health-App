@@ -26,6 +26,9 @@ public interface PlaylistDao {
     @Query("SELECT * FROM Playlists WHERE playlistID=:playlistID")
     List<Playlist> getPlaylist(int playlistID);
 
+    @Query("SELECT * FROM Playlists WHERE playlistName=:playlistName")
+    List<Playlist> findPlaylist(String playlistName);
+
     @Query("SELECT * FROM Playlists WHERE userID=:userID")
     LiveData<List<Playlist>> getAllPlaylists(int userID);
 }

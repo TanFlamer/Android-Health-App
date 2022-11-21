@@ -35,11 +35,11 @@ public class SongPlaylistRepository {
     }
 
     public List<SongPlaylist> findSongPlaylist(int playlistID, int songID) {
-        return new FindSongPlaylistExecutorTask(songPlaylistDao).get(playlistID, songID);
+        return new FindSongPlaylistExecutorTask(songPlaylistDao).find(playlistID, songID);
     }
 
-    public LiveData<List<SongPlaylist>> getSongPlaylist(int playlistID) {
-        return songPlaylistDao.getSongPlaylist(playlistID);
+    public List<SongPlaylist> getSongPlaylist(int playlistID) {
+        return new FindSongPlaylistExecutorTask(songPlaylistDao).get(playlistID);
     }
 
     public LiveData<List<SongPlaylist>> getAllSongPlaylist(int userID) {
@@ -85,9 +85,17 @@ public class SongPlaylistRepository {
         private FindSongPlaylistExecutorTask(SongPlaylistDao songPlaylistDao) {
             this.songPlaylistDao = songPlaylistDao;
         }
-        protected List<SongPlaylist> get(int playlistID, int songID) {
+        protected List<SongPlaylist> find(int playlistID, int songID) {
             try {
                 return service.submit(() -> songPlaylistDao.findSongPlaylist(playlistID, songID)).get();
+            } catch (ExecutionException | InterruptedException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+        protected List<SongPlaylist> get(int playlistID) {
+            try {
+                return service.submit(() -> songPlaylistDao.getSongPlaylist(playlistID)).get();
             } catch (ExecutionException | InterruptedException e) {
                 e.printStackTrace();
             }

@@ -1,4 +1,4 @@
-package com.example.myapp.fragmentsMusic.expandableListMusic;
+package com.example.myapp.fragmentsMusic;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -9,38 +9,44 @@ import android.widget.BaseExpandableListAdapter;
 import android.widget.TextView;
 
 import com.example.myapp.R;
-import com.example.myapp.fragmentsSport.expandableListSport.SportExpandableListItem;
+import com.example.myapp.databaseFiles.entity.Playlist;
+import com.example.myapp.databaseFiles.entity.Song;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 public class MusicExpandableListAdapter extends BaseExpandableListAdapter {
 
     private Context context;
-    private List<MusicExpandableListItem> musicExpandableListItemList;
+    private List<Playlist> playlistList;
+    private HashMap<Playlist, List<Song>> songPlaylists;
 
-    public MusicExpandableListAdapter(Context context, List<MusicExpandableListItem> musicExpandableListItemList){
+    public MusicExpandableListAdapter(Context context, HashMap<Playlist, List<Song>> songPlaylists){
         this.context = context;
-        this.musicExpandableListItemList = musicExpandableListItemList;
+        this.playlistList = new ArrayList<>(songPlaylists.keySet());
+        this.songPlaylists = songPlaylists;
     }
 
     @Override
     public int getGroupCount() {
-        return musicExpandableListItemList.size();
+        return playlistList.size();
     }
 
     @Override
     public int getChildrenCount(int i) {
-        return musicExpandableListItemList.get(i).getMusicData().size();
+        return Objects.requireNonNull(songPlaylists.get(playlistList.get(i))).size();
     }
 
     @Override
     public Object getGroup(int i) {
-        return musicExpandableListItemList.get(i).getMusicData();
+        return songPlaylists.get(playlistList.get(i));
     }
 
     @Override
     public Object getChild(int i, int i1) {
-        return musicExpandableListItemList.get(i).getMusicData().get(i1);
+        return Objects.requireNonNull(songPlaylists.get(playlistList.get(i))).get(i1);
     }
 
     @Override
@@ -61,7 +67,7 @@ public class MusicExpandableListAdapter extends BaseExpandableListAdapter {
     @SuppressLint("InflateParams")
     @Override
     public View getGroupView(int i, boolean b, View view, ViewGroup viewGroup) {
-        String playlistName = musicExpandableListItemList.get(i).getPlaylistName();
+        String playlistName = playlistList.get(i).getPlaylistName();
 
         if(view == null)
             view = LayoutInflater.from(context).inflate(R.layout.music_expandable_list_item, null);
@@ -72,10 +78,10 @@ public class MusicExpandableListAdapter extends BaseExpandableListAdapter {
         return view;
     }
 
-    @SuppressLint("InflateParams")
+    @SuppressLint({"InflateParams", "SetTextI18n"})
     @Override
     public View getChildView(int i, int i1, boolean b, View view, ViewGroup viewGroup) {
-        MusicExpandableListData musicExpandableListData = musicExpandableListItemList.get(i).getMusicData().get(i1);
+        Song song = Objects.requireNonNull(songPlaylists.get(playlistList.get(i))).get(i1);
 
         if(view == null)
             view = LayoutInflater.from(context).inflate(R.layout.music_expandable_list_item_data, null);
@@ -83,8 +89,8 @@ public class MusicExpandableListAdapter extends BaseExpandableListAdapter {
         TextView nameView = view.findViewById(R.id.musicSongName);
         TextView lengthView = view.findViewById(R.id.musicSongLength);
 
-        nameView.setText(musicExpandableListData.getName());
-        lengthView.setText(String.valueOf(musicExpandableListData.getLength()));
+        nameView.setText(song.getSongName());
+        lengthView.setText(song.getSongDuration().toString());
 
         return view;
     }
@@ -94,9 +100,11 @@ public class MusicExpandableListAdapter extends BaseExpandableListAdapter {
         return true;
     }
 
-    public void updateMusicPlaylists(List<MusicExpandableListItem> newMusicExpandableListItemList){
-        musicExpandableListItemList.clear();
-        musicExpandableListItemList.addAll(newMusicExpandableListItemList);
+    public void updateMusicPlaylists(HashMap<Playlist, List<Song>> newSongPlaylists){
+        playlistList.clear();
+        playlistList.addAll(newSongPlaylists.keySet());
+        songPlaylists.clear();
+        songPlaylists.putAll(newSongPlaylists);
         notifyDataSetChanged();
     }
 }

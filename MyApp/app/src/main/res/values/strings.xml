@@ -15,4 +15,5 @@
     <string name="account_deletion">Account Deletion</string>
     <string name="delete">Delete</string>
     <string name="login">Login</string>
+    <string name="playlist_name">Playlist Name</string>
 </resources>

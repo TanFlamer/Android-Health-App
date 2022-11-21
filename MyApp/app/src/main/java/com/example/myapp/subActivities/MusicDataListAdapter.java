@@ -1,4 +1,4 @@
-package com.example.myapp.subActivities.listMusicData;
+package com.example.myapp.subActivities;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -11,13 +11,17 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.example.myapp.R;
+import com.example.myapp.databaseFiles.entity.Song;
 
 import java.util.List;
 
-public class MusicDataListAdapter extends ArrayAdapter<MusicDataListItem> {
+public class MusicDataListAdapter extends ArrayAdapter<Song> {
 
-    public MusicDataListAdapter(@NonNull Context context, int resource, List<MusicDataListItem> musicDataListItemList) {
-        super(context, resource, musicDataListItemList);
+    private List<Song> songList;
+
+    public MusicDataListAdapter(@NonNull Context context, int resource, List<Song> songList) {
+        super(context, resource, songList);
+        this.songList = songList;
     }
 
     @NonNull
@@ -28,14 +32,20 @@ public class MusicDataListAdapter extends ArrayAdapter<MusicDataListItem> {
         if(currentItemView == null)
             currentItemView = LayoutInflater.from(getContext()).inflate(R.layout.data_music_list_item, parent, false);
 
-        MusicDataListItem musicDataListItem = getItem(position);
+        Song song = getItem(position);
 
         TextView nameView = currentItemView.findViewById(R.id.musicName);
         TextView lengthView = currentItemView.findViewById(R.id.musicLength);
 
-        nameView.setText(musicDataListItem.getName());
-        lengthView.setText(String.valueOf(musicDataListItem.getLength()));
+        nameView.setText(song.getSongName());
+        lengthView.setText(String.valueOf(song.getSongDuration()));
 
         return currentItemView;
+    }
+
+    public void updateSongList(List<Song> newSongList){
+        songList.clear();
+        songList.addAll(newSongList);
+        notifyDataSetChanged();
     }
 }

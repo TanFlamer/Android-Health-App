@@ -6,12 +6,17 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.myapp.R;
+import com.example.myapp.databaseFiles.entity.Sport;
+import com.example.myapp.databaseFiles.viewModal.SleepChartViewModel;
+import com.example.myapp.databaseFiles.viewModal.SportChartViewModel;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
@@ -19,6 +24,7 @@ import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.utils.ColorTemplate;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -58,6 +64,10 @@ public class SportChart extends Fragment {
         return fragment;
     }
 
+    SportChartViewModel sportChartViewModel;
+    List<BarEntry> sportData;
+    BarChart barChart;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,6 +75,7 @@ public class SportChart extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        sportChartViewModel = new ViewModelProvider(this).get(SportChartViewModel.class);
     }
 
     @Override
@@ -74,24 +85,27 @@ public class SportChart extends Fragment {
         return inflater.inflate(R.layout.fragment_sport_chart, container, false);
     }
 
-    ArrayList<BarEntry> sportData;
-
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        BarChart barChart = requireView().findViewById(R.id.sportBarChart);
-        getData();
+        barChart = requireView().findViewById(R.id.sportBarChart);
+        sportData = new ArrayList<>();
 
         BarDataSet barDataSet = new BarDataSet(sportData, "Sleep Bar Chart");
-        BarData barData = new BarData(barDataSet);
-        barChart.setData(barData);
-        barChart.setVisibleXRangeMaximum(10);
-
         barDataSet.setColors(ColorTemplate.COLORFUL_COLORS);
         barDataSet.setValueTextColor(Color.BLACK);
         barDataSet.setValueTextSize(16f);
+
+        BarData barData = new BarData(barDataSet);
+        barChart.setData(barData);
+        barChart.setVisibleXRangeMaximum(10);
         barChart.getDescription().setEnabled(true);
+
+        sportChartViewModel.getSportList().observe(getViewLifecycleOwner(), sportList -> {
+            sportData.clear();
+            sportData.addAll(sportChartViewModel.processData(sportList));
+            barChart.notifyDataSetChanged();
+        });
     }
 
     private void getData(){

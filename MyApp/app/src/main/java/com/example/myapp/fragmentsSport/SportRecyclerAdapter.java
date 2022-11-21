@@ -9,6 +9,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.myapp.R;
@@ -61,10 +62,13 @@ public class SportRecyclerAdapter extends RecyclerView.Adapter<SportRecyclerAdap
     }
 
     public void updateSportList(List<Sport> newSportList){
+        final SportRecyclerDiffCallback diffCallback = new SportRecyclerDiffCallback(sportList, newSportList);
+        final DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(diffCallback);
         sportList.clear();
         sportList.addAll(newSportList);
         visibilityMap.clear();
         for(Sport sport : sportList) visibilityMap.put(sport, false);
+        diffResult.dispatchUpdatesTo(this);
     }
 
     public class SportRecyclerItemViewHolder extends RecyclerView.ViewHolder{

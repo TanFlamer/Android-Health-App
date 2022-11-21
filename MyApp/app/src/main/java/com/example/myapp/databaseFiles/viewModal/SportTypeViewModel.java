@@ -21,13 +21,8 @@ public class SportTypeViewModel extends AndroidViewModel {
     public SportTypeViewModel(@NonNull Application application) {
         super(application);
         typeRepository = new TypeRepository(application);
-        userID = loadUserID();
+        userID = ((MainApplication) getApplication()).getUserID();
         typeList = typeRepository.getAllTypes(userID);
-    }
-
-    public int loadUserID(){
-        MainApplication appState = this.getApplication();
-        return appState.getUserID();
     }
 
     public void insert(Type type){

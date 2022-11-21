@@ -10,36 +10,19 @@ import com.example.myapp.MainApplication;
 import com.example.myapp.databaseFiles.entity.Sleep;
 import com.example.myapp.databaseFiles.repository.SleepRepository;
 
-import java.time.LocalDate;
 import java.util.List;
 
-public class SleepListViewModel extends AndroidViewModel {
+public class SleepStatisticsViewModel extends AndroidViewModel {
 
     private SleepRepository sleepRepository;
     private LiveData<List<Sleep>> sleepList;
     private int userID;
 
-    public SleepListViewModel(@NonNull Application application) {
+    public SleepStatisticsViewModel(@NonNull Application application) {
         super(application);
         sleepRepository = new SleepRepository(application);
         userID = ((MainApplication) getApplication()).getUserID();
         sleepList = sleepRepository.getAllSleep(userID);
-    }
-
-    public void insert(Sleep sleep){
-        sleepRepository.insert(sleep);
-    }
-
-    public void update(Sleep sleep){
-        sleepRepository.update(sleep);
-    }
-
-    public void delete(Sleep sleep){
-        sleepRepository.delete(sleep);
-    }
-
-    public List<Sleep> findSleep(int userID, LocalDate date){
-        return sleepRepository.findSleep(userID, date);
     }
 
     public LiveData<List<Sleep>> getSleepList(){
