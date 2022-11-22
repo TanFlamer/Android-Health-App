@@ -140,6 +140,7 @@
                     android:layout_weight="4" />
 
                 <ImageView
+                    android:id="@+id/addImageView"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="1"
@@ -155,6 +156,7 @@
                     android:layout_weight="1" />
 
                 <ImageView
+                    android:id="@+id/removeImageView"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="1"

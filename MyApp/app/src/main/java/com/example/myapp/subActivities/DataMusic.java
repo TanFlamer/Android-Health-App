@@ -8,15 +8,22 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AbsListView;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.example.myapp.R;
+import com.example.myapp.databaseFiles.entity.Song;
 import com.example.myapp.databaseFiles.viewModal.DataMusicViewModel;
 import com.google.android.material.textfield.TextInputLayout;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Objects;
 
 public class DataMusic extends AppCompatActivity {
@@ -25,7 +32,12 @@ public class DataMusic extends AppCompatActivity {
     ListView songSelected, songUnselected;
     Button editSaveButton, returnButton;
     TextInputLayout playlistNameInput;
+    ImageView addImageView, removeImageView;
     EditText playlistName;
+
+    private final int ADD_TO_PLAYLIST = 1;
+    private final int REMOVE_FROM_PLAYLIST = -1;
+    HashMap<Integer, Integer> changeLogs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,7 +58,9 @@ public class DataMusic extends AppCompatActivity {
 
     public void initialiseListViews(){
         songUnselected = findViewById(R.id.songUnselected);
+        songUnselected.setChoiceMode(AbsListView.CHOICE_MODE_MULTIPLE);
         songSelected = findViewById(R.id.songSelected);
+        songSelected.setChoiceMode(AbsListView.CHOICE_MODE_MULTIPLE);
 
         MusicDataListAdapter songUnselectedAdapter = new MusicDataListAdapter(this, R.layout.data_music_list_item, new ArrayList<>());
         songUnselected.setAdapter(songUnselectedAdapter);
@@ -55,6 +69,11 @@ public class DataMusic extends AppCompatActivity {
         MusicDataListAdapter songSelectedAdapter = new MusicDataListAdapter(this, R.layout.data_music_list_item, new ArrayList<>());
         songSelected.setAdapter(songSelectedAdapter);
         dataMusicViewModel.getSelectedSongs().observeForever(songSelectedAdapter::updateSongList);
+    }
+
+    public void initialiseImageView(){
+        addImageView = findViewById(R.id.addImageView);
+        removeImageView = findViewById(R.id.removeImageView);
     }
 
     public void initialiseEditText(){
@@ -100,6 +119,38 @@ public class DataMusic extends AppCompatActivity {
         @Override
         public void afterTextChanged(Editable s) {
 
+        }
+    };
+
+    public AdapterView.OnItemClickListener onItemClickListener = (parent, view, position, id) -> {
+        view.setSelected(!view.isSelected());
+        Song song = (Song) parent.getItemAtPosition(position);
+        Toast.makeText(getApplicationContext(), song.getSongName() + " clicked", Toast.LENGTH_SHORT).show();
+    };
+
+    public AdapterView.OnItemSelectedListener onSongSelectedListener = new AdapterView.OnItemSelectedListener() {
+        @Override
+        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+            Song song = (Song) songSelected.getItemAtPosition(position);
+            Toast.makeText(getApplicationContext(), song.getSongName() + " selected", Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        public void onNothingSelected(AdapterView<?> parent) {
+            Toast.makeText(getApplicationContext(), "Item unselected", Toast.LENGTH_SHORT).show();
+        }
+    };
+
+    public AdapterView.OnItemSelectedListener onSongUnselectedListener = new AdapterView.OnItemSelectedListener() {
+        @Override
+        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+            Song song = (Song) songUnselected.getItemAtPosition(position);
+            Toast.makeText(getApplicationContext(), song.getSongName() + " selected", Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        public void onNothingSelected(AdapterView<?> parent) {
+            Toast.makeText(getApplicationContext(), "Item unselected", Toast.LENGTH_SHORT).show();
         }
     };
 

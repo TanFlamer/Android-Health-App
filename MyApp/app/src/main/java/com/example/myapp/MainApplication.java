@@ -5,6 +5,8 @@ import android.util.Pair;
 
 import androidx.lifecycle.MutableLiveData;
 
+import com.example.myapp.databaseFiles.repository.UserRepository;
+
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,9 +14,11 @@ import java.util.List;
 public class MainApplication extends Application {
 
     private MutableLiveData<List<Pair<String, LocalTime>>> saveLogs;
-    int userID;
+    private int userID;
 
-    public MainApplication(){
+    @Override
+    public void onCreate() {
+        super.onCreate();
         userID = 0;
         saveLogs = new MutableLiveData<>();
         saveLogs.setValue(new ArrayList<>());
