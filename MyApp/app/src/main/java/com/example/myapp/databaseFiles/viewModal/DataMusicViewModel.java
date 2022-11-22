@@ -15,6 +15,7 @@ import com.example.myapp.databaseFiles.repository.SongPlaylistRepository;
 import com.example.myapp.databaseFiles.repository.SongRepository;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -25,7 +26,7 @@ public class DataMusicViewModel extends AndroidViewModel {
     private PlaylistRepository playlistRepository;
     private SongPlaylistRepository songPlaylistRepository;
 
-    private List<Song> allSongs;
+    private LiveData<List<Song>> allSongs;
     private MutableLiveData<List<Song>> selectedSongList;
     private MutableLiveData<List<Song>> unselectedSongList;
 
@@ -38,7 +39,9 @@ public class DataMusicViewModel extends AndroidViewModel {
         playlistRepository = new PlaylistRepository(application);
         songPlaylistRepository = new SongPlaylistRepository(application);
 
-        allSongs = songRepository.getAllSongs(userID).getValue();
+        while (allSongs == null) allSongs = songRepository.getAllSongs(userID);
+        System.out.println(Arrays.toString(allSongs.getValue().toArray()));
+
         selectedSongList = new MutableLiveData<>();
         selectedSongList.setValue(new ArrayList<>());
         unselectedSongList = new MutableLiveData<>();
@@ -57,16 +60,20 @@ public class DataMusicViewModel extends AndroidViewModel {
     }
 
     public void populateLists(){
-        List<Song> selectedList = new ArrayList<>();
-        List<SongPlaylist> songPlaylists = songPlaylistRepository.getSongPlaylist(playListID);
-        for(SongPlaylist songPlaylist : songPlaylists) selectedList.add(songRepository.getSong(songPlaylist.getSongID()).get(0));
+        if(playListID == 0)
+            unselectedSongList.setValue(allSongs.getValue());
+        else{
+            List<SongPlaylist> songPlaylists = songPlaylistRepository.getSongPlaylist(playListID);
+            List<Song> selectedList = new ArrayList<>();
+            for(SongPlaylist songPlaylist : songPlaylists) selectedList.add(songRepository.getSong(songPlaylist.getSongID()).get(0));
 
-        Set<Song> selectedSong = new HashSet<>(allSongs);
-        for(Song song : selectedList) selectedSong.remove(song);
-        List<Song> unselectedList = new ArrayList<>(selectedSong);
+            Set<Song> selectedSong = new HashSet<>(allSongs.getValue());
+            for(Song song : selectedList) selectedSong.remove(song);
+            List<Song> unselectedList = new ArrayList<>(selectedSong);
 
-        selectedSongList.setValue(selectedList);
-        unselectedSongList.setValue(unselectedList);
+            selectedSongList.setValue(selectedList);
+            unselectedSongList.setValue(unselectedList);
+        }
     }
 
     public MutableLiveData<List<Song>> getSelectedSongs(){

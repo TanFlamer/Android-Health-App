@@ -1,6 +1,7 @@
 package com.example.myapp.subActivities;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.os.Bundle;
@@ -23,7 +24,9 @@ import com.example.myapp.databaseFiles.viewModal.DataMusicViewModel;
 import com.google.android.material.textfield.TextInputLayout;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Objects;
 
 public class DataMusic extends AppCompatActivity {
@@ -45,7 +48,7 @@ public class DataMusic extends AppCompatActivity {
         setContentView(R.layout.data_music);
         dataMusicViewModel = new ViewModelProvider(this).get(DataMusicViewModel.class);
         //get playlist id from intent first
-        //dataMusicViewModel.populateLists();
+        dataMusicViewModel.populateLists();
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         initialiseAll();
     }
@@ -53,18 +56,31 @@ public class DataMusic extends AppCompatActivity {
     public void initialiseAll(){
         initialiseListViews();
         initialiseEditText();
+        initialiseImageView();
         initialiseButton();
     }
 
     public void initialiseListViews(){
         songUnselected = findViewById(R.id.songUnselected);
         songUnselected.setChoiceMode(AbsListView.CHOICE_MODE_MULTIPLE);
+        songUnselected.setOnItemClickListener(onItemClickListener);
+        songUnselected.setOnItemSelectedListener(onSongUnselectedListener);
+
         songSelected = findViewById(R.id.songSelected);
         songSelected.setChoiceMode(AbsListView.CHOICE_MODE_MULTIPLE);
+        songSelected.setOnItemClickListener(onItemClickListener);
+        songSelected.setOnItemSelectedListener(onSongSelectedListener);
 
         MusicDataListAdapter songUnselectedAdapter = new MusicDataListAdapter(this, R.layout.data_music_list_item, new ArrayList<>());
         songUnselected.setAdapter(songUnselectedAdapter);
-        dataMusicViewModel.getUnselectedSongs().observeForever(songUnselectedAdapter::updateSongList);
+        dataMusicViewModel.getUnselectedSongs().observeForever(new Observer<List<Song>>() {
+            @Override
+            public void onChanged(List<Song> songs) {
+                System.out.println(Arrays.toString(songs.toArray()));
+                songUnselectedAdapter.updateSongList(songs);
+            }
+        });
+        //dataMusicViewModel.getUnselectedSongs().observeForever(songUnselectedAdapter::updateSongList);
 
         MusicDataListAdapter songSelectedAdapter = new MusicDataListAdapter(this, R.layout.data_music_list_item, new ArrayList<>());
         songSelected.setAdapter(songSelectedAdapter);
@@ -131,12 +147,16 @@ public class DataMusic extends AppCompatActivity {
     public AdapterView.OnItemSelectedListener onSongSelectedListener = new AdapterView.OnItemSelectedListener() {
         @Override
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+            addImageView.setAlpha((float) 1);
+            addImageView.setClickable(true);
             Song song = (Song) songSelected.getItemAtPosition(position);
             Toast.makeText(getApplicationContext(), song.getSongName() + " selected", Toast.LENGTH_SHORT).show();
         }
 
         @Override
         public void onNothingSelected(AdapterView<?> parent) {
+            addImageView.setAlpha((float) 0.35);
+            addImageView.setClickable(false);
             Toast.makeText(getApplicationContext(), "Item unselected", Toast.LENGTH_SHORT).show();
         }
     };
@@ -144,13 +164,35 @@ public class DataMusic extends AppCompatActivity {
     public AdapterView.OnItemSelectedListener onSongUnselectedListener = new AdapterView.OnItemSelectedListener() {
         @Override
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+            removeImageView.setAlpha((float) 1);
+            removeImageView.setClickable(true);
             Song song = (Song) songUnselected.getItemAtPosition(position);
             Toast.makeText(getApplicationContext(), song.getSongName() + " selected", Toast.LENGTH_SHORT).show();
         }
 
         @Override
         public void onNothingSelected(AdapterView<?> parent) {
+            removeImageView.setAlpha((float) 0.35);
+            removeImageView.setClickable(false);
             Toast.makeText(getApplicationContext(), "Item unselected", Toast.LENGTH_SHORT).show();
+        }
+    };
+
+    public View.OnClickListener addImageViewOnClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            List<Song> addSongList = new ArrayList<>();
+            int songCount = songUnselected.getChildCount();
+            for(int i = 0; i < songCount; i++){
+                //if(songUnselected.getItemAtPosition(i))
+            }
+        }
+    };
+
+    public View.OnClickListener removeImageViewOnClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+
         }
     };
 

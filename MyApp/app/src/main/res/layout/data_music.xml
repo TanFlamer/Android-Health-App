@@ -141,14 +141,14 @@
 
                 <ImageView
                     android:id="@+id/addImageView"
+                    android:alpha="0.35"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="1"
                     android:background="?attr/selectableItemBackgroundBorderless"
-                    android:clickable="true"
+                    android:clickable="false"
                     app:srcCompat="@drawable/ic_right"
-                    tools:ignore="SpeakableTextPresentCheck"
-                    android:focusable="true" />
+                    tools:ignore="SpeakableTextPresentCheck" />
 
                 <Space
                     android:layout_width="match_parent"
@@ -157,14 +157,14 @@
 
                 <ImageView
                     android:id="@+id/removeImageView"
+                    android:alpha="0.35"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="1"
                     android:background="?attr/selectableItemBackgroundBorderless"
-                    android:clickable="true"
+                    android:clickable="false"
                     app:srcCompat="@drawable/ic_left"
-                    tools:ignore="SpeakableTextPresentCheck"
-                    android:focusable="true" />
+                    tools:ignore="SpeakableTextPresentCheck" />
 
                 <Space
                     android:layout_width="match_parent"
@@ -176,7 +176,7 @@
                 android:layout_width="2dp"
                 android:layout_height="match_parent"
                 android:background="#000000"
-                android:orientation="vertical"></LinearLayout>
+                android:orientation="vertical" />
 
             <ListView
                 android:id="@+id/songSelected"
