@@ -1,6 +1,7 @@
 package com.example.myapp.subActivities;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -51,6 +52,8 @@ public class SportDataListAdapter extends BaseAdapter {
         if(currentItemView == null)
             currentItemView = LayoutInflater.from(context).inflate(R.layout.data_sport_list_item, parent, false);
 
+        currentItemView.setBackgroundColor(Color.WHITE);
+
         Pair<Type, Duration> typeSport = typeSports.get(position);
         Type type = typeSport.first;
         Duration duration = typeSport.second;
@@ -64,11 +67,5 @@ public class SportDataListAdapter extends BaseAdapter {
         calorieView.setText(String.valueOf(type.getCaloriePerMinute() * duration.toMinutes()));
 
         return currentItemView;
-    }
-
-    public void updateSportDataList(List<Pair<Type, Duration>> newTypeSports){
-        typeSports.clear();
-        typeSports.addAll(newTypeSports);
-        notifyDataSetChanged();
     }
 }

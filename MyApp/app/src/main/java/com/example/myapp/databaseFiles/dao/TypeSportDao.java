@@ -27,7 +27,7 @@ public interface TypeSportDao {
     List<TypeSport> findTypeSport(int sportID, int typeID);
 
     @Query("SELECT * FROM TypeSport WHERE sportID=:sportID")
-    LiveData<List<TypeSport>> getTypeSport(int sportID);
+    List<TypeSport> getTypeSport(int sportID);
 
     @Query("SELECT * FROM TypeSport WHERE userID=:userID")
     LiveData<List<TypeSport>> getAllTypeSport(int userID);

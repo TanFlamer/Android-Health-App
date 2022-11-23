@@ -228,7 +228,7 @@ public class Account extends AppCompatActivity {
     public void initialiseLoginButton(){
         loginButton = findViewById(R.id.loginButton);
         loginButton.setOnClickListener(v -> {
-            saveUserID(accountViewModel.getUser().getUserID());
+            ((MainApplication) this.getApplication()).setUserID(accountViewModel.getUser().getUserID());
             startActivity(new Intent(getApplicationContext(), Music.class));
             Toast.makeText(getApplicationContext(), "Welcome " + accountViewModel.getUser().getUsername(), Toast.LENGTH_SHORT).show();
         });
@@ -285,11 +285,6 @@ public class Account extends AppCompatActivity {
 
         deletePasswordConfirm.addTextChangedListener(deleteUserTextWatcher);
         deletePasswordConfirm.setOnFocusChangeListener((v, hasFocus) -> validatePassword(deletePasswordConfirmInput, deletePasswordConfirm, deletePassword, true));
-    }
-
-    public void saveUserID(int userID){
-        MainApplication appState = (MainApplication) this.getApplication();
-        appState.setUserID(userID);
     }
 
     public void clearTextFields(){

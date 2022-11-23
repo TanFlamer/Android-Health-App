@@ -1,6 +1,7 @@
 package com.example.myapp.subActivities;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,6 +33,8 @@ public class MusicDataListAdapter extends ArrayAdapter<Song> {
         if(currentItemView == null)
             currentItemView = LayoutInflater.from(getContext()).inflate(R.layout.data_music_list_item, parent, false);
 
+        currentItemView.setBackgroundColor(Color.WHITE);
+
         Song song = getItem(position);
 
         TextView nameView = currentItemView.findViewById(R.id.musicName);
@@ -41,11 +44,5 @@ public class MusicDataListAdapter extends ArrayAdapter<Song> {
         lengthView.setText(String.valueOf(song.getSongDuration()));
 
         return currentItemView;
-    }
-
-    public void updateSongList(List<Song> newSongList){
-        songList.clear();
-        songList.addAll(newSongList);
-        notifyDataSetChanged();
     }
 }

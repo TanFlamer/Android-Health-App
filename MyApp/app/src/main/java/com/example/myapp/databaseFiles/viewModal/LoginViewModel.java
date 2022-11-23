@@ -20,7 +20,7 @@ public class LoginViewModel extends AndroidViewModel {
 
     public LoginViewModel(@NonNull Application application) {
         super(application);
-        userRepository = new UserRepository(application);
+        userRepository = ((MainApplication) getApplication()).getUserRepository();
     }
 
     public User validateUser(String username, String password){

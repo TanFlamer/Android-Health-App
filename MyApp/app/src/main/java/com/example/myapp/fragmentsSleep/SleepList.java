@@ -115,13 +115,6 @@ public class SleepList extends Fragment {
 
     public void initialiseFloatingButton(){
         floatingActionButton = requireView().findViewById(R.id.buttonFloating);
-        floatingActionButton.setOnClickListener(v -> {
-            Dialog dialog = new Dialog(getContext());
-            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-            dialog.setCancelable(true);
-            dialog.setContentView(R.layout.dialog_sleep);
-            dialog.show();
-        });
-        //floatingActionButton.setOnClickListener(view1 -> startActivity(new Intent(getContext(), DataSleep.class)));
+        floatingActionButton.setOnClickListener(view1 -> startActivity(new Intent(getContext(), DataSleep.class)));
     }
 }

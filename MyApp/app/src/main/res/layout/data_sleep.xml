@@ -160,6 +160,7 @@
                 android:orientation="vertical"></LinearLayout>
 
             <TextView
+                android:id="@+id/durationView"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -189,12 +190,14 @@
                 android:layout_weight="1" />
 
             <Button
+                android:id="@+id/buttonEditSave"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="3"
-                android:text="Save" />
+                android:text="Edit/Save" />
 
             <Button
+                android:id="@+id/buttonReturn"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="3"

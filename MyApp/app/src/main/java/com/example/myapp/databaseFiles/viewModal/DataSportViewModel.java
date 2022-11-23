@@ -20,67 +20,45 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class DataSportViewModel extends AndroidViewModel {
 
     private SportRepository sportRepository;
     private TypeRepository typeRepository;
     private TypeSportRepository typeSportRepository;
-    private MutableLiveData<List<TypeSport>> typeSportList;
-    private LocalDate date;
-    private int userID;
 
-    private HashMap<Integer, Sport> sportList;
-    private HashMap<Integer, Type> typeList;
+    public List<Type> typeList;
+    private final int userID;
 
     public DataSportViewModel(@NonNull Application application) {
         super(application);
+        MainApplication mainApplication = this.getApplication();
         sportRepository = new SportRepository(application);
-        typeRepository = new TypeRepository(application);
-        typeSportRepository = new TypeSportRepository(application);
-        userID = ((MainApplication) getApplication()).getUserID();
+        typeRepository = mainApplication.getTypeRepository();
+        typeSportRepository = mainApplication.getTypeSportRepository();
 
-        typeSportList = new MutableLiveData<>();
-        typeSportList.setValue(new ArrayList<>());
-
-        sportList = new HashMap<>();
-        typeList = new HashMap<>();
+        typeList = mainApplication.getTypeList();
+        userID = mainApplication.getUserID();
     }
 
-    public LocalDate getDate() {
-        return date;
-    }
-
-    public List<Sport> findSport(LocalDate date){
-        return sportRepository.findSport(userID, date);
-    }
-
-    public void updateTypeSportList(List<TypeSport> newTypeSportList){
-        typeSportList.setValue(newTypeSportList);
-    }
-
-    public LiveData<List<TypeSport>> getTypeSportList() {
-        return typeSportList;
-    }
-
-    public List<Pair<Type, Duration>> processData(List<TypeSport> typeSportList) {
-        if (typeSportList.size() == 0) return new ArrayList<>();
-        List<Pair<Type, Duration>> newTypeSport = new ArrayList<>();
-
-        for (TypeSport typeSport : typeSportList) {
-            int sportID = typeSport.getSportID();
-            int typeID = typeSport.getTypeID();
-            Duration duration = typeSport.getDuration();
-
-            Sport sport = sportList.containsKey(sportID) ? sportList.get(sportID) : sportRepository.getSport(sportID).get(0);
-            sportList.putIfAbsent(sportID, sport);
-
-            Type type = typeList.containsKey(typeID) ? typeList.get(typeID) : typeRepository.getType(typeID).get(0);
-            typeList.putIfAbsent(typeID, type);
-
-            newTypeSport.add(new Pair<>(type, duration));
+    public Pair<List<Pair<Type, Duration>>, List<Type>> populateList(LocalDate date){
+        List<Sport> sports = sportRepository.findSport(userID, date);
+        if(sports.size() == 0) {
+            return new Pair<>(new ArrayList<>(), new ArrayList<>(typeList));
         }
-        return newTypeSport;
+        else{
+            List<Pair<Type, Duration>> newTypeSport = new ArrayList<>();
+            Set<Type> typeSet = new HashSet<>(typeList);
+            for(TypeSport typeSport : typeSportRepository.getTypeSport(sports.get(0).getSportID())){
+                Type type = typeRepository.getType(typeSport.getTypeID()).get(0);
+                Duration duration = typeSport.getDuration();
+                newTypeSport.add(new Pair<>(type, duration));
+                typeSet.remove(type);
+            }
+            return new Pair<>(newTypeSport, new ArrayList<>(typeSet));
+        }
     }
 }

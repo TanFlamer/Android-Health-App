@@ -1,15 +1,12 @@
 package com.example.myapp.subActivities;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
-
+import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Pair;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -18,13 +15,14 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
+
 import com.example.myapp.R;
 import com.example.myapp.databaseFiles.entity.Song;
 import com.example.myapp.databaseFiles.viewModal.DataMusicViewModel;
 import com.google.android.material.textfield.TextInputLayout;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
@@ -42,13 +40,25 @@ public class DataMusic extends AppCompatActivity {
     private final int REMOVE_FROM_PLAYLIST = -1;
     HashMap<Integer, Integer> changeLogs;
 
+    MusicDataListAdapter songUnselectedAdapter;
+    MusicDataListAdapter songSelectedAdapter;
+
+    List<Song> unselectedSongList;
+    List<Song> selectedSongList;
+
+    boolean[] unselectedArray;
+    boolean[] selectedArray;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.data_music);
         dataMusicViewModel = new ViewModelProvider(this).get(DataMusicViewModel.class);
         //get playlist id from intent first
-        dataMusicViewModel.populateLists();
+        Pair<List<Song>, List<Song>> songLists = dataMusicViewModel.populateLists();
+        unselectedSongList = songLists.first;
+        selectedSongList = songLists.second;
+        changeLogs = new HashMap<>();
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         initialiseAll();
     }
@@ -57,39 +67,88 @@ public class DataMusic extends AppCompatActivity {
         initialiseListViews();
         initialiseEditText();
         initialiseImageView();
-        initialiseButton();
+        initialiseButtons();
+    }
+
+    public void resetLists(){
+        resetAdapters();
+        resetImageViews();
+        resetArrays();
+    }
+
+    public void resetArrays(){
+        unselectedArray = new boolean[unselectedSongList.size()];
+        selectedArray = new boolean[selectedSongList.size()];
+    }
+
+    public void resetImageViews(){
+        addImageView.setAlpha((float) 0.35);
+        addImageView.setClickable(false);
+        removeImageView.setAlpha((float) 0.35);
+        removeImageView.setClickable(false);
+    }
+
+    public void resetAdapters(){
+        songUnselectedAdapter.notifyDataSetChanged();
+        songSelectedAdapter.notifyDataSetChanged();
+    }
+
+    public boolean selected(boolean[] booleans){
+        for(boolean bool : booleans)
+            if(bool)
+                return true;
+        return false;
     }
 
     public void initialiseListViews(){
         songUnselected = findViewById(R.id.songUnselected);
         songUnselected.setChoiceMode(AbsListView.CHOICE_MODE_MULTIPLE);
         songUnselected.setOnItemClickListener(onItemClickListener);
-        songUnselected.setOnItemSelectedListener(onSongUnselectedListener);
 
         songSelected = findViewById(R.id.songSelected);
         songSelected.setChoiceMode(AbsListView.CHOICE_MODE_MULTIPLE);
         songSelected.setOnItemClickListener(onItemClickListener);
-        songSelected.setOnItemSelectedListener(onSongSelectedListener);
 
-        MusicDataListAdapter songUnselectedAdapter = new MusicDataListAdapter(this, R.layout.data_music_list_item, new ArrayList<>());
+        songUnselectedAdapter = new MusicDataListAdapter(this, R.layout.data_music_list_item, unselectedSongList);
         songUnselected.setAdapter(songUnselectedAdapter);
-        dataMusicViewModel.getUnselectedSongs().observeForever(new Observer<List<Song>>() {
-            @Override
-            public void onChanged(List<Song> songs) {
-                System.out.println(Arrays.toString(songs.toArray()));
-                songUnselectedAdapter.updateSongList(songs);
-            }
-        });
-        //dataMusicViewModel.getUnselectedSongs().observeForever(songUnselectedAdapter::updateSongList);
 
-        MusicDataListAdapter songSelectedAdapter = new MusicDataListAdapter(this, R.layout.data_music_list_item, new ArrayList<>());
+        songSelectedAdapter = new MusicDataListAdapter(this, R.layout.data_music_list_item, selectedSongList);
         songSelected.setAdapter(songSelectedAdapter);
-        dataMusicViewModel.getSelectedSongs().observeForever(songSelectedAdapter::updateSongList);
+    }
+
+    public void moveSongs(boolean[] booleans, List<Song> songListFrom, List<Song> songListTo, int operation){
+        for(int i = booleans.length - 1; i >= 0; i--){
+            if(booleans[i]){
+                Song song = songListFrom.get(i);
+                songListFrom.remove(i);
+                songListTo.add(song);
+                changeLogs.put(song.getSongID(), Objects.requireNonNull(changeLogs.getOrDefault(song.getSongID(), 0)) + operation);
+            }
+        }
     }
 
     public void initialiseImageView(){
         addImageView = findViewById(R.id.addImageView);
+        addImageView.setOnClickListener(v -> {
+            moveSongs(unselectedArray, unselectedSongList, selectedSongList, ADD_TO_PLAYLIST);
+            resetLists();
+        });
+
         removeImageView = findViewById(R.id.removeImageView);
+        removeImageView.setOnClickListener(v -> {
+            moveSongs(selectedArray, selectedSongList, unselectedSongList, REMOVE_FROM_PLAYLIST);
+            resetLists();
+        });
+
+        resetLists();
+    }
+
+    public boolean updateImageView(boolean[] booleans, int position, ImageView imageView){
+        booleans[position] = !booleans[position];
+        boolean selected = selected(booleans);
+        imageView.setAlpha((float)(selected ? 1 : 0.35));
+        imageView.setClickable(selected);
+        return booleans[position];
     }
 
     public void initialiseEditText(){
@@ -99,7 +158,7 @@ public class DataMusic extends AppCompatActivity {
         playlistName.setOnFocusChangeListener((v, hasFocus) -> validatePlaylistName(playlistNameInput, playlistName));
     }
 
-    public void initialiseButton(){
+    public void initialiseButtons(){
         editSaveButton = findViewById(R.id.editSaveButton);
         returnButton = findViewById(R.id.returnButton);
         returnButton.setOnClickListener(v -> finish());
@@ -107,17 +166,20 @@ public class DataMusic extends AppCompatActivity {
 
     public boolean validatePlaylistName(TextInputLayout textInputLayout, EditText editText){
         String playlistText = editText.getText().toString();
-        boolean hasFocus = editText.hasFocus();
-        boolean emptyUsername = playlistText.isEmpty();
-        boolean validUsername = !emptyUsername && dataMusicViewModel.validatePlaylistName(playlistText);
+        String oldPlaylistName = dataMusicViewModel.getPlaylistName();
 
-        if(!hasFocus || validUsername)
+        boolean hasFocus = editText.hasFocus();
+        boolean emptyPlaylistName = playlistText.isEmpty();
+        boolean validPlaylistName = !emptyPlaylistName && dataMusicViewModel.validatePlaylistName(playlistText);
+        boolean equalPlaylistName = oldPlaylistName == null || playlistText.equals(oldPlaylistName);
+
+        if(!hasFocus || equalPlaylistName || validPlaylistName)
             textInputLayout.setErrorEnabled(false);
-        else if(emptyUsername)
+        else if(emptyPlaylistName)
             textInputLayout.setError("Playlist name cannot be empty");
         else
             textInputLayout.setError("Playlist name already taken");
-        return validUsername;
+        return equalPlaylistName || validPlaylistName;
     }
 
     private final TextWatcher playlistNameTextWatcher = new TextWatcher() {
@@ -139,61 +201,10 @@ public class DataMusic extends AppCompatActivity {
     };
 
     public AdapterView.OnItemClickListener onItemClickListener = (parent, view, position, id) -> {
-        view.setSelected(!view.isSelected());
+        boolean selected = parent.equals(songUnselected) ? updateImageView(unselectedArray, position, addImageView) : updateImageView(selectedArray, position, removeImageView);
+        view.setBackgroundColor(selected ? Color.BLUE : Color.WHITE);
         Song song = (Song) parent.getItemAtPosition(position);
         Toast.makeText(getApplicationContext(), song.getSongName() + " clicked", Toast.LENGTH_SHORT).show();
-    };
-
-    public AdapterView.OnItemSelectedListener onSongSelectedListener = new AdapterView.OnItemSelectedListener() {
-        @Override
-        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-            addImageView.setAlpha((float) 1);
-            addImageView.setClickable(true);
-            Song song = (Song) songSelected.getItemAtPosition(position);
-            Toast.makeText(getApplicationContext(), song.getSongName() + " selected", Toast.LENGTH_SHORT).show();
-        }
-
-        @Override
-        public void onNothingSelected(AdapterView<?> parent) {
-            addImageView.setAlpha((float) 0.35);
-            addImageView.setClickable(false);
-            Toast.makeText(getApplicationContext(), "Item unselected", Toast.LENGTH_SHORT).show();
-        }
-    };
-
-    public AdapterView.OnItemSelectedListener onSongUnselectedListener = new AdapterView.OnItemSelectedListener() {
-        @Override
-        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-            removeImageView.setAlpha((float) 1);
-            removeImageView.setClickable(true);
-            Song song = (Song) songUnselected.getItemAtPosition(position);
-            Toast.makeText(getApplicationContext(), song.getSongName() + " selected", Toast.LENGTH_SHORT).show();
-        }
-
-        @Override
-        public void onNothingSelected(AdapterView<?> parent) {
-            removeImageView.setAlpha((float) 0.35);
-            removeImageView.setClickable(false);
-            Toast.makeText(getApplicationContext(), "Item unselected", Toast.LENGTH_SHORT).show();
-        }
-    };
-
-    public View.OnClickListener addImageViewOnClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            List<Song> addSongList = new ArrayList<>();
-            int songCount = songUnselected.getChildCount();
-            for(int i = 0; i < songCount; i++){
-                //if(songUnselected.getItemAtPosition(i))
-            }
-        }
-    };
-
-    public View.OnClickListener removeImageViewOnClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-
-        }
     };
 
     @Override

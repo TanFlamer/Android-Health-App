@@ -25,10 +25,10 @@ public class MusicListViewModel extends AndroidViewModel {
 
     public MusicListViewModel(@NonNull Application application) {
         super(application);
-        mediaMetadataRetriever = new MediaMetadataRetriever();
-        songRepository = new SongRepository(application);
+        songRepository = ((MainApplication) getApplication()).getSongRepository();
         userID = ((MainApplication) getApplication()).getUserID();
         songList = songRepository.getAllSongs(userID);
+        mediaMetadataRetriever = new MediaMetadataRetriever();
         filePath = getApplication().getFilesDir() + "/music/" + userID;
     }
 
