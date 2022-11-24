@@ -6,7 +6,6 @@ import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
@@ -22,9 +21,9 @@ import java.util.List;
 public class SportDataListAdapter extends BaseAdapter {
 
     private Context context;
-    private List<Pair<Type, Duration>> typeSports;
+    private List<Pair<Pair<Type, Duration>, Boolean>> typeSports;
 
-    public SportDataListAdapter(@NonNull Context context, List<Pair<Type, Duration>> typeSports) {
+    public SportDataListAdapter(@NonNull Context context, List<Pair<Pair<Type, Duration>, Boolean>> typeSports) {
         this.context = context;
         this.typeSports = typeSports;
     }
@@ -41,7 +40,7 @@ public class SportDataListAdapter extends BaseAdapter {
 
     @Override
     public long getItemId(int position) {
-        return 0;
+        return position;
     }
 
     @NonNull
@@ -52,9 +51,9 @@ public class SportDataListAdapter extends BaseAdapter {
         if(currentItemView == null)
             currentItemView = LayoutInflater.from(context).inflate(R.layout.data_sport_list_item, parent, false);
 
-        currentItemView.setBackgroundColor(Color.WHITE);
+        Pair<Pair<Type, Duration>, Boolean> initialPair = typeSports.get(position);
 
-        Pair<Type, Duration> typeSport = typeSports.get(position);
+        Pair<Type, Duration> typeSport = initialPair.first;
         Type type = typeSport.first;
         Duration duration = typeSport.second;
 
@@ -65,6 +64,9 @@ public class SportDataListAdapter extends BaseAdapter {
         typeView.setText(type.getName());
         durationView.setText(duration.toString());
         calorieView.setText(String.valueOf(type.getCaloriePerMinute() * duration.toMinutes()));
+
+        Boolean selected = initialPair.second;
+        currentItemView.setBackgroundColor(selected ? Color.BLUE : Color.WHITE);
 
         return currentItemView;
     }

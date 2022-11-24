@@ -45,9 +45,27 @@ public class DataSportViewModel extends AndroidViewModel {
         userID = mainApplication.getUserID();
     }
 
-    public void insert(LocalDate newDate){
+    public void insertSport(LocalDate newDate){
         sportID = (int) sportRepository.insert(new Sport(date, userID));
         date = newDate;
+    }
+
+    public void deleteSport(){
+        sportRepository.delete(new Sport(sportID, date, userID));
+        sportID = 0;
+        date = null;
+    }
+
+    public void insertTypeSport(int typeID, Duration duration){
+        typeSportRepository.insert(new TypeSport(sportID, typeID, duration, userID));
+    }
+
+    public void updateTypeSport(int typeID, Duration duration){
+        typeSportRepository.update(new TypeSport(sportID, typeID, duration, userID));
+    }
+
+    public void deleteTypeSport(int typeID, Duration duration){
+        typeSportRepository.delete(new TypeSport(sportID, typeID, duration, userID));
     }
 
     public Pair<List<Pair<Type, Duration>>, List<Type>> populateList(LocalDate date){
@@ -66,5 +84,9 @@ public class DataSportViewModel extends AndroidViewModel {
             }
             return new Pair<>(newTypeSport, new ArrayList<>(typeSet));
         }
+    }
+
+    public int getSportID() {
+        return sportID;
     }
 }

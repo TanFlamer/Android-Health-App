@@ -10,13 +10,16 @@ import com.example.myapp.databaseFiles.entity.Sleep;
 import com.example.myapp.databaseFiles.repository.SleepRepository;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 
 public class DataSleepViewModel extends AndroidViewModel {
 
     private SleepRepository sleepRepository;
-    private LocalDate date;
+
     private int userID;
+    private int sleepID;
+    private LocalDate date;
 
     public DataSleepViewModel(@NonNull Application application) {
         super(application);
@@ -24,11 +27,31 @@ public class DataSleepViewModel extends AndroidViewModel {
         userID = ((MainApplication) getApplication()).getUserID();
     }
 
+    public void insert(LocalTime sleepTime, LocalTime wakeTime){
+        sleepRepository.insert(new Sleep(date, sleepTime, wakeTime, userID));
+    }
+
+    public void update(LocalTime sleepTime, LocalTime wakeTime){
+        sleepRepository.update(new Sleep(sleepID, date, sleepTime, wakeTime, userID));
+    }
+
+    public void delete(LocalTime sleepTime, LocalTime wakeTime){
+        sleepRepository.delete(new Sleep(sleepID, date, sleepTime, wakeTime, userID));
+    }
+
     public void setDate(LocalDate date) {
         this.date = date;
     }
 
-    public List<Sleep> findSleep(LocalDate date){
-        return sleepRepository.findSleep(userID, date);
+    public Sleep findSleep(LocalDate date){
+        List<Sleep> sleepList = sleepRepository.findSleep(userID, date);
+        if(sleepList.size() == 0){
+            this.date = null;
+            return null;
+        }
+        else {
+            this.date = date;
+            return sleepList.get(0);
+        }
     }
 }

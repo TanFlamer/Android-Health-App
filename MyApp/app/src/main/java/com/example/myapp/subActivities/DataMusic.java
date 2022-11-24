@@ -7,7 +7,6 @@ import android.text.TextWatcher;
 import android.util.Pair;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -24,6 +23,7 @@ import com.example.myapp.databaseFiles.entity.Song;
 import com.example.myapp.databaseFiles.viewModal.DataMusicViewModel;
 import com.google.android.material.textfield.TextInputLayout;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
@@ -32,7 +32,7 @@ public class DataMusic extends AppCompatActivity {
 
     DataMusicViewModel dataMusicViewModel;
     ListView songSelected, songUnselected;
-    Button editSaveButton, returnButton;
+    Button saveButton, returnButton;
     TextInputLayout playlistNameInput;
     ImageView addImageView, removeImageView;
     EditText playlistName;
@@ -44,11 +44,8 @@ public class DataMusic extends AppCompatActivity {
     MusicDataListAdapter songUnselectedAdapter;
     MusicDataListAdapter songSelectedAdapter;
 
-    List<Song> unselectedSongList;
-    List<Song> selectedSongList;
-
-    boolean[] unselectedArray;
-    boolean[] selectedArray;
+    List<Pair<Song, Boolean>> unselectedSongList;
+    List<Pair<Song, Boolean>> selectedSongList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,12 +53,22 @@ public class DataMusic extends AppCompatActivity {
         setContentView(R.layout.data_music);
         dataMusicViewModel = new ViewModelProvider(this).get(DataMusicViewModel.class);
         //get playlist id from intent first
-        Pair<List<Song>, List<Song>> songLists = dataMusicViewModel.populateLists();
-        unselectedSongList = songLists.first;
-        selectedSongList = songLists.second;
         changeLogs = new HashMap<>();
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
+        initialiseSongLists();
         initialiseAll();
+    }
+
+    public void initialiseSongLists(){
+        Pair<List<Song>, List<Song>> songLists = dataMusicViewModel.populateLists();
+
+        List<Song> unselectedSongs = songLists.first;
+        unselectedSongList = new ArrayList<>();
+        for(Song song : unselectedSongs) unselectedSongList.add(new Pair<>(song, false));
+
+        List<Song> selectedSongs = songLists.second;
+        selectedSongList = new ArrayList<>();
+        for(Song song : selectedSongs) selectedSongList.add(new Pair<>(song, false));
     }
 
     public void initialiseAll(){
@@ -74,19 +81,11 @@ public class DataMusic extends AppCompatActivity {
     public void resetLists(){
         resetAdapters();
         resetImageViews();
-        resetArrays();
-    }
-
-    public void resetArrays(){
-        unselectedArray = new boolean[unselectedSongList.size()];
-        selectedArray = new boolean[selectedSongList.size()];
     }
 
     public void resetImageViews(){
-        addImageView.setAlpha((float) 0.35);
-        addImageView.setClickable(false);
-        removeImageView.setAlpha((float) 0.35);
-        removeImageView.setClickable(false);
+        setImageView(unselectedSongList, addImageView);
+        setImageView(selectedSongList, removeImageView);
     }
 
     public void resetAdapters(){
@@ -94,9 +93,9 @@ public class DataMusic extends AppCompatActivity {
         songSelectedAdapter.notifyDataSetChanged();
     }
 
-    public boolean selected(boolean[] booleans){
-        for(boolean bool : booleans)
-            if(bool)
+    public boolean selected(List<Pair<Song, Boolean>> songList){
+        for(Pair<Song, Boolean> pair : songList)
+            if(pair.second)
                 return true;
         return false;
     }
@@ -117,13 +116,18 @@ public class DataMusic extends AppCompatActivity {
         songSelected.setAdapter(songSelectedAdapter);
     }
 
-    public void moveSongs(boolean[] booleans, List<Song> songListFrom, List<Song> songListTo, int operation){
-        for(int i = booleans.length - 1; i >= 0; i--){
-            if(booleans[i]){
-                Song song = songListFrom.get(i);
+    public void moveSongs(List<Pair<Song, Boolean>> songListFrom, List<Pair<Song, Boolean>> songListTo, int operation){
+        for(int i = songListFrom.size() - 1; i >= 0; i--){
+            Pair<Song, Boolean> songBooleanPair = songListFrom.get(i);
+            if(songBooleanPair.second){
+                Song song = songBooleanPair.first;
                 songListFrom.remove(i);
-                songListTo.add(song);
-                changeLogs.put(song.getSongID(), Objects.requireNonNull(changeLogs.getOrDefault(song.getSongID(), 0)) + operation);
+                songListTo.add(new Pair<>(song, false));
+                int finalOperation = Objects.requireNonNull(changeLogs.getOrDefault(song.getSongID(), 0)) + operation;
+                if(finalOperation == 0)
+                    changeLogs.remove(song.getSongID());
+                else
+                    changeLogs.put(song.getSongID(), finalOperation);
             }
         }
     }
@@ -131,25 +135,32 @@ public class DataMusic extends AppCompatActivity {
     public void initialiseImageView(){
         addImageView = findViewById(R.id.addImageView);
         addImageView.setOnClickListener(v -> {
-            moveSongs(unselectedArray, unselectedSongList, selectedSongList, ADD_TO_PLAYLIST);
+            moveSongs(unselectedSongList, selectedSongList, ADD_TO_PLAYLIST);
             resetLists();
+            checkButton();
         });
 
         removeImageView = findViewById(R.id.removeImageView);
         removeImageView.setOnClickListener(v -> {
-            moveSongs(selectedArray, selectedSongList, unselectedSongList, REMOVE_FROM_PLAYLIST);
+            moveSongs(selectedSongList, unselectedSongList, REMOVE_FROM_PLAYLIST);
             resetLists();
+            checkButton();
         });
 
         resetLists();
     }
 
-    public boolean updateImageView(boolean[] booleans, int position, ImageView imageView){
-        booleans[position] = !booleans[position];
-        boolean selected = selected(booleans);
+    public boolean updateImageView(List<Pair<Song, Boolean>> songList, int position, ImageView imageView){
+        Pair<Song, Boolean> songBooleanPair = songList.get(position);
+        songList.set(position, new Pair<>(songBooleanPair.first, !songBooleanPair.second));
+        setImageView(songList, imageView);
+        return !songBooleanPair.second;
+    }
+
+    public void setImageView(List<Pair<Song, Boolean>> songList, ImageView imageView){
+        boolean selected = selected(songList);
         imageView.setAlpha((float)(selected ? 1 : 0.35));
         imageView.setClickable(selected);
-        return booleans[position];
     }
 
     public void initialiseEditText(){
@@ -160,8 +171,8 @@ public class DataMusic extends AppCompatActivity {
     }
 
     public void initialiseButtons(){
-        editSaveButton = findViewById(R.id.editSaveButton);
-        editSaveButton.setOnClickListener(v -> {
+        saveButton = findViewById(R.id.editSaveButton);
+        saveButton.setOnClickListener(v -> {
             if(dataMusicViewModel.getPlayListID() == 0) dataMusicViewModel.insertPlaylist(playlistName.getText().toString());
             changeLogs.forEach((songID, operation) -> {
                 if(operation > 0)
@@ -169,6 +180,7 @@ public class DataMusic extends AppCompatActivity {
                 else if(operation < 0)
                     dataMusicViewModel.deleteSongPlaylist(songID);
             });
+            finish();
         });
         returnButton = findViewById(R.id.returnButton);
         returnButton.setOnClickListener(v -> finish());
@@ -191,6 +203,13 @@ public class DataMusic extends AppCompatActivity {
         return validPlaylistName;
     }
 
+    public void checkButton(){
+        boolean validPlaylistName = validatePlaylistName(playlistNameInput, playlistName);
+        boolean emptyPlaylist = selectedSongList.isEmpty();
+        boolean noChanges = changeLogs.isEmpty();
+        saveButton.setEnabled(!emptyPlaylist && !noChanges && validPlaylistName);
+    }
+
     private final TextWatcher playlistNameTextWatcher = new TextWatcher() {
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -199,8 +218,7 @@ public class DataMusic extends AppCompatActivity {
 
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
-            boolean validPlaylistName = validatePlaylistName(playlistNameInput, playlistName);
-            editSaveButton.setEnabled(validPlaylistName);
+            checkButton();
         }
 
         @Override
@@ -210,10 +228,10 @@ public class DataMusic extends AppCompatActivity {
     };
 
     public AdapterView.OnItemClickListener onItemClickListener = (parent, view, position, id) -> {
-        boolean selected = parent.equals(songUnselected) ? updateImageView(unselectedArray, position, addImageView) : updateImageView(selectedArray, position, removeImageView);
+        boolean selected = parent.equals(songUnselected) ? updateImageView(unselectedSongList, position, addImageView) : updateImageView(selectedSongList, position, removeImageView);
         view.setBackgroundColor(selected ? Color.BLUE : Color.WHITE);
-        Song song = (Song) parent.getItemAtPosition(position);
-        Toast.makeText(getApplicationContext(), song.getSongName() + " clicked", Toast.LENGTH_SHORT).show();
+        Pair<Song, Boolean> songBooleanPair = (Pair<Song, Boolean>) parent.getItemAtPosition(position);
+        Toast.makeText(getApplicationContext(), songBooleanPair.first.getSongName() + " clicked", Toast.LENGTH_SHORT).show();
     };
 
     @Override

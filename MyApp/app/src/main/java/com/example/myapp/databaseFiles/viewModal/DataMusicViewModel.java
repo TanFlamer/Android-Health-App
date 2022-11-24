@@ -49,6 +49,11 @@ public class DataMusicViewModel extends AndroidViewModel {
         playlistName = newPlaylistName;
     }
 
+    public void updatePlaylist(String newPlaylistName){
+        playlistRepository.update(new Playlist(playListID, newPlaylistName, userID));
+        playlistName = newPlaylistName;
+    }
+
     public void deletePlaylist(){
         playlistRepository.delete(new Playlist(playListID, playlistName, userID));
         playListID = 0;

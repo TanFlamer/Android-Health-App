@@ -4,6 +4,7 @@ import static androidx.room.ForeignKey.CASCADE;
 
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
+import androidx.room.Ignore;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
 import androidx.room.TypeConverters;
@@ -26,6 +27,13 @@ public class Sport {
     private Integer userID;
 
     public Sport(LocalDate date, Integer userID) {
+        this.date = date;
+        this.userID = userID;
+    }
+
+    @Ignore
+    public Sport(Integer sportID, LocalDate date, Integer userID) {
+        this.sportID = sportID;
         this.date = date;
         this.userID = userID;
     }

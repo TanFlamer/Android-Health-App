@@ -151,7 +151,7 @@
             android:layout_width="2dp"
             android:layout_height="match_parent"
             android:background="#000000"
-            android:orientation="vertical"></LinearLayout>
+            android:orientation="vertical" />
 
         <TextView
             android:id="@+id/durationView"
@@ -159,7 +159,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="Test"
+            android:text="-"
             android:textSize="20sp"
             android:textStyle="bold" />
 
@@ -184,11 +184,12 @@
             android:layout_weight="1" />
 
         <Button
-            android:id="@+id/buttonEditSave"
+            android:id="@+id/buttonSave"
+            android:enabled="false"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="3"
-            android:text="Edit/Save" />
+            android:text="Save" />
 
         <Button
             android:id="@+id/buttonReturn"

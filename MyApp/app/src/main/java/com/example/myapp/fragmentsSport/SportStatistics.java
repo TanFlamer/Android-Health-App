@@ -96,9 +96,9 @@ public class SportStatistics extends Fragment {
         recyclerView.setAdapter(sportRecyclerAdapter);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        sportStatisticsViewModel.getSportList().observe(getViewLifecycleOwner(), songList -> {
+        sportStatisticsViewModel.getTypeSportList().observe(getViewLifecycleOwner(), typeSportList -> {
             Toast.makeText(getContext(), "Dataset changed", Toast.LENGTH_SHORT).show();
-            sportRecyclerAdapter.updateSportList(songList);
+            //sportRecyclerAdapter.updateSportList(typeSportList);
         });
     }
 

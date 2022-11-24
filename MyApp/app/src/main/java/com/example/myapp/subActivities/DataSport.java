@@ -1,5 +1,6 @@
 package com.example.myapp.subActivities;
 
+import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.graphics.Color;
@@ -11,6 +12,7 @@ import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -33,6 +35,7 @@ import java.util.Objects;
 public class DataSport extends AppCompatActivity {
 
     DataSportViewModel dataSportViewModel;
+    LinearLayout hiddenLayout;
     ListView dataSportList;
     Button buttonDate, buttonAdd, buttonDuration, buttonDelete, buttonEditSave, buttonReturn;
     Spinner typeSpinner;
@@ -43,9 +46,8 @@ public class DataSport extends AppCompatActivity {
     HashMap<Pair<Integer, Duration>, Integer> changeLogs;
     SportDataListAdapter sportDataListAdapter;
     TypeSpinnerAdapter spinnerAdapter;
-    List<Pair<Type, Duration>> sportDataList;
+    List<Pair<Pair<Type, Duration>, Boolean>> sportDataList;
     List<Type> typeList;
-    boolean[] sportDataArray;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,20 +62,35 @@ public class DataSport extends AppCompatActivity {
 
     public void populateLists(LocalDate date){
         Pair<List<Pair<Type, Duration>>, List<Type>> listPair = dataSportViewModel.populateList(date);
-        sportDataList = listPair.first;
+
+        List<Pair<Type, Duration>> sportsList = listPair.first;
+        sportDataList = new ArrayList<>();
+        for(Pair<Type, Duration> typeDurationPair : sportsList) sportDataList.add(new Pair<>(typeDurationPair, false));
+
         typeList = listPair.second;
         resetList();
     }
 
+    public void findAllViewByID(){
+        hiddenLayout = findViewById(R.id.hiddenLayout);
+        dataSportList = findViewById(R.id.sportDataListView);
+        typeSpinner = findViewById(R.id.typeSpinner);
+        buttonAdd = findViewById(R.id.buttonAdd);
+        buttonDelete = findViewById(R.id.buttonDelete);
+        buttonDate = findViewById(R.id.buttonDate);
+        buttonDuration = findViewById(R.id.buttonDuration);
+        buttonEditSave = findViewById(R.id.buttonEditSave);
+        buttonReturn = findViewById(R.id.buttonReturn);
+    }
+
     public void initialiseAll(){
+        findAllViewByID();
         initialiseListView();
         initialiseSpinners();
         initialiseButtons();
-        populateLists(LocalDate.of(1, 1, 1));
     }
 
     public void initialiseListView(){
-        dataSportList = findViewById(R.id.sportDataListView);
         dataSportList.setChoiceMode(AbsListView.CHOICE_MODE_MULTIPLE);
         dataSportList.setOnItemClickListener(onItemClickListener);
 
@@ -82,90 +99,52 @@ public class DataSport extends AppCompatActivity {
     }
 
     public void initialiseSpinners(){
-        typeSpinner = findViewById(R.id.typeSpinner);
-        typeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(getApplicationContext(), ((Type)parent.getItemAtPosition(position)).getName() + " clicked", Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {}
-        });
+        typeSpinner.setOnItemSelectedListener(onItemSelectedListener);
         spinnerAdapter = new TypeSpinnerAdapter(this, androidx.appcompat.R.layout.support_simple_spinner_dropdown_item, typeList);
         typeSpinner.setAdapter(spinnerAdapter);
     }
 
     public void initialiseButtons(){
-        initialiseDateButton();
         initialiseAddButton();
         initialiseDeleteButton();
+        initialiseDateButton();
         initialiseDurationButton();
         initialiseBottomButtons();
     }
 
     public void initialiseAddButton(){
-        buttonAdd = findViewById(R.id.buttonAdd);
         buttonAdd.setOnClickListener(v -> {
             addSport();
             resetList();
         });
     }
 
+    public void checkAddButton(){
+        boolean emptySpinner = typeList.isEmpty();
+        boolean validDuration = minute > 0 || hour > 0;
+        buttonAdd.setEnabled(!emptySpinner && validDuration);
+    }
+
+    @SuppressLint("SetTextI18n")
     public void addSport(){
         Type type = (Type) typeSpinner.getSelectedItem();
         Duration duration = Duration.ofMinutes(hour * 60L + minute);
 
-        sportDataList.add(new Pair<>(type, duration));
+        sportDataList.add(new Pair<>(new Pair<>(type, duration), false));
         typeList.remove(type);
 
+        buttonDuration.setText("Select Duration");
         hour = minute = 0;
 
         Pair<Integer, Duration> integerDurationPair = new Pair<>(type.getTypeID(), duration);
         changeLogs.put(integerDurationPair, Objects.requireNonNull(changeLogs.getOrDefault(integerDurationPair, 0)) + 1);
     }
 
-    public void initialiseDeleteButton(){
-        buttonDelete = findViewById(R.id.buttonDelete);
-        buttonDelete.setOnClickListener(v -> {
-            deleteSports();
-            resetList();
-        });
-    }
-
-    public void initialiseDurationButton(){
-        buttonDuration = findViewById(R.id.buttonDuration);
-        buttonDuration.setOnClickListener(v -> new TimePickerDialog(DataSport.this, android.R.style.Theme_Holo_Light_Dialog, (timePicker, i, i2) -> {
-            hour = i;
-            minute = i2;
-        }, hour, minute, true).show());
-    }
-
-    public void initialiseBottomButtons(){
-        buttonEditSave = findViewById(R.id.buttonEditSave);
-        buttonReturn = findViewById(R.id.buttonReturn);
-        buttonReturn.setOnClickListener(v -> finish());
-    }
-
-    public void initialiseDateButton(){
-        Calendar currentDate = Calendar.getInstance();
-        year = currentDate.get(Calendar.YEAR);
-        month = currentDate.get(Calendar.MONTH);
-        day = currentDate.get(Calendar.DAY_OF_MONTH);
-
-        buttonDate = findViewById(R.id.buttonDate);
-        buttonDate.setOnClickListener(view -> new DatePickerDialog(this, (datePicker, i, i1, i2) -> {
-            year = i;
-            month = i1;
-            day = i2;
-            populateLists(LocalDate.of(year, month, day));
-        }, year, month, day).show());
-    }
-
     public void deleteSports(){
-        for(int i = sportDataArray.length - 1; i >= 0; i--){
-            if(sportDataArray[i]){
-                Pair<Type, Duration> typeDurationPair = sportDataList.get(i);
+        for(int i = sportDataList.size() - 1; i >= 0; i--){
+            Pair<Pair<Type, Duration>, Boolean> pairBooleanPair = sportDataList.get(i);
+            if(pairBooleanPair.second){
+                Pair<Type, Duration> typeDurationPair = pairBooleanPair.first;
                 sportDataList.remove(i);
                 typeList.add(typeDurationPair.first);
                 Pair<Integer, Duration> integerDurationPair = new Pair<>(typeDurationPair.first.getTypeID(), typeDurationPair.second);
@@ -174,19 +153,107 @@ public class DataSport extends AppCompatActivity {
         }
     }
 
-    public void resetList(){
-        sportDataListAdapter.notifyDataSetChanged();
-        spinnerAdapter.notifyDataSetChanged();
-        sportDataArray = new boolean[sportDataList.size()];
+    public void initialiseDeleteButton(){
+        buttonDelete.setOnClickListener(v -> {
+            deleteSports();
+            resetList();
+        });
     }
 
-    AdapterView.OnItemClickListener onItemClickListener = new AdapterView.OnItemClickListener() {
+    @SuppressLint("DefaultLocale")
+    public void initialiseDurationButton(){
+        buttonDuration.setOnClickListener(v -> new TimePickerDialog(DataSport.this, android.R.style.Theme_Holo_Light_Dialog, (timePicker, i, i2) -> {
+            hour = i;
+            minute = i2;
+            buttonDuration.setText(hour == 0 && minute == 0 ? "Select Duration" : String.format("%d:%02d", hour, minute));
+            checkAddButton();
+        }, hour, minute, true).show());
+    }
+
+    @SuppressLint("SetTextI18n")
+    public void initialiseBottomButtons(){
+        buttonEditSave.setOnClickListener(v -> {
+            if(hiddenLayout.getVisibility() == View.GONE){
+                buttonEditSave.setText("Save");
+                buttonEditSave.setEnabled(false);
+                hiddenLayout.setVisibility(View.VISIBLE);
+            }
+            else {
+                if(dataSportViewModel.getSportID() == 0) dataSportViewModel.insertSport(LocalDate.of(year, month, day));
+                changeLogs.forEach((pair, operation) -> {
+                    int typeID = pair.first;
+                    Duration duration = pair.second;
+                    if(operation > 0)
+                        dataSportViewModel.insertTypeSport(typeID, duration);
+                    else if(operation < 0)
+                        dataSportViewModel.deleteTypeSport(typeID, duration);
+                    else
+                        dataSportViewModel.updateTypeSport(typeID, duration);
+                });
+                finish();
+            }
+        });
+        buttonReturn.setOnClickListener(v -> finish());
+    }
+
+    @SuppressLint("DefaultLocale")
+    public void initialiseDateButton(){
+        Calendar currentDate = Calendar.getInstance();
+        year = currentDate.get(Calendar.YEAR);
+        month = currentDate.get(Calendar.MONTH);
+        day = currentDate.get(Calendar.DAY_OF_MONTH);
+        populateLists(LocalDate.of(year, month, day));
+        buttonDate.setText(String.format("%02d/%02d/%04d", day, month, year));
+
+        buttonDate.setOnClickListener(view -> new DatePickerDialog(this, (datePicker, i, i1, i2) -> {
+            year = i;
+            month = i1;
+            day = i2;
+            populateLists(LocalDate.of(year, month, day));
+            buttonDate.setText(String.format("%02d/%02d/%04d", day, month, year));
+        }, year, month, day).show());
+    }
+
+    public void resetList(){
+        resetAdapters();
+        resetButtons();
+    }
+
+    public void resetAdapters(){
+        sportDataListAdapter.notifyDataSetChanged();
+        spinnerAdapter.notifyDataSetChanged();
+    }
+
+    public void resetButtons(){
+        buttonEditSave.setEnabled(!(sportDataList.isEmpty() || changeLogs.isEmpty()) || hiddenLayout.getVisibility() == View.GONE);
+        buttonDelete.setEnabled(selected());
+    }
+
+    public boolean selected(){
+        for(Pair<Pair<Type, Duration>, Boolean> pair : sportDataList)
+            if(pair.second)
+                return true;
+        return false;
+    }
+
+    AdapterView.OnItemClickListener onItemClickListener = (parent, view, position, id) -> {
+        Pair<Pair<Type, Duration>, Boolean> pairBooleanPair = sportDataList.get(position);
+        view.setBackgroundColor(pairBooleanPair.second ? Color.WHITE : Color.BLUE);
+        sportDataList.set(position, new Pair<>(pairBooleanPair.first, !pairBooleanPair.second));
+        Pair<Pair<Type, Duration>, Boolean> typeDurationPair = (Pair<Pair<Type, Duration>, Boolean>) parent.getItemAtPosition(position);
+        Toast.makeText(getApplicationContext(), typeDurationPair.first.first.getName() + " clicked", Toast.LENGTH_SHORT).show();
+    };
+
+    AdapterView.OnItemSelectedListener onItemSelectedListener = new AdapterView.OnItemSelectedListener() {
         @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            sportDataArray[position] = !sportDataArray[position];
-            view.setBackgroundColor(sportDataArray[position] ? Color.BLUE : Color.WHITE);
-            Pair<Type, Duration> typeDurationPair = (Pair<Type, Duration>) parent.getItemAtPosition(position);
-            Toast.makeText(getApplicationContext(), typeDurationPair.first.getName() + " clicked", Toast.LENGTH_SHORT).show();
+        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+            checkAddButton();
+            Toast.makeText(getApplicationContext(), ((Type)parent.getItemAtPosition(position)).getName() + " clicked", Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        public void onNothingSelected(AdapterView<?> parent) {
+            checkAddButton();
         }
     };
 

@@ -2,6 +2,7 @@ package com.example.myapp.subActivities;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,9 +17,9 @@ import com.example.myapp.databaseFiles.entity.Song;
 
 import java.util.List;
 
-public class MusicDataListAdapter extends ArrayAdapter<Song> {
+public class MusicDataListAdapter extends ArrayAdapter<Pair<Song, Boolean>> {
 
-    public MusicDataListAdapter(@NonNull Context context, int resource, List<Song> songList) {
+    public MusicDataListAdapter(@NonNull Context context, int resource, List<Pair<Song, Boolean>> songList) {
         super(context, resource, songList);
     }
 
@@ -30,9 +31,9 @@ public class MusicDataListAdapter extends ArrayAdapter<Song> {
         if(currentItemView == null)
             currentItemView = LayoutInflater.from(getContext()).inflate(R.layout.data_music_list_item, parent, false);
 
-        currentItemView.setBackgroundColor(Color.WHITE);
+        Pair<Song, Boolean> songBooleanPair = getItem(position);
 
-        Song song = getItem(position);
+        Song song = songBooleanPair.first;
 
         TextView nameView = currentItemView.findViewById(R.id.musicName);
         TextView lengthView = currentItemView.findViewById(R.id.musicLength);
@@ -40,6 +41,10 @@ public class MusicDataListAdapter extends ArrayAdapter<Song> {
         nameView.setText(song.getSongName());
         lengthView.setText(String.valueOf(song.getSongDuration()));
 
+        Boolean selected = songBooleanPair.second;
+        currentItemView.setBackgroundColor(selected ? Color.BLUE : Color.WHITE);
+
         return currentItemView;
     }
+
 }

@@ -47,6 +47,16 @@ public class Sleep {
         this.userID = userID;
     }
 
+    @Ignore
+    public Sleep(Integer sleepID, LocalDate date, LocalTime sleepTime, LocalTime wakeTime, Integer userID) {
+        this.sleepID = sleepID;
+        this.date = date;
+        this.sleepTime = sleepTime;
+        this.wakeTime = wakeTime;
+        this.sleepDuration = Duration.between(sleepTime, wakeTime);
+        this.userID = userID;
+    }
+
     public Integer getSleepID() {
         return sleepID;
     }

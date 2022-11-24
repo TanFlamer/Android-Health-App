@@ -6,19 +6,33 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 
 import com.example.myapp.MainApplication;
+import com.example.myapp.databaseFiles.entity.Type;
 import com.example.myapp.databaseFiles.repository.TypeRepository;
 
 public class DataTypeViewModel extends AndroidViewModel {
 
     private TypeRepository typeRepository;
-    private String typeName;
+
     private int userID;
+    private int typeID;
+    private String typeName;
 
     public DataTypeViewModel(@NonNull Application application) {
         super(application);
         typeRepository = new TypeRepository(application);
         userID = ((MainApplication) getApplication()).getUserID();
-        typeName = null;
+    }
+
+    public void insert(String typeName, Double calorie){
+        typeRepository.insert(new Type(typeName, calorie, userID));
+    }
+
+    public void update(String typeName, Double calorie){
+        typeRepository.update(new Type(typeID, typeName, calorie, userID));
+    }
+
+    public void delete(String typeName, Double calorie){
+        typeRepository.delete(new Type(typeID, typeName, calorie, userID));
     }
 
     public String getTypeName() {
