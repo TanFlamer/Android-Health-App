@@ -7,6 +7,7 @@ import android.text.TextWatcher;
 import android.util.Pair;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -160,6 +161,15 @@ public class DataMusic extends AppCompatActivity {
 
     public void initialiseButtons(){
         editSaveButton = findViewById(R.id.editSaveButton);
+        editSaveButton.setOnClickListener(v -> {
+            if(dataMusicViewModel.getPlayListID() == 0) dataMusicViewModel.insertPlaylist(playlistName.getText().toString());
+            changeLogs.forEach((songID, operation) -> {
+                if(operation > 0)
+                    dataMusicViewModel.insertSongPlaylist(songID);
+                else if(operation < 0)
+                    dataMusicViewModel.deleteSongPlaylist(songID);
+            });
+        });
         returnButton = findViewById(R.id.returnButton);
         returnButton.setOnClickListener(v -> finish());
     }
@@ -170,16 +180,15 @@ public class DataMusic extends AppCompatActivity {
 
         boolean hasFocus = editText.hasFocus();
         boolean emptyPlaylistName = playlistText.isEmpty();
-        boolean validPlaylistName = !emptyPlaylistName && dataMusicViewModel.validatePlaylistName(playlistText);
-        boolean equalPlaylistName = oldPlaylistName == null || playlistText.equals(oldPlaylistName);
+        boolean validPlaylistName = !emptyPlaylistName && (playlistText.equals(oldPlaylistName) || dataMusicViewModel.validatePlaylistName(playlistText));
 
-        if(!hasFocus || equalPlaylistName || validPlaylistName)
+        if(!hasFocus || validPlaylistName)
             textInputLayout.setErrorEnabled(false);
         else if(emptyPlaylistName)
             textInputLayout.setError("Playlist name cannot be empty");
         else
             textInputLayout.setError("Playlist name already taken");
-        return equalPlaylistName || validPlaylistName;
+        return validPlaylistName;
     }
 
     private final TextWatcher playlistNameTextWatcher = new TextWatcher() {

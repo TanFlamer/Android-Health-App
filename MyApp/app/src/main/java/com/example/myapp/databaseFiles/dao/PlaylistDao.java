@@ -15,7 +15,7 @@ import java.util.List;
 public interface PlaylistDao {
 
     @Insert
-    void insert(Playlist playlist);
+    long insert(Playlist playlist);
 
     @Update
     void update(Playlist playlist);

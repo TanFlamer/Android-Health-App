@@ -9,6 +9,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.myapp.MainApplication;
+import com.example.myapp.databaseFiles.entity.Playlist;
 import com.example.myapp.databaseFiles.entity.Song;
 import com.example.myapp.databaseFiles.entity.SongPlaylist;
 import com.example.myapp.databaseFiles.repository.PlaylistRepository;
@@ -39,11 +40,27 @@ public class DataMusicViewModel extends AndroidViewModel {
         songRepository = ((MainApplication) getApplication()).getSongRepository();
         playlistRepository = new PlaylistRepository(application);
         songPlaylistRepository = new SongPlaylistRepository(application);
-
         allSongs = ((MainApplication) getApplication()).getSongList();
         userID = ((MainApplication) getApplication()).getUserID();
+    }
+
+    public void insertPlaylist(String newPlaylistName){
+        playListID = (int) playlistRepository.insert(new Playlist(newPlaylistName, userID));
+        playlistName = newPlaylistName;
+    }
+
+    public void deletePlaylist(){
+        playlistRepository.delete(new Playlist(playListID, playlistName, userID));
         playListID = 0;
         playlistName = null;
+    }
+
+    public void insertSongPlaylist(int songID){
+        songPlaylistRepository.insert(new SongPlaylist(playListID, songID, userID));
+    }
+
+    public void deleteSongPlaylist(int songID){
+        songPlaylistRepository.delete(new SongPlaylist(playListID, songID,userID));
     }
 
     public boolean validatePlaylistName(String playlistName){

@@ -154,6 +154,6 @@
         android:clickable="true"
         android:focusable="true"
         android:src="@drawable/ic_add"
-        tools:ignore="SpeakableTextPresentCheck" />
+        tools:ignore="SpeakableTextPresentCheck,ImageContrastCheck" />
 
 </RelativeLayout>

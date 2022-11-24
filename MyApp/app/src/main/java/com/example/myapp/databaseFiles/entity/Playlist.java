@@ -4,6 +4,7 @@ import static androidx.room.ForeignKey.CASCADE;
 
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
+import androidx.room.Ignore;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
@@ -20,6 +21,13 @@ public class Playlist {
     private Integer userID;
 
     public Playlist(String playlistName, Integer userID) {
+        this.playlistName = playlistName;
+        this.userID = userID;
+    }
+
+    @Ignore
+    public Playlist(Integer playlistID, String playlistName, Integer userID){
+        this.playlistID = playlistID;
         this.playlistName = playlistName;
         this.userID = userID;
     }

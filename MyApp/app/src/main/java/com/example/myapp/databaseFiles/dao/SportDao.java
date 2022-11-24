@@ -18,7 +18,7 @@ import java.util.List;
 public interface SportDao {
 
     @Insert
-    void insert(Sport sport);
+    long insert(Sport sport);
 
     @Update
     void update(Sport sport);

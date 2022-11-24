@@ -62,16 +62,15 @@ public class DataType extends AppCompatActivity {
 
         boolean hasFocus = name.hasFocus();
         boolean emptyTypeName = typeNameText.isEmpty();
-        boolean validTypeName = !emptyTypeName && dataTypeViewModel.validateTypeName(typeNameText);
-        boolean equalTypeName = oldTypeName == null || typeNameText.equals(oldTypeName);
+        boolean validTypeName = !emptyTypeName && (typeNameText.equals(oldTypeName) || dataTypeViewModel.validateTypeName(typeNameText));
 
-        if(!hasFocus || equalTypeName || validTypeName)
+        if(!hasFocus || validTypeName)
             nameInput.setErrorEnabled(false);
         else if(emptyTypeName)
             nameInput.setError("Type name cannot be empty");
         else
             nameInput.setError("Type name already taken");
-        return equalTypeName || validTypeName;
+        return validTypeName;
     }
 
     public boolean validateDouble(){
@@ -82,13 +81,13 @@ public class DataType extends AppCompatActivity {
         boolean positiveTypeCalorie = validTypeCalorie && Double.parseDouble(typeCalorieText) > 0;
 
         if(!hasFocus || positiveTypeCalorie)
-            nameInput.setErrorEnabled(false);
+            calorieInput.setErrorEnabled(false);
         else if(emptyTypeCalorie)
-            nameInput.setError("Calories per minute cannot be empty");
+            calorieInput.setError("Calories per minute cannot be empty");
         else if(!validTypeCalorie)
-            nameInput.setError("Calories per minute must be double");
+            calorieInput.setError("Calories per minute must be double");
         else
-            nameInput.setError("Calories per minute cannot be zero or negative");
+            calorieInput.setError("Calories per minute cannot be zero or negative");
         return positiveTypeCalorie;
     }
 

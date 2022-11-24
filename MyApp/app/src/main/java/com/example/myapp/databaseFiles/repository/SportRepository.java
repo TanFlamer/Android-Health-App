@@ -7,9 +7,11 @@ import androidx.lifecycle.LiveData;
 import com.example.myapp.databaseFiles.Database;
 import com.example.myapp.databaseFiles.dao.SportDao;
 import com.example.myapp.databaseFiles.entity.Sport;
+import com.example.myapp.databaseFiles.entity.User;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -23,8 +25,8 @@ public class SportRepository {
         sportDao = database.getSportDao();
     }
 
-    public void insert(Sport sport) {
-        new InsertSportExecutorTask(sportDao).execute(sport);
+    public long insert(Sport sport) {
+        return new InsertSportExecutorTask(sportDao).execute(sport);
     }
 
     public void update(Sport sport) {
@@ -53,8 +55,13 @@ public class SportRepository {
         private InsertSportExecutorTask(SportDao sportDao) {
             this.sportDao = sportDao;
         }
-        protected void execute(Sport sport){
-            service.execute(() -> sportDao.insert(sport));
+        protected long execute(Sport sport) {
+            try{
+                return (long) service.submit((Callable<Object>) () -> sportDao.insert(sport)).get();
+            } catch (ExecutionException | InterruptedException e) {
+                e.printStackTrace();
+            }
+            return 0;
         }
     }
 

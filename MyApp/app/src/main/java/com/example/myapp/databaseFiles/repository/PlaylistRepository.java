@@ -7,8 +7,10 @@ import androidx.lifecycle.LiveData;
 import com.example.myapp.databaseFiles.Database;
 import com.example.myapp.databaseFiles.dao.PlaylistDao;
 import com.example.myapp.databaseFiles.entity.Playlist;
+import com.example.myapp.databaseFiles.entity.User;
 
 import java.util.List;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -22,8 +24,8 @@ public class PlaylistRepository {
         playlistDao = database.getPlaylistDao();
     }
 
-    public void insert(Playlist playlist) {
-        new InsertPlaylistExecutorTask(playlistDao).execute(playlist);
+    public long insert(Playlist playlist) {
+        return new InsertPlaylistExecutorTask(playlistDao).execute(playlist);
     }
 
     public void update(Playlist playlist) {
@@ -52,8 +54,13 @@ public class PlaylistRepository {
         private InsertPlaylistExecutorTask(PlaylistDao playlistDao) {
             this.playlistDao = playlistDao;
         }
-        protected void execute(Playlist playlist){
-            service.execute(() -> playlistDao.insert(playlist));
+        protected long execute(Playlist playlist) {
+            try{
+                return (long) service.submit((Callable<Object>) () -> playlistDao.insert(playlist)).get();
+            } catch (ExecutionException | InterruptedException e) {
+                e.printStackTrace();
+            }
+            return 0;
         }
     }
 

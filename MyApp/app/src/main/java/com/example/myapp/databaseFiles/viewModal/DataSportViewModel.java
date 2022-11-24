@@ -29,9 +29,11 @@ public class DataSportViewModel extends AndroidViewModel {
     private SportRepository sportRepository;
     private TypeRepository typeRepository;
     private TypeSportRepository typeSportRepository;
-
     public List<Type> typeList;
-    private final int userID;
+
+    private int userID;
+    private int sportID;
+    private LocalDate date;
 
     public DataSportViewModel(@NonNull Application application) {
         super(application);
@@ -39,9 +41,13 @@ public class DataSportViewModel extends AndroidViewModel {
         sportRepository = new SportRepository(application);
         typeRepository = mainApplication.getTypeRepository();
         typeSportRepository = mainApplication.getTypeSportRepository();
-
         typeList = mainApplication.getTypeList();
         userID = mainApplication.getUserID();
+    }
+
+    public void insert(LocalDate newDate){
+        sportID = (int) sportRepository.insert(new Sport(date, userID));
+        date = newDate;
     }
 
     public Pair<List<Pair<Type, Duration>>, List<Type>> populateList(LocalDate date){
