@@ -20,6 +20,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.example.myapp.R;
 import com.example.myapp.databaseFiles.entity.Type;
 import com.example.myapp.databaseFiles.viewModal.SportTypeViewModel;
+import com.example.myapp.subActivities.DataType;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
@@ -148,12 +149,6 @@ public class SportType extends Fragment {
 
     public void initialiseFloatingButton(){
         floatingActionButton = requireView().findViewById(R.id.buttonFloating);
-        floatingActionButton.setOnClickListener(view1 -> {
-            Dialog dialog = new Dialog(getContext());
-            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-            dialog.setCancelable(true);
-            dialog.setContentView(R.layout.dialog_sport);
-            dialog.show();
-        });
+        floatingActionButton.setOnClickListener(view1 -> new DataType().show(getChildFragmentManager(), "Type Dialog"));
     }
 }

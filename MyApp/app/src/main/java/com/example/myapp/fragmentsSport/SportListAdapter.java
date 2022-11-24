@@ -2,7 +2,6 @@ package com.example.myapp.fragmentsSport;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,10 +15,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 
 import com.example.myapp.R;
-import com.example.myapp.databaseFiles.entity.Song;
 import com.example.myapp.databaseFiles.entity.Type;
-import com.example.myapp.mainActivities.Account;
-import com.example.myapp.subActivities.DataSport;
 
 import java.util.List;
 
@@ -61,7 +57,7 @@ public class SportListAdapter extends ArrayAdapter<Type> {
             Dialog dialog = new Dialog(getContext());
             dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             dialog.setCancelable(true);
-            dialog.setContentView(R.layout.dialog_sport);
+            dialog.setContentView(R.layout.data_type);
             dialog.show();
         });
     }

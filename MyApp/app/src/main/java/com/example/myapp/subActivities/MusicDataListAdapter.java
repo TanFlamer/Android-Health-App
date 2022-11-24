@@ -18,11 +18,8 @@ import java.util.List;
 
 public class MusicDataListAdapter extends ArrayAdapter<Song> {
 
-    private List<Song> songList;
-
     public MusicDataListAdapter(@NonNull Context context, int resource, List<Song> songList) {
         super(context, resource, songList);
-        this.songList = songList;
     }
 
     @NonNull

@@ -16,4 +16,6 @@
     <string name="delete">Delete</string>
     <string name="login">Login</string>
     <string name="playlist_name">Playlist Name</string>
+    <string name="name">Name</string>
+    <string name="calorie_per_minute">Calorie per Minute</string>
 </resources>
