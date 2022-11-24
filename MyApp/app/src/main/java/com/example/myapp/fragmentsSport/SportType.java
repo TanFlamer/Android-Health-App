@@ -1,11 +1,10 @@
 package com.example.myapp.fragmentsSport;
 
-import android.app.Dialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -149,6 +148,6 @@ public class SportType extends Fragment {
 
     public void initialiseFloatingButton(){
         floatingActionButton = requireView().findViewById(R.id.buttonFloating);
-        floatingActionButton.setOnClickListener(view1 -> new DataType().show(getChildFragmentManager(), "Type Dialog"));
+        floatingActionButton.setOnClickListener(view1 -> startActivity(new Intent(getContext(), DataType.class)));
     }
 }

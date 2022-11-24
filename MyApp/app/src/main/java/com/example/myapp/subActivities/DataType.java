@@ -1,58 +1,137 @@
 package com.example.myapp.subActivities;
 
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.EditText;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.DialogFragment;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.example.myapp.R;
+import com.example.myapp.databaseFiles.viewModal.DataTypeViewModel;
 import com.google.android.material.textfield.TextInputLayout;
 
-public class DataType extends DialogFragment {
+import java.util.Objects;
 
+public class DataType extends AppCompatActivity {
+
+    DataTypeViewModel dataTypeViewModel;
     EditText name, calorie;
     TextInputLayout nameInput, calorieInput;
     Button buttonSave, buttonReturn;
 
-    @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.data_type, container, false);
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.data_type);
+        dataTypeViewModel = new ViewModelProvider(this).get(DataTypeViewModel.class);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
+        initialiseAll();
     }
 
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
-        name = view.findViewById(R.id.name);
-        calorie = view.findViewById(R.id.calorie);
-
-        nameInput = view.findViewById(R.id.nameInput);
-        calorieInput = view.findViewById(R.id.calorieInput);
-
-        buttonSave = view.findViewById(R.id.buttonSave);
-        buttonReturn = view.findViewById(R.id.buttonReturn);
-        buttonReturn.setOnClickListener(v -> dismiss());
+    public void initialiseAll(){
+        initialiseEditTexts();
+        initialiseButtons();
     }
 
-    /*public boolean validateName(TextInputLayout textInputLayout, EditText editText){
-        String nameText = editText.getText().toString();
-        boolean hasFocus = editText.hasFocus();
-        boolean emptyUsername = nameText.isEmpty();
-        boolean validUsername = !emptyUsername && accountViewModel.validateUsername(nameText);
+    public void initialiseEditTexts(){
+        name = findViewById(R.id.name);
+        nameInput = findViewById(R.id.nameInput);
+        name.addTextChangedListener(typeTextWatcher);
+        name.setOnFocusChangeListener((v, hasFocus) -> validateName());
 
-        if(!hasFocus || validUsername)
-            textInputLayout.setErrorEnabled(false);
-        else if(emptyUsername)
-            textInputLayout.setError("Username cannot be empty");
+        calorie = findViewById(R.id.calorie);
+        calorieInput = findViewById(R.id.calorieInput);
+        calorie.addTextChangedListener(typeTextWatcher);
+        calorie.setOnFocusChangeListener((v, hasFocus) -> validateDouble());
+    }
+
+    public void initialiseButtons(){
+        buttonSave = findViewById(R.id.buttonSave);
+        buttonReturn = findViewById(R.id.buttonReturn);
+        buttonReturn.setOnClickListener(v -> finish());
+    }
+
+    public boolean validateName(){
+        String typeNameText = name.getText().toString();
+        String oldTypeName = dataTypeViewModel.getTypeName();
+
+        boolean hasFocus = name.hasFocus();
+        boolean emptyTypeName = typeNameText.isEmpty();
+        boolean validTypeName = !emptyTypeName && dataTypeViewModel.validateTypeName(typeNameText);
+        boolean equalTypeName = oldTypeName == null || typeNameText.equals(oldTypeName);
+
+        if(!hasFocus || equalTypeName || validTypeName)
+            nameInput.setErrorEnabled(false);
+        else if(emptyTypeName)
+            nameInput.setError("Type name cannot be empty");
         else
-            textInputLayout.setError("Username already taken");
-        return validUsername;
-    }*/
+            nameInput.setError("Type name already taken");
+        return equalTypeName || validTypeName;
+    }
+
+    public boolean validateDouble(){
+        String typeCalorieText = calorie.getText().toString();
+        boolean hasFocus = calorie.hasFocus();
+        boolean emptyTypeCalorie = typeCalorieText.isEmpty();
+        boolean validTypeCalorie = !emptyTypeCalorie && isDouble(typeCalorieText);
+        boolean positiveTypeCalorie = validTypeCalorie && Double.parseDouble(typeCalorieText) > 0;
+
+        if(!hasFocus || positiveTypeCalorie)
+            nameInput.setErrorEnabled(false);
+        else if(emptyTypeCalorie)
+            nameInput.setError("Calories per minute cannot be empty");
+        else if(!validTypeCalorie)
+            nameInput.setError("Calories per minute must be double");
+        else
+            nameInput.setError("Calories per minute cannot be zero or negative");
+        return positiveTypeCalorie;
+    }
+
+    public boolean isDouble(String calorieText){
+        try{
+            Double.parseDouble(calorieText);
+            return true;
+        }
+        catch (NumberFormatException e){
+            return false;
+        }
+    }
+
+    private final TextWatcher typeTextWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+            boolean validTypeName = validateName();
+            boolean validTypeCalorie = validateDouble();
+            buttonSave.setEnabled(validTypeName && validTypeCalorie);
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+
+        }
+    };
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            finish();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    public boolean onCreateOptionsMenu(Menu menu) {
+        return true;
+    }
 }
