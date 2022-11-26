@@ -25,12 +25,12 @@ import com.example.myapp.databaseFiles.type.Type;
 import com.example.myapp.subActivities.type.TypeSpinnerAdapter;
 
 import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
+import java.util.TimeZone;
 
 public class DataSport extends AppCompatActivity {
 
@@ -40,20 +40,22 @@ public class DataSport extends AppCompatActivity {
     Button buttonDate, buttonAdd, buttonDuration, buttonDelete, buttonEditSave, buttonReturn;
     Spinner typeSpinner;
 
-    int year, month, day;
-    int hour, minute;
-
-    HashMap<Pair<Integer, Integer>, Integer> changeLogs;
     SportDataListAdapter sportDataListAdapter;
     TypeSpinnerAdapter spinnerAdapter;
+
+    HashMap<Pair<Integer, Integer>, Integer> changeLogs;
     List<Pair<Pair<Type, Integer>, Boolean>> sportDataList;
     List<Type> typeList;
+
+    int year, month, day;
+    int hour, minute;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.data_sport);
         dataSportViewModel = new ViewModelProvider(this).get(DataSportViewModel.class);
+        changeLogs = new HashMap<>();
         sportDataList = new ArrayList<>();
         typeList = new ArrayList<>();
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
@@ -63,11 +65,11 @@ public class DataSport extends AppCompatActivity {
     public void populateLists(long date){
         Pair<List<Pair<Type, Integer>>, List<Type>> listPair = dataSportViewModel.populateList(date);
 
-        List<Pair<Type, Integer>> sportsList = listPair.first;
-        sportDataList = new ArrayList<>();
-        for(Pair<Type, Integer> typeDurationPair : sportsList) sportDataList.add(new Pair<>(typeDurationPair, false));
+        sportDataList.clear();
+        typeList.clear();
 
-        typeList = listPair.second;
+        for(Pair<Type, Integer> typeDurationPair : listPair.first) sportDataList.add(new Pair<>(typeDurationPair, false));
+        typeList.addAll(listPair.second);
         resetList();
     }
 
@@ -179,7 +181,8 @@ public class DataSport extends AppCompatActivity {
                 hiddenLayout.setVisibility(View.VISIBLE);
             }
             else {
-                if(dataSportViewModel.getSportID() == 0) dataSportViewModel.insertSport(LocalDate.of(year, month, day).atStartOfDay(ZoneId.of("Asia/Singapore")).toInstant().toEpochMilli());
+                long date = LocalDate.of(year, month, day).atStartOfDay(TimeZone.getDefault().toZoneId()).toInstant().toEpochMilli();
+                if(dataSportViewModel.getSport() == null) dataSportViewModel.insertSport(date);
                 changeLogs.forEach((pair, operation) -> {
                     int typeID = pair.first;
                     int duration = pair.second;
@@ -202,15 +205,15 @@ public class DataSport extends AppCompatActivity {
         year = currentDate.get(Calendar.YEAR);
         month = currentDate.get(Calendar.MONTH);
         day = currentDate.get(Calendar.DAY_OF_MONTH);
-        populateLists(LocalDate.of(year, month, day).atStartOfDay(ZoneId.of("Asia/Singapore")).toInstant().toEpochMilli());
-        buttonDate.setText(String.format("%02d/%02d/%04d", day, month, year));
+        populateLists(LocalDate.of(year, month, day).atStartOfDay(TimeZone.getDefault().toZoneId()).toInstant().toEpochMilli());
+        buttonDate.setText(String.format("%02d/%02d/%04d", day, month + 1, year));
 
         buttonDate.setOnClickListener(view -> new DatePickerDialog(this, (datePicker, i, i1, i2) -> {
             year = i;
             month = i1;
             day = i2;
-            populateLists(LocalDate.of(year, month, day).atStartOfDay(ZoneId.of("Asia/Singapore")).toInstant().toEpochMilli());
-            buttonDate.setText(String.format("%02d/%02d/%04d", day, month, year));
+            populateLists(LocalDate.of(year, month, day).atStartOfDay(TimeZone.getDefault().toZoneId()).toInstant().toEpochMilli());
+            buttonDate.setText(String.format("%02d/%02d/%04d", day, month + 1, year));
         }, year, month, day).show());
     }
 
@@ -227,6 +230,7 @@ public class DataSport extends AppCompatActivity {
     public void resetButtons(){
         buttonEditSave.setEnabled(!(sportDataList.isEmpty() || changeLogs.isEmpty()) || hiddenLayout.getVisibility() == View.GONE);
         buttonDelete.setEnabled(selected());
+        checkAddButton();
     }
 
     public boolean selected(){
@@ -240,6 +244,7 @@ public class DataSport extends AppCompatActivity {
         Pair<Pair<Type, Integer>, Boolean> pairBooleanPair = sportDataList.get(position);
         view.setBackgroundColor(pairBooleanPair.second ? Color.WHITE : Color.BLUE);
         sportDataList.set(position, new Pair<>(pairBooleanPair.first, !pairBooleanPair.second));
+        buttonDelete.setEnabled(selected());
         Pair<Pair<Type, Integer>, Boolean> typeDurationPair = (Pair<Pair<Type, Integer>, Boolean>) parent.getItemAtPosition(position);
         Toast.makeText(getApplicationContext(), typeDurationPair.first.first.getTypeName() + " clicked", Toast.LENGTH_SHORT).show();
     };

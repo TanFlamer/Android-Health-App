@@ -16,9 +16,9 @@ import com.example.myapp.R;
 import com.example.myapp.databaseFiles.sleep.Sleep;
 
 import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.Calendar;
 import java.util.Objects;
+import java.util.TimeZone;
 
 public class DataSleep extends AppCompatActivity{
 
@@ -31,6 +31,10 @@ public class DataSleep extends AppCompatActivity{
     int sleepHour, sleepMinute;
     int wakeHour, wakeMinute;
 
+    long date;
+    int timeSleep;
+    int timeWake;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,20 +44,23 @@ public class DataSleep extends AppCompatActivity{
         initialiseAll();
     }
 
-    @SuppressLint("SetTextI18n")
-    public void fillDateData(long date){
-        Sleep sleep = dataSleepViewModel.findSleep(date);
-        if(sleep == null){
-            sleepTime.setText("Sleep Time");
-            wakeTime.setText("Wake Time");
-            durationView.setText("-");
-        }
-        else{
-            sleepTime.setText(sleep.getSleepTime().toString());
-            wakeTime.setText(sleep.getWakeTime().toString());
-            //durationView.setText(sleep.getSleepDuration().toString());
-        }
+    @SuppressLint({"SetTextI18n", "DefaultLocale"})
+    public void fillDateData(){
+        date = LocalDate.of(year, month, day).atStartOfDay(TimeZone.getDefault().toZoneId()).toInstant().toEpochMilli();
+        initialiseTime(dataSleepViewModel.loadSleepData(date));
+        sleepTime.setText(String.format("%02d:%02d", sleepHour, sleepMinute));
+        wakeTime.setText(String.format("%02d:%02d", wakeHour, wakeMinute));
+        calculateSleepDuration();
         buttonSave.setEnabled(false);
+    }
+
+    public void initialiseTime(Sleep sleep){
+        int sleepTime = sleep == null ? 0 : sleep.getSleepTime();
+        sleepHour = sleepTime / 60;
+        sleepMinute = sleepTime % 60;
+        int wakeTime = sleep == null ? 0 : sleep.getWakeTime();
+        wakeHour = wakeTime / 60;
+        wakeMinute = wakeTime % 60;
     }
 
     public void initialiseAll(){
@@ -83,15 +90,15 @@ public class DataSleep extends AppCompatActivity{
         year = currentDate.get(Calendar.YEAR);
         month = currentDate.get(Calendar.MONTH);
         day = currentDate.get(Calendar.DAY_OF_MONTH);
-        fillDateData(LocalDate.of(year, month, day).atStartOfDay(ZoneId.of("Asia/Singapore")).toInstant().toEpochMilli());
-        buttonDate.setText(String.format("%02d/%02d/%04d", day, month, year));
+        fillDateData();
+        buttonDate.setText(String.format("%02d/%02d/%04d", day, month + 1, year));
 
         buttonDate.setOnClickListener(view -> new DatePickerDialog(this, (datePicker, i, i1, i2) -> {
             year = i;
             month = i1;
             day = i2;
-            fillDateData(LocalDate.of(year, month, day).atStartOfDay(ZoneId.of("Asia/Singapore")).toInstant().toEpochMilli());
-            buttonDate.setText(String.format("%02d/%02d/%04d", day, month, year));
+            fillDateData();
+            buttonDate.setText(String.format("%02d/%02d/%04d", day, month + 1, year));
         }, year, month, day).show());
     }
 
@@ -117,15 +124,22 @@ public class DataSleep extends AppCompatActivity{
 
     @SuppressLint("DefaultLocale")
     public boolean calculateSleepDuration(){
-        int duration = (wakeHour - sleepHour) * 60 + (60 - sleepMinute + wakeMinute);
-        duration += ((sleepHour >= 12 && wakeHour < 12) ? 23 : (sleepHour < 12 && wakeHour >= 12) ? 11 : (sleepHour * 60 + sleepMinute < wakeHour * 60 + wakeMinute) ? -1 : -24) * 60;
-        boolean validDuration = duration > 0;
-        durationView.setText(validDuration ? String.format("%02d:%02d", duration / 60, duration % 60) : "Invalid Time Range");
-        return validDuration;
+        int duration = (wakeHour - sleepHour - 1) * 60 + (60 - sleepMinute + wakeMinute);
+        duration += (wakeHour * 60 + wakeMinute >= sleepHour * 60 + sleepMinute) ? 0 : 24 * 60;
+        durationView.setText(duration > 0 ? String.format("%02d:%02d", duration / 60, duration % 60) : "-");
+        timeSleep = sleepHour * 60 + sleepMinute;
+        timeWake = wakeHour * 60 + wakeMinute;
+        return duration > 0;
     }
 
     public void initialiseBottomButtons(){
-        //buttonSave.setOnClickListener();
+        buttonSave.setOnClickListener(v -> {
+            if(dataSleepViewModel.getSleep() == null)
+                dataSleepViewModel.insert(date, timeSleep, timeWake);
+            else
+                dataSleepViewModel.update(timeSleep, timeWake);
+            finish();
+        });
         buttonReturn.setOnClickListener(v -> finish());
     }
 

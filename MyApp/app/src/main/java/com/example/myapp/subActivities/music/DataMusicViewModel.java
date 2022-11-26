@@ -8,101 +8,95 @@ import androidx.lifecycle.AndroidViewModel;
 
 import com.example.myapp.MainApplication;
 import com.example.myapp.databaseFiles.playlist.Playlist;
+import com.example.myapp.databaseFiles.playlist.PlaylistRepository;
 import com.example.myapp.databaseFiles.song.Song;
 import com.example.myapp.databaseFiles.songPlaylist.SongPlaylist;
-import com.example.myapp.databaseFiles.playlist.PlaylistRepository;
 import com.example.myapp.databaseFiles.songPlaylist.SongPlaylistRepository;
-import com.example.myapp.databaseFiles.song.SongRepository;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 public class DataMusicViewModel extends AndroidViewModel {
 
-    private SongRepository songRepository;
     private PlaylistRepository playlistRepository;
     private SongPlaylistRepository songPlaylistRepository;
 
-    private List<Song> allSongs;
-    private List<Song> selectedSongList;
-    private List<Song> unselectedSongList;
+    private HashMap<Integer, Song> songMap;
+    private List<Song> songList;
+    private List<SongPlaylist> songPlaylistList;
 
+    private Playlist playlist;
     private int userID;
-    private int playListID;
-    private String playlistName;
 
     public DataMusicViewModel(@NonNull Application application) {
         super(application);
-        songRepository = ((MainApplication) getApplication()).getSongRepository();
-        playlistRepository = new PlaylistRepository(application);
-        songPlaylistRepository = new SongPlaylistRepository(application);
-        allSongs = ((MainApplication) getApplication()).getSongList();
+        playlistRepository = ((MainApplication) getApplication()).getPlaylistRepository();
+        songPlaylistRepository = ((MainApplication) getApplication()).getSongPlaylistRepository();
+
+        songPlaylistList = ((MainApplication) getApplication()).getSongPlaylistList();
+        songList = ((MainApplication) getApplication()).getSongList();
+
+        songMap = new HashMap<>();
+        for(Song song : songList) songMap.put(song.getSongID(), song);
+
         userID = ((MainApplication) getApplication()).getUserID();
     }
 
-    public void insertPlaylist(String newPlaylistName){
-        playListID = (int) playlistRepository.insert(new Playlist(newPlaylistName, userID));
-        playlistName = newPlaylistName;
-    }
-
-    public void updatePlaylist(String newPlaylistName){
-        playlistRepository.update(new Playlist(playListID, newPlaylistName, userID));
-        playlistName = newPlaylistName;
-    }
-
-    public void deletePlaylist(){
-        playlistRepository.delete(new Playlist(playListID, playlistName, userID));
-        playListID = 0;
-        playlistName = null;
-    }
-
-    public void insertSongPlaylist(int songID){
-        songPlaylistRepository.insert(new SongPlaylist(playListID, songID, userID));
-    }
-
-    public void deleteSongPlaylist(int songID){
-        songPlaylistRepository.delete(new SongPlaylist(playListID, songID,userID));
+    public String loadPlaylist(String playlistName){
+        playlist = playlistName == null ? null : playlistRepository.findPlaylist(userID, playlistName).get(0);
+        return playlistName == null ? "" : playlistName;
     }
 
     public boolean validatePlaylistName(String playlistName){
         return playlistRepository.findPlaylist(userID, playlistName).size() == 0;
     }
 
+    public void insertPlaylist(String newPlaylistName){
+        int playListID = (int) playlistRepository.insert(new Playlist(newPlaylistName, userID));
+        playlist = new Playlist(playListID, newPlaylistName, userID);
+    }
+
+    public void updatePlaylist(String newPlaylistName){
+        playlist.setPlaylistName(newPlaylistName);
+        playlistRepository.update(playlist);
+    }
+
+    public void deletePlaylist(){
+        playlistRepository.delete(playlist);
+        playlist = null;
+    }
+
+    public void insertSongPlaylist(int songID){
+        songPlaylistRepository.insert(new SongPlaylist(playlist.getPlaylistID(), songID, userID));
+    }
+
+    public void deleteSongPlaylist(int songID){
+        songPlaylistRepository.delete(new SongPlaylist(playlist.getPlaylistID(), songID, userID));
+    }
+
     public Pair<List<Song>, List<Song>> populateLists(){
-        if(playListID == 0) {
-            unselectedSongList = new ArrayList<>(allSongs);
-            selectedSongList = new ArrayList<>();
-        }
+        if(playlist == null)
+            return new Pair<>(new ArrayList<>(songList), new ArrayList<>());
         else{
             List<Song> selectedList = new ArrayList<>();
-            List<SongPlaylist> songPlaylists = songPlaylistRepository.getSongPlaylist(playListID);
-            for(SongPlaylist songPlaylist : songPlaylists) selectedList.add(songRepository.getSong(songPlaylist.getSongID()).get(0));
+            Set<Song> songSet = new HashSet<>(songList);
 
-            Set<Song> selectedSong = new HashSet<>(allSongs);
-            for(Song song : selectedList) selectedSong.remove(song);
-            List<Song> unselectedList = new ArrayList<>(selectedSong);
+            List<SongPlaylist> songPlaylists = new ArrayList<>(songPlaylistList);
+            songPlaylists.removeIf(songPlaylist -> !songPlaylist.getPlaylistID().equals(playlist.getPlaylistID()));
 
-            selectedSongList = new ArrayList<>(selectedList);
-            unselectedSongList = new ArrayList<>(unselectedList);
+            for(SongPlaylist songPlaylist : songPlaylists){
+                Song song = songMap.get(songPlaylist.getSongID());
+                selectedList.add(song);
+                songSet.remove(song);
+            }
+            return new Pair<>(new ArrayList<>(songSet), selectedList);
         }
-        return new Pair<>(unselectedSongList, selectedSongList);
     }
 
-    public int getPlayListID() {
-        return playListID;
-    }
-
-    public void setPlayListID(int playListID) {
-        this.playListID = playListID;
-    }
-
-    public String getPlaylistName() {
-        return playlistName;
-    }
-
-    public void setPlaylistName(String playlistName) {
-        this.playlistName = playlistName;
+    public Playlist getPlaylist() {
+        return playlist;
     }
 }

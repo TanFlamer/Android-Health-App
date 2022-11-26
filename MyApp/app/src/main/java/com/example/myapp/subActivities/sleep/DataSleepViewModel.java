@@ -14,10 +14,8 @@ import java.util.List;
 public class DataSleepViewModel extends AndroidViewModel {
 
     private SleepRepository sleepRepository;
-
+    private Sleep sleep;
     private int userID;
-    private int sleepID;
-    private Long date;
 
     public DataSleepViewModel(@NonNull Application application) {
         super(application);
@@ -25,31 +23,25 @@ public class DataSleepViewModel extends AndroidViewModel {
         userID = ((MainApplication) getApplication()).getUserID();
     }
 
-    public void insert(Integer sleepTime, Integer wakeTime){
+    public Sleep loadSleepData(long date){
+        List<Sleep> sleepList = sleepRepository.findSleep(userID, date);
+        sleep = sleepList.size() == 0 ? null : sleepList.get(0);
+        return sleep;
+    }
+
+    public void insert(long date, int sleepTime, int wakeTime){
         sleepRepository.insert(new Sleep(date, sleepTime, wakeTime, userID));
     }
 
-    public void update(Integer sleepTime, Integer wakeTime){
-        sleepRepository.update(new Sleep(sleepID, date, sleepTime, wakeTime, userID));
+    public void update(int sleepTime, int wakeTime){
+        sleepRepository.update(new Sleep(sleep.getSleepID(), sleep.getDate(), sleepTime, wakeTime, userID));
     }
 
-    public void delete(Integer sleepTime, Integer wakeTime){
-        sleepRepository.delete(new Sleep(sleepID, date, sleepTime, wakeTime, userID));
+    public void delete(){
+        sleepRepository.delete(sleep);
     }
 
-    public void setDate(Long date) {
-        this.date = date;
-    }
-
-    public Sleep findSleep(Long date){
-        List<Sleep> sleepList = sleepRepository.findSleep(userID, date);
-        if(sleepList.size() == 0){
-            this.date = null;
-            return null;
-        }
-        else {
-            this.date = date;
-            return sleepList.get(0);
-        }
+    public Sleep getSleep() {
+        return sleep;
     }
 }

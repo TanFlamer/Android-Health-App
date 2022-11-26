@@ -5,8 +5,6 @@ import android.app.Application;
 import androidx.lifecycle.LiveData;
 
 import com.example.myapp.Database;
-import com.example.myapp.databaseFiles.typeSport.TypeSportDao;
-import com.example.myapp.databaseFiles.typeSport.TypeSport;
 
 import java.util.List;
 import java.util.concurrent.ExecutionException;

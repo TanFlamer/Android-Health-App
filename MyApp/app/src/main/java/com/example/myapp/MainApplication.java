@@ -5,7 +5,11 @@ import android.util.Pair;
 
 import androidx.lifecycle.MutableLiveData;
 
+import com.example.myapp.databaseFiles.playlist.Playlist;
+import com.example.myapp.databaseFiles.playlist.PlaylistRepository;
 import com.example.myapp.databaseFiles.song.Song;
+import com.example.myapp.databaseFiles.songPlaylist.SongPlaylist;
+import com.example.myapp.databaseFiles.songPlaylist.SongPlaylistRepository;
 import com.example.myapp.databaseFiles.sport.Sport;
 import com.example.myapp.databaseFiles.type.Type;
 import com.example.myapp.databaseFiles.typeSport.TypeSport;
@@ -26,11 +30,15 @@ public class MainApplication extends Application {
 
     private UserRepository userRepository;
     private SongRepository songRepository;
+    private PlaylistRepository playlistRepository;
+    private SongPlaylistRepository songPlaylistRepository;
     private SportRepository sportRepository;
     private TypeRepository typeRepository;
     private TypeSportRepository typeSportRepository;
 
     private List<Song> songList;
+    private List<Playlist> playlistList;
+    private List<SongPlaylist> songPlaylistList;
     private List<Type> typeList;
     private List<Sport> sportList;
     private List<TypeSport> typeSportList;
@@ -40,10 +48,6 @@ public class MainApplication extends Application {
         super.onCreate();
         saveLogs = new MutableLiveData<>();
         saveLogs.setValue(new ArrayList<>());
-        sportList = new ArrayList<>();
-        songList = new ArrayList<>();
-        typeList = new ArrayList<>();
-        typeSportList = new ArrayList<>();
     }
 
     public void updateSaveLogs(Pair<String, LocalTime> newSaveLog){
@@ -60,14 +64,34 @@ public class MainApplication extends Application {
 
     public SongRepository getSongRepository(){
         if(songRepository == null) {
+            songList = new ArrayList<>();
             songRepository = new SongRepository(this);
             songRepository.getAllSongs(userID).observeForever(newSongList -> songList = newSongList);
         }
         return songRepository;
     }
 
+    public PlaylistRepository getPlaylistRepository(){
+        if(playlistRepository == null) {
+            playlistList = new ArrayList<>();
+            playlistRepository = new PlaylistRepository(this);
+            playlistRepository.getAllPlaylists(userID).observeForever(newPlaylistList -> playlistList = newPlaylistList);
+        }
+        return playlistRepository;
+    }
+
+    public SongPlaylistRepository getSongPlaylistRepository(){
+        if(songPlaylistRepository == null) {
+            songPlaylistList = new ArrayList<>();
+            songPlaylistRepository = new SongPlaylistRepository(this);
+            songPlaylistRepository.getAllSongPlaylist(userID).observeForever(newSongPlaylistList -> songPlaylistList = newSongPlaylistList);
+        }
+        return songPlaylistRepository;
+    }
+
     public SportRepository getSportRepository(){
         if(sportRepository == null) {
+            sportList = new ArrayList<>();
             sportRepository = new SportRepository(this);
             sportRepository.getAllSport(userID).observeForever(newSportList -> sportList = newSportList);
         }
@@ -76,6 +100,7 @@ public class MainApplication extends Application {
 
     public TypeRepository getTypeRepository(){
         if(typeRepository == null) {
+            typeList = new ArrayList<>();
             typeRepository = new TypeRepository(this);
             typeRepository.getAllTypes(userID).observeForever(newTypeList -> typeList = newTypeList);
         }
@@ -84,6 +109,7 @@ public class MainApplication extends Application {
 
     public TypeSportRepository getTypeSportRepository(){
         if(typeSportRepository == null) {
+            typeSportList = new ArrayList<>();
             typeSportRepository = new TypeSportRepository(this);
             typeSportRepository.getAllTypeSport(userID).observeForever(newTypeSportList -> typeSportList = newTypeSportList);
         }
@@ -104,6 +130,14 @@ public class MainApplication extends Application {
 
     public List<Song> getSongList() {
         return songList;
+    }
+
+    public List<Playlist> getPlaylistList() {
+        return playlistList;
+    }
+
+    public List<SongPlaylist> getSongPlaylistList() {
+        return songPlaylistList;
     }
 
     public List<Type> getTypeList() {

@@ -2,15 +2,18 @@ package com.example.myapp.fragments.music.musicPlaylists;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.myapp.R;
 import com.example.myapp.databaseFiles.playlist.Playlist;
 import com.example.myapp.databaseFiles.song.Song;
+import com.example.myapp.subActivities.music.DataMusic;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -73,7 +76,14 @@ public class MusicExpandableListAdapter extends BaseExpandableListAdapter {
             view = LayoutInflater.from(context).inflate(R.layout.music_expandable_list_item, null);
 
         TextView nameView = view.findViewById(R.id.musicPlaylistName);
+        ImageView clickEdit = view.findViewById(R.id.clickEdit);
+        ImageView clickDelete = view.findViewById(R.id.clickDelete);
         nameView.setText(playlistName);
+        clickEdit.setOnClickListener(v -> {
+            Intent intent = new Intent(context, DataMusic.class);
+            intent.putExtra("playlistName", playlistName);
+            context.startActivity(intent);
+        });
 
         return view;
     }

@@ -19,6 +19,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.myapp.R;
+import com.example.myapp.databaseFiles.playlist.Playlist;
 import com.example.myapp.databaseFiles.song.Song;
 import com.google.android.material.textfield.TextInputLayout;
 
@@ -46,12 +47,14 @@ public class DataMusic extends AppCompatActivity {
     List<Pair<Song, Boolean>> unselectedSongList;
     List<Pair<Song, Boolean>> selectedSongList;
 
+    String namePlaylist;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.data_music);
         dataMusicViewModel = new ViewModelProvider(this).get(DataMusicViewModel.class);
-        //get playlist id from intent first
+        namePlaylist = dataMusicViewModel.loadPlaylist(getIntent().getStringExtra("playlistName"));
         changeLogs = new HashMap<>();
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         initialiseSongLists();
@@ -60,14 +63,10 @@ public class DataMusic extends AppCompatActivity {
 
     public void initialiseSongLists(){
         Pair<List<Song>, List<Song>> songLists = dataMusicViewModel.populateLists();
-
-        List<Song> unselectedSongs = songLists.first;
         unselectedSongList = new ArrayList<>();
-        for(Song song : unselectedSongs) unselectedSongList.add(new Pair<>(song, false));
-
-        List<Song> selectedSongs = songLists.second;
+        for(Song song : songLists.first) unselectedSongList.add(new Pair<>(song, false));
         selectedSongList = new ArrayList<>();
-        for(Song song : selectedSongs) selectedSongList.add(new Pair<>(song, false));
+        for(Song song : songLists.second) selectedSongList.add(new Pair<>(song, false));
     }
 
     public void initialiseAll(){
@@ -165,6 +164,7 @@ public class DataMusic extends AppCompatActivity {
     public void initialiseEditText(){
         playlistNameInput = findViewById(R.id.playlistNameInput);
         playlistName = findViewById(R.id.playlistName);
+        playlistName.setText(namePlaylist);
         playlistName.addTextChangedListener(playlistNameTextWatcher);
         playlistName.setOnFocusChangeListener((v, hasFocus) -> validatePlaylistName(playlistNameInput, playlistName));
     }
@@ -172,7 +172,11 @@ public class DataMusic extends AppCompatActivity {
     public void initialiseButtons(){
         saveButton = findViewById(R.id.editSaveButton);
         saveButton.setOnClickListener(v -> {
-            if(dataMusicViewModel.getPlayListID() == 0) dataMusicViewModel.insertPlaylist(playlistName.getText().toString());
+            String newPlaylistName = playlistName.getText().toString();
+            if(dataMusicViewModel.getPlaylist() == null)
+                dataMusicViewModel.insertPlaylist(newPlaylistName);
+            else if(!namePlaylist.equals(newPlaylistName))
+                dataMusicViewModel.updatePlaylist(newPlaylistName);
             changeLogs.forEach((songID, operation) -> {
                 if(operation > 0)
                     dataMusicViewModel.insertSongPlaylist(songID);
@@ -187,11 +191,9 @@ public class DataMusic extends AppCompatActivity {
 
     public boolean validatePlaylistName(TextInputLayout textInputLayout, EditText editText){
         String playlistText = editText.getText().toString();
-        String oldPlaylistName = dataMusicViewModel.getPlaylistName();
-
         boolean hasFocus = editText.hasFocus();
         boolean emptyPlaylistName = playlistText.isEmpty();
-        boolean validPlaylistName = !emptyPlaylistName && (playlistText.equals(oldPlaylistName) || dataMusicViewModel.validatePlaylistName(playlistText));
+        boolean validPlaylistName = !emptyPlaylistName && (playlistText.equals(namePlaylist) || dataMusicViewModel.validatePlaylistName(playlistText));
 
         if(!hasFocus || validPlaylistName)
             textInputLayout.setErrorEnabled(false);
