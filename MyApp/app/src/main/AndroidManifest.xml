@@ -17,28 +17,28 @@
         android:theme="@style/Theme.MyApp"
         tools:targetApi="31">
         <activity
-            android:name=".subActivities.DataMusic"
+            android:name=".subActivities.music.DataMusic"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
-            android:name=".subActivities.DataType"
+            android:name=".subActivities.type.DataType"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
-            android:name=".mainActivities.Account"
+            android:name=".mainActivities.account.Account"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
-            android:name=".mainActivities.Login"
+            android:name=".mainActivities.login.Login"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -51,49 +51,49 @@
                 android:value="" />
         </activity>
         <activity
-            android:name=".subActivities.DataSport"
+            android:name=".subActivities.sport.DataSport"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
-            android:name=".subActivities.DataSleep"
+            android:name=".subActivities.sleep.DataSleep"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
-            android:name=".mainActivities.Info"
+            android:name=".mainActivities.info.Info"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
-            android:name=".mainActivities.Sport"
+            android:name=".mainActivities.sport.Sport"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
-            android:name=".mainActivities.Sleep"
+            android:name=".mainActivities.sleep.Sleep"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
-            android:name=".mainActivities.Save"
+            android:name=".mainActivities.save.Save"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
-            android:name=".mainActivities.Music"
+            android:name=".mainActivities.music.Music"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

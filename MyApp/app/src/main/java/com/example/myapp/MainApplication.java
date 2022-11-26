@@ -4,14 +4,16 @@ import android.app.Application;
 import android.util.Pair;
 
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Observer;
 
-import com.example.myapp.databaseFiles.entity.Song;
-import com.example.myapp.databaseFiles.entity.Type;
-import com.example.myapp.databaseFiles.repository.SongRepository;
-import com.example.myapp.databaseFiles.repository.TypeRepository;
-import com.example.myapp.databaseFiles.repository.TypeSportRepository;
-import com.example.myapp.databaseFiles.repository.UserRepository;
+import com.example.myapp.databaseFiles.song.Song;
+import com.example.myapp.databaseFiles.sport.Sport;
+import com.example.myapp.databaseFiles.type.Type;
+import com.example.myapp.databaseFiles.typeSport.TypeSport;
+import com.example.myapp.databaseFiles.song.SongRepository;
+import com.example.myapp.databaseFiles.sport.SportRepository;
+import com.example.myapp.databaseFiles.type.TypeRepository;
+import com.example.myapp.databaseFiles.typeSport.TypeSportRepository;
+import com.example.myapp.databaseFiles.user.UserRepository;
 
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -24,19 +26,24 @@ public class MainApplication extends Application {
 
     private UserRepository userRepository;
     private SongRepository songRepository;
+    private SportRepository sportRepository;
     private TypeRepository typeRepository;
     private TypeSportRepository typeSportRepository;
 
     private List<Song> songList;
     private List<Type> typeList;
+    private List<Sport> sportList;
+    private List<TypeSport> typeSportList;
 
     @Override
     public void onCreate() {
         super.onCreate();
         saveLogs = new MutableLiveData<>();
         saveLogs.setValue(new ArrayList<>());
+        sportList = new ArrayList<>();
         songList = new ArrayList<>();
         typeList = new ArrayList<>();
+        typeSportList = new ArrayList<>();
     }
 
     public void updateSaveLogs(Pair<String, LocalTime> newSaveLog){
@@ -59,6 +66,14 @@ public class MainApplication extends Application {
         return songRepository;
     }
 
+    public SportRepository getSportRepository(){
+        if(sportRepository == null) {
+            sportRepository = new SportRepository(this);
+            sportRepository.getAllSport(userID).observeForever(newSportList -> sportList = newSportList);
+        }
+        return sportRepository;
+    }
+
     public TypeRepository getTypeRepository(){
         if(typeRepository == null) {
             typeRepository = new TypeRepository(this);
@@ -68,8 +83,10 @@ public class MainApplication extends Application {
     }
 
     public TypeSportRepository getTypeSportRepository(){
-        if(typeSportRepository == null)
+        if(typeSportRepository == null) {
             typeSportRepository = new TypeSportRepository(this);
+            typeSportRepository.getAllTypeSport(userID).observeForever(newTypeSportList -> typeSportList = newTypeSportList);
+        }
         return typeSportRepository;
     }
 
@@ -91,5 +108,13 @@ public class MainApplication extends Application {
 
     public List<Type> getTypeList() {
         return typeList;
+    }
+
+    public List<Sport> getSportList() {
+        return sportList;
+    }
+
+    public List<TypeSport> getTypeSportList() {
+        return typeSportList;
     }
 }
