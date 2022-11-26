@@ -6,6 +6,7 @@ import android.util.Pair;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MediatorLiveData;
 
 import com.example.myapp.MainApplication;
 import com.example.myapp.databaseFiles.sport.Sport;
@@ -16,54 +17,65 @@ import com.example.myapp.databaseFiles.type.TypeRepository;
 import com.example.myapp.databaseFiles.typeSport.TypeSportRepository;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
 public class SportStatisticsViewModel extends AndroidViewModel {
 
-    private SportRepository sportRepository;
     private TypeRepository typeRepository;
     private TypeSportRepository typeSportRepository;
 
-    private HashMap<Integer, Sport> sportList;
-    private HashMap<Integer, Type> typeList;
+    private MediatorLiveData<HashMap<Type, int[]>> sportDateMerger;
+    private LiveData<List<Type>> typeLiveData;
+    private LiveData<List<TypeSport>> typeSportLiveData;
 
     private int userID;
 
     public SportStatisticsViewModel(@NonNull Application application) {
         super(application);
-        sportRepository = new SportRepository(application);
-        typeRepository = new TypeRepository(application);
-        typeSportRepository = new TypeSportRepository(application);
-
+        typeRepository = ((MainApplication) getApplication()).getTypeRepository();
+        typeSportRepository = ((MainApplication) getApplication()).getTypeSportRepository();
         userID = ((MainApplication) getApplication()).getUserID();
+        initialiseLists();
+        initialiseLiveDataMerger();
     }
 
-    public HashMap<Sport, List<Pair<Type, Integer>>> processData(List<TypeSport> typeSports){
+    public void initialiseLists(){
+        typeLiveData = typeRepository.getAllTypes(userID);
+        typeSportLiveData = typeSportRepository.getAllTypeSport(userID);
+    }
 
-        if(typeSports.size() == 0) return new HashMap<>();
-        HashMap<Sport, List<Pair<Type, Integer>>> newTypeSport = new HashMap<>();
+    public void initialiseLiveDataMerger(){
+        sportDateMerger = new MediatorLiveData<>();
+        sportDateMerger.addSource(typeLiveData, typeList -> sportDateMerger.setValue(processResults(((MainApplication) getApplication()).getTypeList(), ((MainApplication) getApplication()).getTypeSportList())));
+        sportDateMerger.addSource(typeSportLiveData, typeSportList -> sportDateMerger.setValue(processResults(((MainApplication) getApplication()).getTypeList(), ((MainApplication) getApplication()).getTypeSportList())));
+    }
 
-        for(TypeSport typeSport : typeSports){
-            int sportID = typeSport.getSportID();
-            int typeID = typeSport.getTypeID();
+    public HashMap<Type, int[]> processResults(List<Type> typeList, List<TypeSport> typeSportList){
+        if(typeList.size() == 0 || typeSportList.size() == 0) return new HashMap<>();
+
+        HashMap<Integer, Type> typeHashMap = new HashMap<>();
+        for(Type type : typeList) typeHashMap.put(type.getTypeID(), type);
+
+        HashMap<Type, int[]> sportResults = new HashMap<>();
+        for(TypeSport typeSport : typeSportList){
+            Type type = typeHashMap.get(typeSport.getTypeID());
             int duration = typeSport.getSportDuration();
-
-            Sport sport = sportList.containsKey(sportID) ? sportList.get(sportID) : sportRepository.getSport(sportID).get(0);
-            sportList.putIfAbsent(sportID, sport);
-
-            Type type = typeList.containsKey(typeID) ? typeList.get(typeID) : typeRepository.getType(typeID).get(0);
-            typeList.putIfAbsent(typeID, type);
-
-            newTypeSport.putIfAbsent(sport, new ArrayList<>());
-            Objects.requireNonNull(newTypeSport.get(sport)).add(new Pair<>(type, duration));
+            sportResults.putIfAbsent(type, new int[] {0, Integer.MIN_VALUE, Integer.MAX_VALUE, 0});
+            int[] results = sportResults.get(type);
+            results[0] += duration; //total duration
+            results[1] = Math.max(duration, results[1]); //max duration
+            results[2] = Math.min(duration, results[2]); //min duration
+            results[3] += 1; //number of days
+            sportResults.put(type, results);
         }
-        return newTypeSport;
+        return sportResults;
     }
 
-    public LiveData<List<TypeSport>> getTypeSportList() {
-        return typeSportRepository.getAllTypeSport(userID);
+    public MediatorLiveData<HashMap<Type, int[]>> getSportDateMerger() {
+        return sportDateMerger;
     }
 
     public int getUserID() {

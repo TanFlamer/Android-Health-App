@@ -125,7 +125,7 @@ public class DataSleep extends AppCompatActivity{
     @SuppressLint("DefaultLocale")
     public boolean calculateSleepDuration(){
         int duration = (wakeHour - sleepHour - 1) * 60 + (60 - sleepMinute + wakeMinute);
-        duration += (wakeHour * 60 + wakeMinute >= sleepHour * 60 + sleepMinute) ? 0 : 24 * 60;
+        duration += (wakeHour * 60 + wakeMinute >= sleepHour * 60 + sleepMinute) ? 0 : 1440;
         durationView.setText(duration > 0 ? String.format("%02d:%02d", duration / 60, duration % 60) : "-");
         timeSleep = sleepHour * 60 + sleepMinute;
         timeWake = wakeHour * 60 + wakeMinute;

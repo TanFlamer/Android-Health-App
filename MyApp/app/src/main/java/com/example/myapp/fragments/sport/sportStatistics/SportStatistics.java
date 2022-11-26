@@ -5,6 +5,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -16,8 +17,10 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.myapp.R;
+import com.example.myapp.databaseFiles.type.Type;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -91,14 +94,11 @@ public class SportStatistics extends Fragment {
 
     public void initialiseRecyclerView(){
         recyclerView = requireView().findViewById(R.id.sportRecyclerView);
-        SportRecyclerAdapter sportRecyclerAdapter = new SportRecyclerAdapter(requireContext(), new ArrayList<>());
+        SportRecyclerAdapter sportRecyclerAdapter = new SportRecyclerAdapter(requireContext(), new HashMap<>());
         recyclerView.setAdapter(sportRecyclerAdapter);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        sportStatisticsViewModel.getTypeSportList().observe(getViewLifecycleOwner(), typeSportList -> {
-            Toast.makeText(getContext(), "Dataset changed", Toast.LENGTH_SHORT).show();
-            //sportRecyclerAdapter.updateSportList(typeSportList);
-        });
+        sportStatisticsViewModel.getSportDateMerger().observe(getViewLifecycleOwner(), sportRecyclerAdapter::updateSportList);
     }
 
     public void initialiseSpinners(){

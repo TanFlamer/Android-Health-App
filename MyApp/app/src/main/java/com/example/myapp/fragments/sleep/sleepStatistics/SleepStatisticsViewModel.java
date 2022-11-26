@@ -25,6 +25,29 @@ public class SleepStatisticsViewModel extends AndroidViewModel {
         sleepList = sleepRepository.getAllSleep(userID);
     }
 
+    public int[] processResults(List<Sleep> sleepList){
+        int[] results = new int[] {0, 0, 1440, 1440, 0, 1440, 0, 0};
+        for(Sleep sleep : sleepList){
+            int duration = sleep.getWakeTime() - sleep.getSleepTime();
+            duration += (duration >= 0) ? 0 : 1440;
+            results[0] += duration; //total time
+            results[1] = Math.max(duration, results[1]); //longest sleep
+            results[2] = Math.min(duration, results[2]); //shortest sleep
+            results[3] = Math.min(normalised(sleep.getSleepTime()), normalised(results[3])); //earliest sleep
+            results[4] = Math.max(normalised(sleep.getSleepTime()), normalised(results[4])); //latest sleep
+            results[5] = Math.min(normalised(sleep.getWakeTime()), normalised(results[5])); //earliest wake
+            results[6] = Math.max(normalised(sleep.getWakeTime()), normalised(results[6])); //latest wake
+            results[7] += 1;
+        }
+        return results;
+    }
+
+    public int normalised(int time){
+        time -= 720;
+        if(time < 0) time += 1440;
+        return time;
+    }
+
     public LiveData<List<Sleep>> getSleepList(){
         return sleepList;
     }

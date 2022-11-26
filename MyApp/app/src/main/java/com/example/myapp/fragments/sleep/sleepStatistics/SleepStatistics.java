@@ -1,15 +1,15 @@
 package com.example.myapp.fragments.sleep.sleepStatistics;
 
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 
 import com.example.myapp.R;
 
@@ -52,6 +52,7 @@ public class SleepStatistics extends Fragment {
     }
 
     SleepStatisticsViewModel sleepStatisticsViewModel;
+    TextView sleepTotal, dayTotal, sleepLongest, sleepShortest, sleepAverage, sleepEarliest, sleepLatest, wakeEarliest, wakeLatest;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -73,5 +74,31 @@ public class SleepStatistics extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        initialiseViews();
+        sleepStatisticsViewModel.getSleepList().observe(getViewLifecycleOwner(), sleepList -> updateResults(sleepStatisticsViewModel.processResults(sleepList)));
+    }
+
+    public void initialiseViews(){
+        sleepTotal = requireView().findViewById(R.id.sleepTotal);
+        dayTotal = requireView().findViewById(R.id.dayTotal);
+        sleepLongest = requireView().findViewById(R.id.sleepLongest);
+        sleepShortest = requireView().findViewById(R.id.sleepShortest);
+        sleepAverage = requireView().findViewById(R.id.sleepAverage);
+        sleepEarliest = requireView().findViewById(R.id.sleepEarliest);
+        sleepLatest = requireView().findViewById(R.id.sleepLatest);
+        wakeEarliest = requireView().findViewById(R.id.wakeEarliest);
+        wakeLatest = requireView().findViewById(R.id.wakeLatest);
+    }
+
+    public void updateResults(int[] results){
+        sleepTotal.setText(String.valueOf(results[0]));
+        dayTotal.setText(String.valueOf(results[7]));
+        sleepLongest.setText(String.valueOf(results[1]));
+        sleepShortest.setText(String.valueOf(results[2]));
+        sleepAverage.setText(String.valueOf(results[0] / (double) results[7]));
+        sleepEarliest.setText(String.valueOf(results[3]));
+        sleepLatest.setText(String.valueOf(results[4]));
+        wakeEarliest.setText(String.valueOf(results[5]));
+        wakeLatest.setText(String.valueOf(results[6]));
     }
 }

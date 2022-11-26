@@ -38,15 +38,17 @@ public class SleepRecyclerAdapter extends RecyclerView.Adapter<SleepRecyclerAdap
         return new SleepRecyclerItemViewHolder(view);
     }
 
-    @SuppressLint("SetTextI18n")
+    @SuppressLint({"SetTextI18n", "DefaultLocale"})
     @Override
     public void onBindViewHolder(@NonNull SleepRecyclerItemViewHolder holder, int position) {
         Sleep sleep = sleepList.get(position);
+        int duration = (sleep.getWakeTime() - sleep.getSleepTime());
+        duration += (duration >= 0) ? 0 : 1440;
         holder.titleView.setText(String.valueOf(sleep.getDate()));
         holder.dateView.setText(String.valueOf(sleep.getDate()));
         holder.sleepView.setText(String.valueOf(sleep.getSleepTime()));
         holder.wakeView.setText(String.valueOf(sleep.getWakeTime()));
-        holder.durationView.setText("test");
+        holder.durationView.setText(String.format("%02d:%02d", duration / 60, duration % 60));
         holder.layoutHidden.setVisibility(Boolean.TRUE.equals(visibilityMap.get(sleep)) ? View.VISIBLE : View.GONE);
     }
 
