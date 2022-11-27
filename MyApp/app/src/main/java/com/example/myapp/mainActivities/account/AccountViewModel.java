@@ -21,7 +21,7 @@ public class AccountViewModel extends AndroidViewModel {
     public AccountViewModel(@NonNull Application application) {
         super(application);
         userRepository = ((MainApplication) getApplication()).getUserRepository();
-        filePath = getApplication().getFilesDir() + "/music/";
+        filePath = getApplication().getFilesDir().toString();
         user = new User(-1, "User", null);
     }
 
@@ -59,8 +59,12 @@ public class AccountViewModel extends AndroidViewModel {
         return user;
     }
 
-    public String getFilePath() {
-        return filePath;
+    public String getMusicFilePath() {
+        return filePath + "/music/";
+    }
+
+    public String getLogsFilePath() {
+        return filePath + "/logs";
     }
 
     public void updateSaveLogs(Pair<String, LocalTime> newSaveLog){

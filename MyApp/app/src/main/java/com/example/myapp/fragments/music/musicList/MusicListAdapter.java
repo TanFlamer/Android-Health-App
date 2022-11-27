@@ -66,4 +66,8 @@ public class MusicListAdapter extends ArrayAdapter<Song> {
         songList.addAll(newSongList);
         notifyDataSetChanged();
     }
+
+    public List<Song> getSongList() {
+        return songList;
+    }
 }

@@ -25,7 +25,7 @@ import java.util.List;
 
 public class MainApplication extends Application {
 
-    private MutableLiveData<List<Pair<String, LocalTime>>> saveLogs;
+    private MutableLiveData<Pair<String, LocalTime>> saveLog;
     private int userID;
 
     private UserRepository userRepository;
@@ -43,17 +43,17 @@ public class MainApplication extends Application {
     private List<Sport> sportList;
     private List<TypeSport> typeSportList;
 
+    private MusicPlayer musicPlayer;
+
     @Override
     public void onCreate() {
         super.onCreate();
-        saveLogs = new MutableLiveData<>();
-        saveLogs.setValue(new ArrayList<>());
+        saveLog = new MutableLiveData<>();
+        musicPlayer = new MusicPlayer(this, this.getFilesDir().toString());
     }
 
     public void updateSaveLogs(Pair<String, LocalTime> newSaveLog){
-        List<Pair<String, LocalTime>> oldSaveLogs = saveLogs.getValue();
-        oldSaveLogs.add(newSaveLog);
-        saveLogs.setValue(oldSaveLogs);
+        saveLog.setValue(newSaveLog);
     }
 
     public UserRepository getUserRepository() {
@@ -116,8 +116,8 @@ public class MainApplication extends Application {
         return typeSportRepository;
     }
 
-    public MutableLiveData<List<Pair<String, LocalTime>>> getSaveLogs() {
-        return saveLogs;
+    public MutableLiveData<Pair<String, LocalTime>> getSaveLog() {
+        return saveLog;
     }
 
     public int getUserID() {
@@ -126,6 +126,7 @@ public class MainApplication extends Application {
 
     public void setUserID(int userID) {
         this.userID = userID;
+        musicPlayer.setUserID(userID);
     }
 
     public List<Song> getSongList() {
@@ -150,5 +151,9 @@ public class MainApplication extends Application {
 
     public List<TypeSport> getTypeSportList() {
         return typeSportList;
+    }
+
+    public MusicPlayer getMusicPlayer() {
+        return musicPlayer;
     }
 }

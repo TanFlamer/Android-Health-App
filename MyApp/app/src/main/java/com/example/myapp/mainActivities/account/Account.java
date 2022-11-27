@@ -234,24 +234,40 @@ public class Account extends AppCompatActivity {
     }
 
     public void createNewFolder(){
-        String newFolderPath = accountViewModel.getFilePath() + accountViewModel.getUser().getUserID();
-        File newFolder = new File(newFolderPath);
-        boolean folderCreation = newFolder.mkdirs();
-        Toast.makeText(getApplicationContext(), "Folder creation " + (folderCreation ? "successful" : "failed"), Toast.LENGTH_SHORT).show();
+        int userID = accountViewModel.getUser().getUserID();
+        String musicFolderPath = accountViewModel.getMusicFilePath() + userID;
+        File musicFolder = new File(musicFolderPath);
+        boolean musicFolderCreation = musicFolder.mkdirs();
+        Toast.makeText(getApplicationContext(), "Folder creation " + (musicFolderCreation ? "successful" : "failed"), Toast.LENGTH_SHORT).show();
+
+        File logFolder = new File(accountViewModel.getLogsFilePath());
+        boolean logFolderCreation = logFolder.mkdirs();
+        Toast.makeText(getApplicationContext(), "Folder creation " + (logFolderCreation ? "successful" : "failed"), Toast.LENGTH_SHORT).show();
+        try{
+            File logFile = new File(logFolder, userID + ".txt");
+            boolean logFileCreation = logFile.createNewFile();
+            Toast.makeText(getApplicationContext(), "File creation " + (logFileCreation ? "successful" : "failed"), Toast.LENGTH_SHORT).show();
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void deleteFolder(int userID){
-        String newFolderPath = accountViewModel.getFilePath() + userID;
-        File newFolder = new File(newFolderPath);
-        if(newFolder.isDirectory()){
-            String[] children = newFolder.list();
+        File musicFolder = new File(accountViewModel.getMusicFilePath() + userID);
+        if(musicFolder.isDirectory()){
+            String[] children = musicFolder.list();
             for (String child : children) {
                 System.out.println(child);
-                new File(newFolder, child).delete();
+                new File(musicFolder, child).delete();
             }
         }
-        boolean folderDeletion = newFolder.delete();
+        boolean folderDeletion = musicFolder.delete();
         Toast.makeText(getApplicationContext(), "Folder deletion " + (folderDeletion ? "successful" : "failed"), Toast.LENGTH_SHORT).show();
+
+        File logFile = new File(new File(accountViewModel.getLogsFilePath()), userID + ".txt");
+        boolean fileDeletion = logFile.delete();
+        Toast.makeText(getApplicationContext(), "File deletion " + (fileDeletion ? "successful" : "failed"), Toast.LENGTH_SHORT).show();
     }
 
     public void initialiseNewUser(){

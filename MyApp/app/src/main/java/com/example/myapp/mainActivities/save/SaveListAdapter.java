@@ -44,9 +44,8 @@ public class SaveListAdapter extends ArrayAdapter<Pair<String, LocalTime>> {
         return currentItemView;
     }
 
-    public void updateSaveLogs(List<Pair<String, LocalTime>> newSaveLogs){
-        saveLogs.clear();
-        saveLogs.addAll(newSaveLogs);
+    public void updateSaveLogs(Pair<String, LocalTime> newSaveLogs){
+        saveLogs.add(newSaveLogs);
         notifyDataSetChanged();
     }
 }

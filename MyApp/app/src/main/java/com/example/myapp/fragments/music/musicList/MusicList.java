@@ -21,6 +21,7 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.example.myapp.MusicPlayer;
 import com.example.myapp.R;
 import com.example.myapp.databaseFiles.song.Song;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -77,6 +78,8 @@ public class MusicList extends Fragment {
     Spinner dataSpinner, orderSpinner;
     ListView listView;
 
+    MusicListAdapter musicListAdapter;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -114,7 +117,7 @@ public class MusicList extends Fragment {
         listView.setOnItemLongClickListener(onItemLongClickListener);
         listView.setOnItemSelectedListener(onItemSelectedListener);
 
-        MusicListAdapter musicListAdapter = new MusicListAdapter(requireContext(), 0, new ArrayList<>());
+        musicListAdapter = new MusicListAdapter(requireContext(), 0, new ArrayList<>());
         listView.setAdapter(musicListAdapter);
         musicListViewModel.getSongList().observe(getViewLifecycleOwner(), songList -> {
             Toast.makeText(getContext(), "Dataset changed", Toast.LENGTH_SHORT).show();
@@ -127,6 +130,7 @@ public class MusicList extends Fragment {
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             Song song = (Song) listView.getItemAtPosition(position);
             Toast.makeText(getContext(), song.getSongName() + " clicked", Toast.LENGTH_SHORT).show();
+            musicListViewModel.getMusicPlayer().setPlaylist(musicListAdapter.getSongList(), position);
         }
     };
 

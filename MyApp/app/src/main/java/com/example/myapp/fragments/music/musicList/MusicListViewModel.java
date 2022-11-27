@@ -9,6 +9,7 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
 import com.example.myapp.MainApplication;
+import com.example.myapp.MusicPlayer;
 import com.example.myapp.databaseFiles.song.Song;
 import com.example.myapp.databaseFiles.song.SongRepository;
 
@@ -19,6 +20,7 @@ public class MusicListViewModel extends AndroidViewModel {
     private final MediaMetadataRetriever mediaMetadataRetriever;
     private final SongRepository songRepository;
     private LiveData<List<Song>> songList;
+    private MusicPlayer musicPlayer;
     private final String filePath;
     private int userID;
 
@@ -29,6 +31,7 @@ public class MusicListViewModel extends AndroidViewModel {
         songList = songRepository.getAllSongs(userID);
         mediaMetadataRetriever = new MediaMetadataRetriever();
         filePath = getApplication().getFilesDir() + "/music/" + userID;
+        musicPlayer = ((MainApplication) getApplication()).getMusicPlayer();
     }
 
     public void processFile(String fileName, Uri uri){
@@ -63,5 +66,9 @@ public class MusicListViewModel extends AndroidViewModel {
         mediaMetadataRetriever.setDataSource(getApplication(), uri);
         String duration = mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
         return Integer.parseInt(duration) / 1000;
+    }
+
+    public MusicPlayer getMusicPlayer() {
+        return musicPlayer;
     }
 }

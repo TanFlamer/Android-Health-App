@@ -21,31 +21,24 @@ import java.util.List;
 
 public class SaveViewModel extends AndroidViewModel {
 
-    private SleepRepository sleepRepository;
-
-    private SongRepository songRepository;
-    private PlaylistRepository playlistRepository;
-    private SongPlaylistRepository songPlaylistRepository;
-
-    private SportRepository sportRepository;
-    private TypeRepository typeRepository;
-    private TypeSportRepository typeSportRepository;
-
+    private String filePath;
     private int userID;
 
     public SaveViewModel(@NonNull Application application) {
         super(application);
-        sleepRepository = new SleepRepository(application);
-        songRepository = new SongRepository(application);
-        playlistRepository = new PlaylistRepository(application);
-        songPlaylistRepository = new SongPlaylistRepository(application);
-        sportRepository = new SportRepository(application);
-        typeRepository = new TypeRepository(application);
-        typeSportRepository = new TypeSportRepository(application);
         userID = ((MainApplication) getApplication()).getUserID();
+        filePath = getApplication().getFilesDir().toString() + "/logs/";
     }
 
-    public MutableLiveData<List<Pair<String, LocalTime>>> getSaveLogs() {
-        return ((MainApplication) getApplication()).getSaveLogs();
+    public MutableLiveData<Pair<String, LocalTime>> getSaveLog() {
+        return ((MainApplication) getApplication()).getSaveLog();
+    }
+
+    public String getFilePath() {
+        return filePath;
+    }
+
+    public int getUserID() {
+        return userID;
     }
 }
