@@ -8,15 +8,21 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.myapp.R;
 import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.formatter.DefaultValueFormatter;
+import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
+import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.github.mikephil.charting.utils.ColorTemplate;
 
 import java.util.ArrayList;
@@ -86,42 +92,45 @@ public class SleepChart extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         barChart = requireView().findViewById(R.id.sleepBarChart);
         sleepData = new ArrayList<>();
+        sleepData.add(new BarEntry(0,0));
 
         BarDataSet barDataSet = new BarDataSet(sleepData, "Sleep Bar Chart");
         barDataSet.setColors(ColorTemplate.COLORFUL_COLORS);
         barDataSet.setValueTextColor(Color.BLACK);
         barDataSet.setValueTextSize(16f);
+        barDataSet.setValueFormatter(new DefaultValueFormatter(2));
+        /*barDataSet.setValueFormatter(new ValueFormatter() {
+            @Override
+            public String getFormattedValue(float value) {
+                return String.valueOf(0);
+            }
+        });*/
 
         BarData barData = new BarData(barDataSet);
         barChart.setData(barData);
-        barChart.setVisibleXRangeMaximum(10);
-        barChart.getDescription().setEnabled(true);
+        barChart.getAxisLeft().setAxisMinimum(0);
+        barChart.getAxisRight().setAxisMinimum(0);
+        barChart.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM);
+        barChart.getXAxis().setGranularity(1);
 
         sleepChartViewModel.getSleepList().observe(getViewLifecycleOwner(), sleepList -> {
+            Pair<List<String>, List<BarEntry>> pair = sleepChartViewModel.processData(sleepList);
+            List<String> xAxisLabels = pair.first;
             sleepData.clear();
-            sleepData.addAll(sleepChartViewModel.processData(sleepList));
+            sleepData.addAll(pair.second);
+            barChart.getXAxis().setValueFormatter(new ValueFormatter() {
+                @Override
+                public String getFormattedValue(float value) {
+                    System.out.println(value);
+                    return xAxisLabels.get((int) value);
+                }
+            });
+            barDataSet.notifyDataSetChanged();
+            barData.notifyDataChanged();
             barChart.notifyDataSetChanged();
+            barChart.invalidate();
+            barChart.setVisibleXRangeMaximum(5);
+            barChart.moveViewToX(xAxisLabels.size() - 1);
         });
-    }
-
-    private void getData(){
-        sleepData = new ArrayList<>();
-        sleepData.add(new BarEntry(1f, 10));
-        sleepData.add(new BarEntry(2f, 20));
-        sleepData.add(new BarEntry(3f, 30));
-        sleepData.add(new BarEntry(4f, 40));
-        sleepData.add(new BarEntry(5f, 50));
-
-        sleepData.add(new BarEntry(6f, 10));
-        sleepData.add(new BarEntry(7f, 20));
-        sleepData.add(new BarEntry(8f, 30));
-        sleepData.add(new BarEntry(9f, 40));
-        sleepData.add(new BarEntry(10f, 50));
-
-        sleepData.add(new BarEntry(11f, 10));
-        sleepData.add(new BarEntry(12f, 20));
-        sleepData.add(new BarEntry(13f, 30));
-        sleepData.add(new BarEntry(14f, 40));
-        sleepData.add(new BarEntry(15f, 50));
     }
 }

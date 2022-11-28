@@ -29,7 +29,8 @@
                 android:id="@+id/dataSpinner"
                 android:layout_width="0dp"
                 android:layout_height="fill_parent"
-                android:layout_weight="2"
+                android:layout_weight="1"
+                android:focusable="false"
                 tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
 
             <LinearLayout
@@ -42,20 +43,10 @@
                 android:id="@+id/orderSpinner"
                 android:layout_width="0dp"
                 android:layout_height="fill_parent"
-                android:layout_weight="2"
+                android:layout_weight="1"
+                android:focusable="false"
                 tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
 
-            <LinearLayout
-                android:layout_width="2dp"
-                android:layout_height="match_parent"
-                android:background="#000000"
-                android:orientation="horizontal" />
-
-            <Button
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Sort" />
         </LinearLayout>
 
         <ExpandableListView

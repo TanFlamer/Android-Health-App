@@ -87,6 +87,8 @@ public class SportChart extends Fragment {
         barChart = requireView().findViewById(R.id.sportBarChart);
         sportData = new ArrayList<>();
 
+        getData();
+
         BarDataSet barDataSet = new BarDataSet(sportData, "Sleep Bar Chart");
         barDataSet.setColors(ColorTemplate.COLORFUL_COLORS);
         barDataSet.setValueTextColor(Color.BLACK);
@@ -97,11 +99,11 @@ public class SportChart extends Fragment {
         barChart.setVisibleXRangeMaximum(10);
         barChart.getDescription().setEnabled(true);
 
-        sportChartViewModel.getSportList().observe(getViewLifecycleOwner(), sportList -> {
+        /*sportChartViewModel.getSportList().observe(getViewLifecycleOwner(), sportList -> {
             sportData.clear();
             sportData.addAll(sportChartViewModel.processData(sportList));
             barChart.notifyDataSetChanged();
-        });
+        });*/
     }
 
     private void getData(){
