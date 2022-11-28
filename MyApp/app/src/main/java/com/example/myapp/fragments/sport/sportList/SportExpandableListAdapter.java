@@ -10,10 +10,13 @@ import android.widget.BaseExpandableListAdapter;
 import android.widget.TextView;
 
 import com.example.myapp.R;
+import com.example.myapp.databaseFiles.playlist.Playlist;
+import com.example.myapp.databaseFiles.song.Song;
 import com.example.myapp.databaseFiles.sport.Sport;
 import com.example.myapp.databaseFiles.type.Type;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
@@ -105,11 +108,56 @@ public class SportExpandableListAdapter extends BaseExpandableListAdapter {
         return true;
     }
 
-    public void updateSportList(HashMap<Sport, List<Pair<Type, Integer>>> newTypeSports){
+    public void updateSportList(HashMap<Sport, List<Pair<Type, Integer>>> newTypeSports, String data, String order){
         sportList.clear();
         sportList.addAll(newTypeSports.keySet());
         typeSports.clear();
         typeSports.putAll(newTypeSports);
+        sortSportList(data, order);
+    }
+
+    public void sortSportList(String data, String order){
+        sportList.sort(getSportComparator(data, order));
+        for(List<Pair<Type, Integer>> pairList : typeSports.values()) pairList.sort(getTypeComparator(data, order));
         notifyDataSetChanged();
+    }
+
+    public Comparator<Sport> getSportComparator(String data, String order){
+        Comparator<Sport> sportComparator = Comparator.comparingLong(Sport::getDate);
+        switch (data) {
+            case "Date Added":
+                sportComparator = Comparator.comparingInt(Sport::getSportID);
+                break;
+            case "Sport Date":
+                sportComparator = Comparator.comparingLong(Sport::getDate);
+                break;
+            case "Calories":
+                sportComparator = Comparator.comparingDouble(this::getCalories);
+                break;
+        }
+        return order.equals("Ascending") ? sportComparator : sportComparator.reversed();
+    }
+
+    public Comparator<Pair<Type, Integer>> getTypeComparator(String data, String order){
+        Comparator<Pair<Type, Integer>> typeComparator = Comparator.comparing(a -> a.first.getTypeName());
+        switch (data) {
+            case "Date Added":
+                typeComparator = Comparator.comparingInt(a -> a.first.getTypeID());
+                break;
+            case "Name":
+                typeComparator = Comparator.comparing(a -> a.first.getTypeName());
+                break;
+            case "Calories":
+                typeComparator = Comparator.comparingDouble(a -> a.first.getCaloriePerMinute() * a.second);
+                break;
+        }
+        return order.equals("Ascending") ? typeComparator : typeComparator.reversed();
+    }
+
+    public double getCalories(Sport sport){
+        double calories = 0;
+        for(Pair<Type, Integer> pair : Objects.requireNonNull(typeSports.get(sport)))
+            calories += pair.first.getCaloriePerMinute() * pair.second;
+        return calories;
     }
 }

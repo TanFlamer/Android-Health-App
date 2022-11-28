@@ -102,7 +102,7 @@ public class DataSport extends AppCompatActivity {
 
     public void initialiseSpinners(){
         typeSpinner.setOnItemSelectedListener(onItemSelectedListener);
-        spinnerAdapter = new TypeSpinnerAdapter(this, androidx.appcompat.R.layout.support_simple_spinner_dropdown_item, typeList);
+        spinnerAdapter = new TypeSpinnerAdapter(this, android.R.layout.simple_spinner_dropdown_item, typeList);
         typeSpinner.setAdapter(spinnerAdapter);
     }
 

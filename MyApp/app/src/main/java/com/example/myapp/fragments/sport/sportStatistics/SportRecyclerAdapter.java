@@ -12,12 +12,15 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.myapp.R;
+import com.example.myapp.databaseFiles.sleep.Sleep;
 import com.example.myapp.databaseFiles.type.Type;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 public class SportRecyclerAdapter extends RecyclerView.Adapter<SportRecyclerAdapter.SportRecyclerItemViewHolder> {
 
@@ -67,14 +70,64 @@ public class SportRecyclerAdapter extends RecyclerView.Adapter<SportRecyclerAdap
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    public void updateSportList(HashMap<Type, int[]> newSportResults){
+    public void updateSportList(HashMap<Type, int[]> newSportResults, String data, String order){
         typeList.clear();
         typeList.addAll(newSportResults.keySet());
         sportResults.clear();
         sportResults.putAll(newSportResults);
+        sortSportList(data, order);
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    public void sortSportList(String data, String order){
+        typeList.sort(getComparator(data, order));
         visibilityMap.clear();
         for(Type type : typeList) visibilityMap.put(type, false);
         notifyDataSetChanged();
+    }
+
+    public Comparator<Type> getComparator(String data, String order){
+        Comparator<Type> typeComparator = Comparator.comparingInt(Type::getTypeID);
+        switch (data) {
+            case "Date Added":
+                typeComparator = Comparator.comparingInt(Type::getTypeID);
+                break;
+            case "Name":
+                typeComparator = Comparator.comparing(Type::getTypeName);
+                break;
+            case "Total Days":
+                typeComparator = Comparator.comparingInt(a -> getResults(a, 3));
+                break;
+            case "Total Duration":
+                typeComparator = Comparator.comparingInt(a -> getResults(a, 0));
+                break;
+            case "Total Calorie":
+                typeComparator = Comparator.comparingDouble(a -> getResults(a, 0) * a.getCaloriePerMinute());
+                break;
+            case "Average Duration":
+                typeComparator = Comparator.comparingDouble(a -> (float) getResults(a, 0) / getResults(a, 3));
+                break;
+            case "Average Calorie":
+                typeComparator = Comparator.comparingDouble(a -> (getResults(a, 0) * a.getCaloriePerMinute()) / getResults(a, 3));
+                break;
+            case "Max Duration":
+                typeComparator = Comparator.comparingInt(a -> getResults(a, 1));
+                break;
+            case "Max Calorie":
+                typeComparator = Comparator.comparingDouble(a -> getResults(a, 1) * a.getCaloriePerMinute());
+                break;
+            case "Min Duration":
+                typeComparator = Comparator.comparingInt(a -> getResults(a, 2));
+                break;
+            case "Min Calorie":
+                typeComparator = Comparator.comparingDouble(a -> getResults(a, 2) * a.getCaloriePerMinute());
+                break;
+        }
+        return order.equals("Ascending") ? typeComparator : typeComparator.reversed();
+    }
+
+    public int getResults(Type type, int result){
+        return Objects.requireNonNull(sportResults.get(type))[result];
     }
 
     public class SportRecyclerItemViewHolder extends RecyclerView.ViewHolder{

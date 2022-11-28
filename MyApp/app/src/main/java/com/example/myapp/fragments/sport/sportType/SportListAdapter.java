@@ -15,8 +15,10 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 
 import com.example.myapp.R;
+import com.example.myapp.databaseFiles.song.Song;
 import com.example.myapp.databaseFiles.type.Type;
 
+import java.util.Comparator;
 import java.util.List;
 
 public class SportListAdapter extends ArrayAdapter<Type> {
@@ -73,9 +75,30 @@ public class SportListAdapter extends ArrayAdapter<Type> {
                 .show());
     }
 
-    public void updateTypeList(List<Type> newTypeList){
+    public void updateTypeList(List<Type> newTypeList, String data, String order){
         typeList.clear();
         typeList.addAll(newTypeList);
+        sortTypeList(data, order);
+    }
+
+    public void sortTypeList(String data, String order){
+        typeList.sort(getComparator(data, order));
         notifyDataSetChanged();
+    }
+
+    public Comparator<Type> getComparator(String data, String order){
+        Comparator<Type> typeComparator = Comparator.comparingInt(Type::getTypeID);
+        switch (data) {
+            case "Date Added":
+                typeComparator = Comparator.comparingInt(Type::getTypeID);
+                break;
+            case "Name":
+                typeComparator = Comparator.comparing(Type::getTypeName);
+                break;
+            case "Calorie":
+                typeComparator = Comparator.comparingDouble(Type::getCaloriePerMinute);
+                break;
+        }
+        return order.equals("Ascending") ? typeComparator : typeComparator.reversed();
     }
 }

@@ -31,7 +31,7 @@
                 android:marqueeRepeatLimit="marquee_forever"
                 android:scrollHorizontally="true"
                 android:singleLine="true"
-                android:text="Simple application that shows how to use marquee, with a long text"
+                android:text="No Music Playing"
                 android:textSize="24sp" />
             <requestFocus />
 

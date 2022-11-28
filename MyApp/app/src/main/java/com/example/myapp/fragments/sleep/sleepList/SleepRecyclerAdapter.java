@@ -14,7 +14,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.myapp.R;
 import com.example.myapp.databaseFiles.sleep.Sleep;
+import com.example.myapp.databaseFiles.song.Song;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
@@ -57,14 +60,51 @@ public class SleepRecyclerAdapter extends RecyclerView.Adapter<SleepRecyclerAdap
         return sleepList.size();
     }
 
-    public void updateSleepList(List<Sleep> newSleepList){
-        final SleepRecyclerDiffCallback diffCallback = new SleepRecyclerDiffCallback(sleepList, newSleepList);
-        final DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(diffCallback);
+    public void updateSleepList(List<Sleep> newSleepList, String data, String order){
         sleepList.clear();
         sleepList.addAll(newSleepList);
+        sortSleepList(data, order);
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    public void sortSleepList(String data, String order){
+        sleepList.sort(getComparator(data, order));
         visibilityMap.clear();
         for(Sleep sleep : sleepList) visibilityMap.put(sleep, false);
-        diffResult.dispatchUpdatesTo(this);
+        notifyDataSetChanged();
+    }
+
+    public Comparator<Sleep> getComparator(String data, String order){
+        Comparator<Sleep> sleepComparator = Comparator.comparingInt(Sleep::getSleepID);
+        switch (data) {
+            case "Date Added":
+                sleepComparator = Comparator.comparingInt(Sleep::getSleepID);
+                break;
+            case "Sleep Date":
+                sleepComparator = Comparator.comparingLong(Sleep::getDate);
+                break;
+            case "Sleep Time":
+                sleepComparator = Comparator.comparingInt(a -> normalisedTime(a.getSleepTime()));
+                break;
+            case "Wake Time":
+                sleepComparator = Comparator.comparingInt(a -> normalisedTime(a.getWakeTime()));
+                break;
+            case "Sleep Duration":
+                sleepComparator = Comparator.comparing(this::getDuration);
+                break;
+        }
+        return order.equals("Ascending") ? sleepComparator : sleepComparator.reversed();
+    }
+
+    public int normalisedTime(int time){
+        time -= 720;
+        if(time < 0) time += 1440;
+        return time;
+    }
+
+    public int getDuration(Sleep sleep){
+        int duration = sleep.getWakeTime() - sleep.getSleepTime();
+        return (duration >= 0) ? duration : duration + 1440;
     }
 
     public class SleepRecyclerItemViewHolder extends RecyclerView.ViewHolder {

@@ -33,10 +33,10 @@ public class SleepStatisticsViewModel extends AndroidViewModel {
             results[0] += duration; //total time
             results[1] = Math.max(duration, results[1]); //longest sleep
             results[2] = Math.min(duration, results[2]); //shortest sleep
-            results[3] = Math.min(normalised(sleep.getSleepTime()), normalised(results[3])); //earliest sleep
-            results[4] = Math.max(normalised(sleep.getSleepTime()), normalised(results[4])); //latest sleep
-            results[5] = Math.min(normalised(sleep.getWakeTime()), normalised(results[5])); //earliest wake
-            results[6] = Math.max(normalised(sleep.getWakeTime()), normalised(results[6])); //latest wake
+            results[3] = (normalised(sleep.getSleepTime()) < normalised(results[3])) ? sleep.getSleepTime() : results[3]; //earliest sleep
+            results[4] = (normalised(sleep.getSleepTime()) > normalised(results[4])) ? sleep.getSleepTime() : results[4]; //latest sleep
+            results[5] = (normalised(sleep.getWakeTime()) < normalised(results[5])) ? sleep.getWakeTime() : results[5]; //earliest wake
+            results[6] = (normalised(sleep.getWakeTime()) > normalised(results[6])) ? sleep.getWakeTime() : results[6]; //latest wake
             results[7] += 1;
         }
         return results;

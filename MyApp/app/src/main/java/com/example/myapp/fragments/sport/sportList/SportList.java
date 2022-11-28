@@ -2,11 +2,13 @@ package com.example.myapp.fragments.sport.sportList;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ExpandableListView;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -14,14 +16,17 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.myapp.R;
+import com.example.myapp.databaseFiles.sport.Sport;
 import com.example.myapp.databaseFiles.type.Type;
 import com.example.myapp.subActivities.sport.DataSport;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -65,6 +70,7 @@ public class SportList extends Fragment {
     FloatingActionButton floatingActionButton;
     Spinner dataSpinner, orderSpinner;
     ExpandableListView expandableListView;
+    SportExpandableListAdapter sportExpandableListAdapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -97,14 +103,11 @@ public class SportList extends Fragment {
 
     public void initialiseListView(){
         expandableListView = requireView().findViewById(R.id.sportExpandableListView);
-        expandableListView.setChoiceMode(AbsListView.CHOICE_MODE_MULTIPLE);
         expandableListView.setOnItemClickListener(onItemClickListener);
-        expandableListView.setOnItemLongClickListener(onItemLongClickListener);
-        expandableListView.setOnItemSelectedListener(onItemSelectedListener);
 
-        SportExpandableListAdapter sportExpandableListAdapter = new SportExpandableListAdapter(requireContext(), new HashMap<>());
+        sportExpandableListAdapter = new SportExpandableListAdapter(requireContext(), new HashMap<>());
         expandableListView.setAdapter(sportExpandableListAdapter);
-        sportListViewModel.getSportDateMerger().observe(getViewLifecycleOwner(), sportExpandableListAdapter::updateSportList);
+        sportListViewModel.getSportDateMerger().observe(getViewLifecycleOwner(), sportListHashMap -> sportExpandableListAdapter.updateSportList(sportListHashMap, dataSpinner.getSelectedItem().toString(), orderSpinner.getSelectedItem().toString()));
         setListeners(sportExpandableListAdapter);
     }
 
@@ -135,20 +138,10 @@ public class SportList extends Fragment {
         }
     };
 
-    public AdapterView.OnItemLongClickListener onItemLongClickListener = new AdapterView.OnItemLongClickListener() {
-        @Override
-        public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-            Type type = (Type) expandableListView.getItemAtPosition(position);
-            Toast.makeText(getContext(), type.getTypeName() + " long clicked", Toast.LENGTH_SHORT).show();
-            return true;
-        }
-    };
-
     public AdapterView.OnItemSelectedListener onItemSelectedListener = new AdapterView.OnItemSelectedListener() {
         @Override
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-            Type type = (Type) expandableListView.getItemAtPosition(position);
-            Toast.makeText(getContext(), type.getTypeName() + " selected", Toast.LENGTH_SHORT).show();
+            sportExpandableListAdapter.sortSportList(dataSpinner.getSelectedItem().toString(), orderSpinner.getSelectedItem().toString());
         }
 
         @Override
@@ -158,8 +151,17 @@ public class SportList extends Fragment {
     };
 
     public void initialiseSpinners(){
+        String[] data = new String[] {"Date Added", "Name", "Length"};
+        String[] order = new String[] {"Ascending", "Descending"};
+
         dataSpinner = requireView().findViewById(R.id.dataSpinner);
         orderSpinner = requireView().findViewById(R.id.orderSpinner);
+
+        dataSpinner.setAdapter(new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item, data));
+        orderSpinner.setAdapter(new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item, order));
+
+        dataSpinner.setOnItemSelectedListener(onItemSelectedListener);
+        orderSpinner.setOnItemSelectedListener(onItemSelectedListener);
     }
 
     public void initialiseFloatingButton(){

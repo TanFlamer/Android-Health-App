@@ -13,6 +13,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -63,6 +65,7 @@ public class SportStatistics extends Fragment {
     SportStatisticsViewModel sportStatisticsViewModel;
     Spinner dataSpinner, orderSpinner;
     RecyclerView recyclerView;
+    SportRecyclerAdapter sportRecyclerAdapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -94,15 +97,36 @@ public class SportStatistics extends Fragment {
 
     public void initialiseRecyclerView(){
         recyclerView = requireView().findViewById(R.id.sportRecyclerView);
-        SportRecyclerAdapter sportRecyclerAdapter = new SportRecyclerAdapter(requireContext(), new HashMap<>());
+        sportRecyclerAdapter = new SportRecyclerAdapter(requireContext(), new HashMap<>());
         recyclerView.setAdapter(sportRecyclerAdapter);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        sportStatisticsViewModel.getSportDateMerger().observe(getViewLifecycleOwner(), sportRecyclerAdapter::updateSportList);
+        sportStatisticsViewModel.getSportDateMerger().observe(getViewLifecycleOwner(), typeHashMap -> sportRecyclerAdapter.updateSportList(typeHashMap, dataSpinner.getSelectedItem().toString(), orderSpinner.getSelectedItem().toString()));
     }
 
     public void initialiseSpinners(){
+        String[] data = new String[] {"Date Added", "Name", "Total Days", "Total Duration", "Total Calorie", "Average Duration", "Average Calorie", "Max Duration", "Max Calorie", "Min Duration", "Min Calorie"};
+        String[] order = new String[] {"Ascending", "Descending"};
+
         dataSpinner = requireView().findViewById(R.id.dataSpinner);
         orderSpinner = requireView().findViewById(R.id.orderSpinner);
+
+        dataSpinner.setAdapter(new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item, data));
+        orderSpinner.setAdapter(new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item, order));
+
+        dataSpinner.setOnItemSelectedListener(onItemSelectedListener);
+        orderSpinner.setOnItemSelectedListener(onItemSelectedListener);
     }
+
+    public AdapterView.OnItemSelectedListener onItemSelectedListener = new AdapterView.OnItemSelectedListener() {
+        @Override
+        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+            sportRecyclerAdapter.sortSportList(dataSpinner.getSelectedItem().toString(), orderSpinner.getSelectedItem().toString());
+        }
+
+        @Override
+        public void onNothingSelected(AdapterView<?> parent) {
+
+        }
+    };
 }

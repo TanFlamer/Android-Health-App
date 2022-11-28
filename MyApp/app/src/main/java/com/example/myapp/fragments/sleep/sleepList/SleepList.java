@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -63,6 +65,7 @@ public class SleepList extends Fragment {
     FloatingActionButton floatingActionButton;
     Spinner dataSpinner, orderSpinner;
     RecyclerView recyclerView;
+    SleepRecyclerAdapter sleepRecyclerAdapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -95,20 +98,41 @@ public class SleepList extends Fragment {
 
     public void initialiseRecyclerView(){
         recyclerView = requireView().findViewById(R.id.sleepRecyclerView);
-        SleepRecyclerAdapter sleepRecyclerAdapter = new SleepRecyclerAdapter(requireContext(), new ArrayList<>());
+        sleepRecyclerAdapter = new SleepRecyclerAdapter(requireContext(), new ArrayList<>());
         recyclerView.setAdapter(sleepRecyclerAdapter);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         sleepListViewModel.getSleepList().observe(getViewLifecycleOwner(), songList -> {
             Toast.makeText(getContext(), "Dataset changed", Toast.LENGTH_SHORT).show();
-            sleepRecyclerAdapter.updateSleepList(songList);
+            sleepRecyclerAdapter.updateSleepList(songList, dataSpinner.getSelectedItem().toString(), orderSpinner.getSelectedItem().toString());
         });
     }
 
     public void initialiseSpinners(){
+        String[] data = new String[] {"Date Added", "Sleep Date", "Sleep Time", "Wake Time", "Sleep Duration"};
+        String[] order = new String[] {"Ascending", "Descending"};
+
         dataSpinner = requireView().findViewById(R.id.dataSpinner);
         orderSpinner = requireView().findViewById(R.id.orderSpinner);
+
+        dataSpinner.setAdapter(new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item, data));
+        orderSpinner.setAdapter(new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item, order));
+
+        dataSpinner.setOnItemSelectedListener(onItemSelectedListener);
+        orderSpinner.setOnItemSelectedListener(onItemSelectedListener);
     }
+
+    public AdapterView.OnItemSelectedListener onItemSelectedListener = new AdapterView.OnItemSelectedListener() {
+        @Override
+        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+            sleepRecyclerAdapter.sortSleepList(dataSpinner.getSelectedItem().toString(), orderSpinner.getSelectedItem().toString());
+        }
+
+        @Override
+        public void onNothingSelected(AdapterView<?> parent) {
+
+        }
+    };
 
     public void initialiseFloatingButton(){
         floatingActionButton = requireView().findViewById(R.id.buttonFloating);

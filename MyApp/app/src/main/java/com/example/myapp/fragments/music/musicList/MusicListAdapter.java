@@ -16,6 +16,8 @@ import androidx.appcompat.app.AlertDialog;
 import com.example.myapp.R;
 import com.example.myapp.databaseFiles.song.Song;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class MusicListAdapter extends ArrayAdapter<Song> {
@@ -61,13 +63,34 @@ public class MusicListAdapter extends ArrayAdapter<Song> {
                 .show());
     }
 
-    public void updateSongList(List<Song> newSongList){
+    public void updateSongList(List<Song> newSongList, String data, String order){
         songList.clear();
         songList.addAll(newSongList);
+        sortSongList(data, order);
+    }
+
+    public void sortSongList(String data, String order){
+        songList.sort(getComparator(data, order));
         notifyDataSetChanged();
     }
 
     public List<Song> getSongList() {
         return songList;
+    }
+
+    public Comparator<Song> getComparator(String data, String order){
+        Comparator<Song> songComparator = Comparator.comparingInt(Song::getSongID);
+        switch (data) {
+            case "Date Added":
+                songComparator = Comparator.comparingInt(Song::getSongID);
+                break;
+            case "Name":
+                songComparator = Comparator.comparing(Song::getSongName);
+                break;
+            case "Length":
+                songComparator = Comparator.comparing(Song::getSongDuration);
+                break;
+        }
+        return order.equals("Ascending") ? songComparator : songComparator.reversed();
     }
 }

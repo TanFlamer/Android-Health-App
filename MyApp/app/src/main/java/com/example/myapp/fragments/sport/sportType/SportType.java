@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -65,6 +66,7 @@ public class SportType extends Fragment {
     FloatingActionButton floatingActionButton;
     Spinner dataSpinner, orderSpinner;
     ListView listView;
+    SportListAdapter sportListAdapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -97,17 +99,11 @@ public class SportType extends Fragment {
 
     public void initialiseListView(){
         listView = requireView().findViewById(R.id.sportListView);
-        listView.setChoiceMode(AbsListView.CHOICE_MODE_MULTIPLE);
         listView.setOnItemClickListener(onItemClickListener);
-        listView.setOnItemLongClickListener(onItemLongClickListener);
-        listView.setOnItemSelectedListener(onItemSelectedListener);
 
-        SportListAdapter sportListAdapter = new SportListAdapter(requireContext(), 0, new ArrayList<>());
+        sportListAdapter = new SportListAdapter(requireContext(), 0, new ArrayList<>());
         listView.setAdapter(sportListAdapter);
-        sportTypeViewModel.getTypeList().observe(getViewLifecycleOwner(), typeList -> {
-            Toast.makeText(getContext(), "Dataset changed", Toast.LENGTH_SHORT).show();
-            sportListAdapter.updateTypeList(typeList);
-        });
+        sportTypeViewModel.getTypeList().observe(getViewLifecycleOwner(), typeList -> sportListAdapter.updateTypeList(typeList, dataSpinner.getSelectedItem().toString(), orderSpinner.getSelectedItem().toString()));
     }
 
     public AdapterView.OnItemClickListener onItemClickListener = new AdapterView.OnItemClickListener() {
@@ -118,31 +114,30 @@ public class SportType extends Fragment {
         }
     };
 
-    public AdapterView.OnItemLongClickListener onItemLongClickListener = new AdapterView.OnItemLongClickListener() {
-        @Override
-        public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-            Type type = (Type) listView.getItemAtPosition(position);
-            Toast.makeText(getContext(), type.getTypeName()  + " long clicked", Toast.LENGTH_SHORT).show();
-            return true;
-        }
-    };
-
     public AdapterView.OnItemSelectedListener onItemSelectedListener = new AdapterView.OnItemSelectedListener() {
         @Override
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-            Type type = (Type) listView.getItemAtPosition(position);
-            Toast.makeText(getContext(), type.getTypeName()  + " selected", Toast.LENGTH_SHORT).show();
+            sportListAdapter.sortTypeList(dataSpinner.getSelectedItem().toString(), orderSpinner.getSelectedItem().toString());
         }
 
         @Override
         public void onNothingSelected(AdapterView<?> parent) {
-            Toast.makeText(getContext(), "Item unselected", Toast.LENGTH_SHORT).show();
+
         }
     };
 
     public void initialiseSpinners(){
+        String[] data = new String[] {"Date Added", "Name", "Calorie"};
+        String[] order = new String[] {"Ascending", "Descending"};
+
         dataSpinner = requireView().findViewById(R.id.dataSpinner);
         orderSpinner = requireView().findViewById(R.id.orderSpinner);
+
+        dataSpinner.setAdapter(new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item, data));
+        orderSpinner.setAdapter(new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item, order));
+
+        dataSpinner.setOnItemSelectedListener(onItemSelectedListener);
+        orderSpinner.setOnItemSelectedListener(onItemSelectedListener);
     }
 
     public void initialiseFloatingButton(){

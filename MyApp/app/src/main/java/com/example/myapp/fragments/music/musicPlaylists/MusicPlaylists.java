@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ExpandableListView;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -66,6 +67,7 @@ public class MusicPlaylists extends Fragment {
     FloatingActionButton floatingActionButton;
     Spinner dataSpinner, orderSpinner;
     ExpandableListView expandableListView;
+    MusicExpandableListAdapter musicExpandableListAdapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -98,14 +100,12 @@ public class MusicPlaylists extends Fragment {
 
     public void initialiseListView(){
         expandableListView = requireView().findViewById(R.id.musicExpandableListView);
-        expandableListView.setChoiceMode(AbsListView.CHOICE_MODE_MULTIPLE);
         expandableListView.setOnItemClickListener(onItemClickListener);
-        expandableListView.setOnItemLongClickListener(onItemLongClickListener);
         expandableListView.setOnItemSelectedListener(onItemSelectedListener);
 
-        MusicExpandableListAdapter musicExpandableListAdapter = new MusicExpandableListAdapter(requireContext(), new HashMap<>());
+        musicExpandableListAdapter = new MusicExpandableListAdapter(requireContext(), new HashMap<>());
         expandableListView.setAdapter(musicExpandableListAdapter);
-        musicPlaylistsViewModel.getSongPlaylistList().observe(getViewLifecycleOwner(), songPlaylists -> musicExpandableListAdapter.updateMusicPlaylists(musicPlaylistsViewModel.updateMusicPlaylists(songPlaylists)));
+        musicPlaylistsViewModel.getSongPlaylistList().observe(getViewLifecycleOwner(), songPlaylists -> musicExpandableListAdapter.updateMusicPlaylists(musicPlaylistsViewModel.updateMusicPlaylists(songPlaylists), dataSpinner.getSelectedItem().toString(), orderSpinner.getSelectedItem().toString()));
         setListeners(musicExpandableListAdapter);
     }
 
@@ -136,31 +136,30 @@ public class MusicPlaylists extends Fragment {
         }
     };
 
-    public AdapterView.OnItemLongClickListener onItemLongClickListener = new AdapterView.OnItemLongClickListener() {
-        @Override
-        public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-            Song song = (Song) expandableListView.getItemAtPosition(position);
-            Toast.makeText(getContext(), song.getSongName() + " long clicked", Toast.LENGTH_SHORT).show();
-            return true;
-        }
-    };
-
     public AdapterView.OnItemSelectedListener onItemSelectedListener = new AdapterView.OnItemSelectedListener() {
         @Override
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-            Song song = (Song) expandableListView.getItemAtPosition(position);
-            Toast.makeText(getContext(), song.getSongName() + " selected", Toast.LENGTH_SHORT).show();
+            musicExpandableListAdapter.sortMusicPlaylists(dataSpinner.getSelectedItem().toString(), orderSpinner.getSelectedItem().toString());
         }
 
         @Override
         public void onNothingSelected(AdapterView<?> parent) {
-            Toast.makeText(getContext(), "Item unselected", Toast.LENGTH_SHORT).show();
+
         }
     };
 
     public void initialiseSpinners(){
+        String[] data = new String[] {"Date Added", "Name", "Length"};
+        String[] order = new String[] {"Ascending", "Descending"};
+
         dataSpinner = requireView().findViewById(R.id.dataSpinner);
         orderSpinner = requireView().findViewById(R.id.orderSpinner);
+
+        dataSpinner.setAdapter(new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item, data));
+        orderSpinner.setAdapter(new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item, order));
+
+        dataSpinner.setOnItemSelectedListener(onItemSelectedListener);
+        orderSpinner.setOnItemSelectedListener(onItemSelectedListener);
     }
 
     public void initialiseFloatingButton(){

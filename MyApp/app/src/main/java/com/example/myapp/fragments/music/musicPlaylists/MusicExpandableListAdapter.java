@@ -16,6 +16,7 @@ import com.example.myapp.databaseFiles.song.Song;
 import com.example.myapp.subActivities.music.DataMusic;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
@@ -110,11 +111,56 @@ public class MusicExpandableListAdapter extends BaseExpandableListAdapter {
         return true;
     }
 
-    public void updateMusicPlaylists(HashMap<Playlist, List<Song>> newSongPlaylists){
+    public void updateMusicPlaylists(HashMap<Playlist, List<Song>> newSongPlaylists, String data, String order){
         playlistList.clear();
         playlistList.addAll(newSongPlaylists.keySet());
         songPlaylists.clear();
         songPlaylists.putAll(newSongPlaylists);
+        sortMusicPlaylists(data, order);
+    }
+
+    public void sortMusicPlaylists(String data, String order){
+        playlistList.sort(getPlaylistComparator(data, order));
+        for(List<Song> songList : songPlaylists.values()) songList.sort(getSongComparator(data, order));
         notifyDataSetChanged();
+    }
+
+    public Comparator<Playlist> getPlaylistComparator(String data, String order){
+        Comparator<Playlist> playlistComparator = Comparator.comparingInt(Playlist::getPlaylistID);
+        switch (data) {
+            case "Date Added":
+                playlistComparator = Comparator.comparingInt(Playlist::getPlaylistID);
+                break;
+            case "Name":
+                playlistComparator = Comparator.comparing(Playlist::getPlaylistName);
+                break;
+            case "Length":
+                playlistComparator = Comparator.comparing(this::getPlaylistLength);
+                break;
+        }
+        return order.equals("Ascending") ? playlistComparator : playlistComparator.reversed();
+    }
+
+    public Comparator<Song> getSongComparator(String data, String order){
+        Comparator<Song> songComparator = Comparator.comparingInt(Song::getSongID);
+        switch (data) {
+            case "Date Added":
+                songComparator = Comparator.comparingInt(Song::getSongID);
+                break;
+            case "Name":
+                songComparator = Comparator.comparing(Song::getSongName);
+                break;
+            case "Length":
+                songComparator = Comparator.comparing(Song::getSongDuration);
+                break;
+        }
+        return order.equals("Ascending") ? songComparator : songComparator.reversed();
+    }
+
+    public int getPlaylistLength(Playlist playlist){
+        int duration = 0;
+        for(Song song : Objects.requireNonNull(songPlaylists.get(playlist)))
+            duration += song.getSongDuration();
+        return duration;
     }
 }

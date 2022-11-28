@@ -1,12 +1,5 @@
 package com.example.myapp.mainActivities.save;
 
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
-
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -14,11 +7,21 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Pair;
-import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.SeekBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+import androidx.lifecycle.ViewModelProvider;
+
+import com.example.myapp.MainApplication;
+import com.example.myapp.MusicPlayer;
 import com.example.myapp.R;
 import com.example.myapp.mainActivities.info.Info;
 import com.example.myapp.mainActivities.music.Music;
@@ -26,10 +29,8 @@ import com.example.myapp.mainActivities.sleep.Sleep;
 import com.example.myapp.mainActivities.sport.Sport;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -44,6 +45,11 @@ public class Save extends AppCompatActivity {
     ListView listView;
     Button printButton;
 
+    MusicPlayer musicPlayer;
+    TextView songName;
+    SeekBar songProgress;
+    ImageButton songPrevious, songPause, songNext;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,6 +58,7 @@ public class Save extends AppCompatActivity {
         initialiseBottomNavigator();
         initialiseListView();
         initialiseButton();
+        initialiseMusicPlayer();
     }
 
     public void initialiseButton(){
@@ -101,6 +108,52 @@ public class Save extends AppCompatActivity {
             }
             return false;
         });
+    }
+
+    public void initialiseMusicPlayer(){
+        musicPlayer = ((MainApplication) getApplication()).getMusicPlayer();
+        initialiseSongController();
+        initialiseImageButtons();
+        initialiseLiveData();
+    }
+
+    public void initialiseSongController(){
+        songName = findViewById(R.id.songName);
+        songProgress = findViewById(R.id.songProgress);
+        songProgress.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                if(fromUser) musicPlayer.setSongProgress(progress);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+                musicPlayer.pauseSong();
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                musicPlayer.playSong();
+            }
+        });
+    }
+
+    public void initialiseImageButtons(){
+        songPrevious = findViewById(R.id.songPrevious);
+        songPrevious.setOnClickListener(v -> musicPlayer.previousButton());
+        songPause = findViewById(R.id.songPause);
+        songPause.setOnClickListener(v -> musicPlayer.playButton());
+        songNext = findViewById(R.id.songNext);
+        songNext.setOnClickListener(v -> musicPlayer.nextButton());
+    }
+
+    public void initialiseLiveData(){
+        musicPlayer.getSong().observeForever(song -> {
+            songName.setText(song.getSongName());
+            songProgress.setProgress(0);
+            songProgress.setMax(song.getSongDuration() * 1000);
+        });
+        musicPlayer.getSongProgress().observeForever(integer -> songProgress.setProgress(integer));
     }
 
     public void separateLogFile(){

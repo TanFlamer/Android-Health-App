@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -24,6 +25,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.example.myapp.MusicPlayer;
 import com.example.myapp.R;
 import com.example.myapp.databaseFiles.song.Song;
+import com.example.myapp.subActivities.type.TypeSpinnerAdapter;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.io.File;
@@ -112,54 +114,48 @@ public class MusicList extends Fragment {
 
     public void initialiseListView(){
         listView = requireView().findViewById(R.id.musicListView);
-        listView.setChoiceMode(AbsListView.CHOICE_MODE_MULTIPLE);
         listView.setOnItemClickListener(onItemClickListener);
-        listView.setOnItemLongClickListener(onItemLongClickListener);
-        listView.setOnItemSelectedListener(onItemSelectedListener);
 
         musicListAdapter = new MusicListAdapter(requireContext(), 0, new ArrayList<>());
         listView.setAdapter(musicListAdapter);
         musicListViewModel.getSongList().observe(getViewLifecycleOwner(), songList -> {
             Toast.makeText(getContext(), "Dataset changed", Toast.LENGTH_SHORT).show();
-            musicListAdapter.updateSongList(songList);
+            musicListAdapter.updateSongList(songList, dataSpinner.getSelectedItem().toString(), orderSpinner.getSelectedItem().toString());
         });
     }
 
     public AdapterView.OnItemClickListener onItemClickListener = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            Song song = (Song) listView.getItemAtPosition(position);
-            Toast.makeText(getContext(), song.getSongName() + " clicked", Toast.LENGTH_SHORT).show();
             musicListViewModel.getMusicPlayer().setPlaylist(musicListAdapter.getSongList(), position);
         }
     };
 
-    public AdapterView.OnItemLongClickListener onItemLongClickListener = new AdapterView.OnItemLongClickListener() {
-        @Override
-        public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-            Song song = (Song) listView.getItemAtPosition(position);
-            Toast.makeText(getContext(), song.getSongName() + " long clicked", Toast.LENGTH_SHORT).show();
-            return true;
-        }
-    };
+    public void initialiseSpinners(){
+        String[] data = new String[] {"Date Added", "Name", "Length"};
+        String[] order = new String[] {"Ascending", "Descending"};
+
+        dataSpinner = requireView().findViewById(R.id.dataSpinner);
+        orderSpinner = requireView().findViewById(R.id.orderSpinner);
+
+        dataSpinner.setAdapter(new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item, data));
+        orderSpinner.setAdapter(new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item, order));
+
+        dataSpinner.setOnItemSelectedListener(onItemSelectedListener);
+        orderSpinner.setOnItemSelectedListener(onItemSelectedListener);
+    }
 
     public AdapterView.OnItemSelectedListener onItemSelectedListener = new AdapterView.OnItemSelectedListener() {
         @Override
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-            Song song = (Song) listView.getItemAtPosition(position);
-            Toast.makeText(getContext(), song.getSongName() + " selected", Toast.LENGTH_SHORT).show();
+            musicListAdapter.sortSongList(dataSpinner.getSelectedItem().toString(), orderSpinner.getSelectedItem().toString());
         }
 
         @Override
         public void onNothingSelected(AdapterView<?> parent) {
-            Toast.makeText(getContext(), "Item unselected", Toast.LENGTH_SHORT).show();
+
         }
     };
-
-    public void initialiseSpinners(){
-        dataSpinner = requireView().findViewById(R.id.dataSpinner);
-        orderSpinner = requireView().findViewById(R.id.orderSpinner);
-    }
 
     public void initialiseFloatingButton(){
         floatingActionButton = requireView().findViewById(R.id.buttonFloating);
