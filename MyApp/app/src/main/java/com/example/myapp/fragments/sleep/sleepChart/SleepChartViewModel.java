@@ -13,7 +13,6 @@ import com.example.myapp.databaseFiles.sleep.SleepRepository;
 import com.github.mikephil.charting.data.BarEntry;
 
 import java.time.Instant;
-import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -25,11 +24,19 @@ public class SleepChartViewModel extends AndroidViewModel {
     private LiveData<List<Sleep>> sleepList;
     private int userID;
 
+    private List<Sleep> currentSleepList;
+    private List<String> xAxisLabels;
+    private List<BarEntry> barEntryList;
+
     public SleepChartViewModel(@NonNull Application application) {
         super(application);
         sleepRepository = new SleepRepository(application);
         userID = ((MainApplication) getApplication()).getUserID();
         sleepList = sleepRepository.getAllSleep(userID);
+
+        currentSleepList = new ArrayList<>();
+        xAxisLabels = new ArrayList<>();
+        barEntryList = new ArrayList<>();
     }
 
     public LiveData<List<Sleep>> getSleepList(){
@@ -40,17 +47,27 @@ public class SleepChartViewModel extends AndroidViewModel {
         return userID;
     }
 
-    public Pair<List<String>, List<BarEntry>> processData(List<Sleep> sleepList){
-        List<String> xAxisLabels = new ArrayList<>();
-        List<BarEntry> barEntryList = new ArrayList<>();
-        sleepList.sort(Comparator.comparingLong(Sleep::getDate));
-        for(int i = 0; i < sleepList.size(); i++){
-            LocalDate date = Instant.ofEpochMilli(sleepList.get(i).getDate()).atZone(ZoneId.systemDefault()).toLocalDate();
-            xAxisLabels.add(date.toString());
-            System.out.println(date);
-            barEntryList.add(new BarEntry((float) i, (float) getDuration(sleepList.get(i)) / 60));
-        }
+    public Pair<List<String>, List<BarEntry>> processData(List<Sleep> newSleepList, String data){
+        currentSleepList = newSleepList;
+        currentSleepList.sort(Comparator.comparingLong(Sleep::getDate));
+        xAxisLabels.clear();
+        for(Sleep sleep : currentSleepList) xAxisLabels.add(String.valueOf(Instant.ofEpochMilli(sleep.getDate()).atZone(ZoneId.systemDefault()).toLocalDate()));
+        refreshBarEntryList(data);
         return new Pair<>(xAxisLabels, barEntryList);
+    }
+
+    public Pair<List<String>, List<BarEntry>> changeData(String data){
+        refreshBarEntryList(data);
+        return new Pair<>(xAxisLabels, barEntryList);
+    }
+
+    public void refreshBarEntryList(String data){
+        barEntryList.clear();
+        for(int i = 0; i < currentSleepList.size(); i++){
+            Sleep sleep = currentSleepList.get(i);
+            int yValue = data.equals("Sleep Duration") ? getDuration(sleep) : data.equals("Sleep Time") ? normalisedTime(sleep.getSleepTime()) : normalisedTime(sleep.getWakeTime());
+            barEntryList.add(new BarEntry((float) i, (float) yValue / 60));
+        }
     }
 
     public int normalisedTime(int time){
