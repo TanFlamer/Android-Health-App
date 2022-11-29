@@ -1,12 +1,18 @@
 package com.example.myapp;
 
 import android.app.Application;
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.util.Pair;
+import android.widget.Toast;
 
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.myapp.databaseFiles.playlist.Playlist;
 import com.example.myapp.databaseFiles.playlist.PlaylistRepository;
+import com.example.myapp.databaseFiles.sleep.Sleep;
+import com.example.myapp.databaseFiles.sleep.SleepRepository;
 import com.example.myapp.databaseFiles.song.Song;
 import com.example.myapp.databaseFiles.songPlaylist.SongPlaylist;
 import com.example.myapp.databaseFiles.songPlaylist.SongPlaylistRepository;
@@ -19,6 +25,7 @@ import com.example.myapp.databaseFiles.type.TypeRepository;
 import com.example.myapp.databaseFiles.typeSport.TypeSportRepository;
 import com.example.myapp.databaseFiles.user.UserRepository;
 
+import java.io.File;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +36,7 @@ public class MainApplication extends Application {
     private int userID;
 
     private UserRepository userRepository;
+    private SleepRepository sleepRepository;
     private SongRepository songRepository;
     private PlaylistRepository playlistRepository;
     private SongPlaylistRepository songPlaylistRepository;
@@ -36,6 +44,7 @@ public class MainApplication extends Application {
     private TypeRepository typeRepository;
     private TypeSportRepository typeSportRepository;
 
+    private List<Sleep> sleepList;
     private List<Song> songList;
     private List<Playlist> playlistList;
     private List<SongPlaylist> songPlaylistList;
@@ -48,8 +57,26 @@ public class MainApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        initialSetup();
         saveLog = new MutableLiveData<>();
         musicPlayer = new MusicPlayer(this, this.getFilesDir().toString());
+    }
+
+    public void initialSetup(){
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        if(!prefs.getBoolean("setup", false)) {
+            createFolder(getApplicationContext(), "logs");
+            createFolder(getApplicationContext(), "music/0");
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putBoolean("setup", true);
+            editor.apply();
+        }
+    }
+
+    public void createFolder(Context context, String folderName){
+        File newFolder = new File(context.getFilesDir(), folderName);
+        boolean folderCreation = newFolder.mkdirs();
+        Toast.makeText(context, "Folder creation " + (folderCreation ? "successful" : "failed"), Toast.LENGTH_SHORT).show();
     }
 
     public void updateSaveLogs(Pair<String, LocalTime> newSaveLog){
@@ -60,6 +87,15 @@ public class MainApplication extends Application {
         if(userRepository == null)
             userRepository = new UserRepository(this);
         return userRepository;
+    }
+
+    public SleepRepository getSleepRepository(){
+        if(sleepRepository == null) {
+            sleepList = new ArrayList<>();
+            sleepRepository = new SleepRepository(this);
+            sleepRepository.getAllSleep(userID).observeForever(newSleepList -> sleepList = newSleepList);
+        }
+        return sleepRepository;
     }
 
     public SongRepository getSongRepository(){
@@ -126,7 +162,6 @@ public class MainApplication extends Application {
 
     public void setUserID(int userID) {
         this.userID = userID;
-        musicPlayer.setUserID(userID);
     }
 
     public List<Song> getSongList() {

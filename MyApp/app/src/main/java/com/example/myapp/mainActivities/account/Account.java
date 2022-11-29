@@ -181,7 +181,8 @@ public class Account extends AppCompatActivity {
             String usernameText = newUsername.getText().toString();
             String passwordText = newPassword.getText().toString();
             accountViewModel.insert(new User(usernameText, passwordText));
-            createNewFolder();
+            createMusicFolder();
+            createLogsFile();
             reloadPage();
             accountViewModel.updateSaveLogs(new Pair<>(usernameText + "account created", LocalTime.now()));
         });
@@ -233,18 +234,18 @@ public class Account extends AppCompatActivity {
         });
     }
 
-    public void createNewFolder(){
+    public void createMusicFolder(){
         int userID = accountViewModel.getUser().getUserID();
         String musicFolderPath = accountViewModel.getMusicFilePath() + userID;
         File musicFolder = new File(musicFolderPath);
         boolean musicFolderCreation = musicFolder.mkdirs();
         Toast.makeText(getApplicationContext(), "Folder creation " + (musicFolderCreation ? "successful" : "failed"), Toast.LENGTH_SHORT).show();
+    }
 
-        File logFolder = new File(accountViewModel.getLogsFilePath());
-        boolean logFolderCreation = logFolder.mkdirs();
-        Toast.makeText(getApplicationContext(), "Folder creation " + (logFolderCreation ? "successful" : "failed"), Toast.LENGTH_SHORT).show();
+    public void createLogsFile(){
+        int userID = accountViewModel.getUser().getUserID();
         try{
-            File logFile = new File(logFolder, userID + ".txt");
+            File logFile = new File(accountViewModel.getLogsFilePath(), userID + ".txt");
             boolean logFileCreation = logFile.createNewFile();
             Toast.makeText(getApplicationContext(), "File creation " + (logFileCreation ? "successful" : "failed"), Toast.LENGTH_SHORT).show();
         }

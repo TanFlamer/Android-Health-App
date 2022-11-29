@@ -8,6 +8,7 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.example.myapp.databaseFiles.song.Song;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Timer;
@@ -15,6 +16,7 @@ import java.util.TimerTask;
 
 public class MusicPlayer {
 
+    private MainApplication mainApplication;
     private Context context;
     private MediaPlayer mediaPlayer;
     private List<Song> playlist;
@@ -25,13 +27,13 @@ public class MusicPlayer {
 
     private boolean initialised;
     private int currentTrack;
-    private int userID;
 
-    public MusicPlayer(Context context, String fileDir){
+    public MusicPlayer(MainApplication mainApplication, String fileDir){
         initialiseMediaPlayer();
         initialiseLiveData();
         updateSongProgress();
-        this.context = context;
+        this.mainApplication = mainApplication;
+        this.context = mainApplication.getApplicationContext();
         filePath = fileDir + "/music/";
         currentTrack = 0;
     }
@@ -62,7 +64,7 @@ public class MusicPlayer {
         currentTrack = (((currentTrack + index) % playlistSize) + playlistSize) % playlistSize;
         Song song = playlist.get(currentTrack);
         currentSong.setValue(song);
-        String musicPath = filePath + userID + "/" + song.getSongName();
+        String musicPath = filePath + mainApplication.getUserID() + "/" + song.getSongName();
         initialised = false;
         mediaPlayer.reset();
         try {
@@ -126,10 +128,6 @@ public class MusicPlayer {
                 if(initialised) songProgress.postValue(mediaPlayer.getCurrentPosition());
             }
         }, 0, 100);
-    }
-
-    public void setUserID(int userID) {
-        this.userID = userID;
     }
 
     public MutableLiveData<Song> getSong() {

@@ -1,6 +1,7 @@
 package com.example.myapp;
 
 import android.content.Context;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.room.Room;
@@ -24,6 +25,7 @@ import com.example.myapp.databaseFiles.type.Type;
 import com.example.myapp.databaseFiles.typeSport.TypeSport;
 import com.example.myapp.databaseFiles.user.User;
 
+import java.io.File;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -46,7 +48,6 @@ public abstract class Database extends RoomDatabase {
         if (instance == null) {
             instance = Room.databaseBuilder(context.getApplicationContext(),
                             Database.class, "user_database")
-                    //.createFromAsset("user_database.db")
                     .addCallback(roomCallback)
                     .build();
         }
@@ -55,20 +56,20 @@ public abstract class Database extends RoomDatabase {
 
     private static final Callback roomCallback = new Callback() {
         @Override
-        public void onOpen(@NonNull SupportSQLiteDatabase db) {
-            super.onOpen(db);
-            //new PopulateDbExecutorTask(instance).execute();
+        public void onCreate(@NonNull SupportSQLiteDatabase db) {
+            super.onCreate(db);
+            new PopulateDbExecutorTask(instance).execute();
         }
     };
 
     private static class PopulateDbExecutorTask{
         private final ExecutorService service = Executors.newSingleThreadExecutor();
-        private UserDao userDao;
+        private final UserDao userDao;
         PopulateDbExecutorTask(Database instance) {
             this.userDao = instance.getUserDao();
         }
         protected void execute(){
-            //service.execute(() -> userDao.insert());
+            service.execute(() -> userDao.insert(new User(0, "GUEST", "")));
         }
     }
 }
