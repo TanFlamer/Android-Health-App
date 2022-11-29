@@ -105,7 +105,7 @@ public class SportList extends Fragment {
         expandableListView = requireView().findViewById(R.id.sportExpandableListView);
         expandableListView.setOnItemClickListener(onItemClickListener);
 
-        sportExpandableListAdapter = new SportExpandableListAdapter(requireContext(), new HashMap<>());
+        sportExpandableListAdapter = new SportExpandableListAdapter(requireContext(), new HashMap<>(), this);
         expandableListView.setAdapter(sportExpandableListAdapter);
         sportListViewModel.getSportDateMerger().observe(getViewLifecycleOwner(), sportListHashMap -> sportExpandableListAdapter.updateSportList(sportListHashMap, dataSpinner.getSelectedItem().toString(), orderSpinner.getSelectedItem().toString()));
         setListeners(sportExpandableListAdapter);
@@ -167,5 +167,13 @@ public class SportList extends Fragment {
     public void initialiseFloatingButton(){
         floatingActionButton = requireView().findViewById(R.id.buttonFloating);
         floatingActionButton.setOnClickListener(view1 -> startActivity(new Intent(getContext(), DataSport.class)));
+    }
+
+    public ExpandableListView getExpandableListView() {
+        return expandableListView;
+    }
+
+    public SportListViewModel getSportListViewModel() {
+        return sportListViewModel;
     }
 }

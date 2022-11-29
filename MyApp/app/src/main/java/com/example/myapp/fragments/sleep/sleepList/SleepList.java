@@ -98,7 +98,7 @@ public class SleepList extends Fragment {
 
     public void initialiseRecyclerView(){
         recyclerView = requireView().findViewById(R.id.sleepRecyclerView);
-        sleepRecyclerAdapter = new SleepRecyclerAdapter(requireContext(), new ArrayList<>());
+        sleepRecyclerAdapter = new SleepRecyclerAdapter(requireContext(), new ArrayList<>(), sleepListViewModel);
         recyclerView.setAdapter(sleepRecyclerAdapter);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));

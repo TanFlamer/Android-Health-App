@@ -101,7 +101,7 @@ public class SportType extends Fragment {
         listView = requireView().findViewById(R.id.sportListView);
         listView.setOnItemClickListener(onItemClickListener);
 
-        sportListAdapter = new SportListAdapter(requireContext(), 0, new ArrayList<>());
+        sportListAdapter = new SportListAdapter(requireContext(), 0, new ArrayList<>(), sportTypeViewModel);
         listView.setAdapter(sportListAdapter);
         sportTypeViewModel.getTypeList().observe(getViewLifecycleOwner(), typeList -> sportListAdapter.updateTypeList(typeList, dataSpinner.getSelectedItem().toString(), orderSpinner.getSelectedItem().toString()));
     }

@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="2dp"
         android:background="#000000"
-        android:orientation="vertical"></LinearLayout>
+        android:orientation="vertical" />
 
     <CalendarView
         android:id="@+id/calendarSleep"
@@ -21,7 +21,7 @@
         android:layout_width="match_parent"
         android:layout_height="2dp"
         android:background="#000000"
-        android:orientation="vertical"></LinearLayout>
+        android:orientation="vertical" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -40,17 +40,19 @@
                 android:layout_weight="1" />
 
             <Button
-                android:id="@+id/button"
+                android:id="@+id/addButton"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="2"
-                android:text="Add / Delete" />
+                android:enabled="false"
+                android:text="Add" />
 
             <Button
-                android:id="@+id/calendarSleepButton"
+                android:id="@+id/infoButton"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="2"
+                android:enabled="false"
                 android:text="More Info" />
 
             <Space

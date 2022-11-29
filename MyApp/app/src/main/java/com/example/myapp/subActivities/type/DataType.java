@@ -73,6 +73,7 @@ public class DataType extends AppCompatActivity {
             finish();
         });
         buttonReturn.setOnClickListener(v -> finish());
+        buttonSave.setEnabled(false);
     }
 
     public boolean validateName(){

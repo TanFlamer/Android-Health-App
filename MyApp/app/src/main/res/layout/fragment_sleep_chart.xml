@@ -22,9 +22,8 @@
 
         <Spinner
             android:id="@+id/dataSpinner"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="fill_parent"
-            android:layout_weight="2"
             tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
 
     </LinearLayout>

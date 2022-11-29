@@ -114,22 +114,13 @@ public class MusicList extends Fragment {
 
     public void initialiseListView(){
         listView = requireView().findViewById(R.id.musicListView);
-        listView.setOnItemClickListener(onItemClickListener);
-
-        musicListAdapter = new MusicListAdapter(requireContext(), 0, new ArrayList<>());
+        musicListAdapter = new MusicListAdapter(requireContext(), 0, new ArrayList<>(), this);
         listView.setAdapter(musicListAdapter);
         musicListViewModel.getSongList().observe(getViewLifecycleOwner(), songList -> {
             Toast.makeText(getContext(), "Dataset changed", Toast.LENGTH_SHORT).show();
             musicListAdapter.updateSongList(songList, dataSpinner.getSelectedItem().toString(), orderSpinner.getSelectedItem().toString());
         });
     }
-
-    public AdapterView.OnItemClickListener onItemClickListener = new AdapterView.OnItemClickListener() {
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            musicListViewModel.getMusicPlayer().setPlaylist(musicListAdapter.getSongList(), position);
-        }
-    };
 
     public void initialiseSpinners(){
         String[] data = new String[] {"Date Added", "Name", "Length"};
@@ -169,12 +160,23 @@ public class MusicList extends Fragment {
             requestPermissionLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE);
     }
 
+    public void deleteFile(Song song){
+        musicListViewModel.delete(song);
+        File musicFile = new File(musicListViewModel.getFilePath(), song.getSongName());
+        boolean fileDeletion = musicFile.delete();
+        Toast.makeText(getContext(), "File deletion " + (fileDeletion ? "successful" : "failed"), Toast.LENGTH_SHORT).show();
+    }
+
     public void checkFolderExists(){
         File newFolder = new File(musicListViewModel.getFilePath());
         if(!newFolder.exists()){
             boolean folderCreation = newFolder.mkdirs();
             Toast.makeText(getContext(), "Folder creation " + (folderCreation ? "successful" : "failed"), Toast.LENGTH_SHORT).show();
         }
+    }
+
+    public MusicListViewModel getMusicListViewModel() {
+        return musicListViewModel;
     }
 
     private final ActivityResultLauncher<String> mGetContent = registerForActivityResult(new ActivityResultContracts.GetMultipleContents(),

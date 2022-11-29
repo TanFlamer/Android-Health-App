@@ -8,10 +8,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AlertDialog;
 
 import com.example.myapp.R;
 import com.example.myapp.databaseFiles.playlist.Playlist;
+import com.example.myapp.databaseFiles.sleep.Sleep;
 import com.example.myapp.databaseFiles.song.Song;
 import com.example.myapp.subActivities.music.DataMusic;
 
@@ -26,11 +30,19 @@ public class MusicExpandableListAdapter extends BaseExpandableListAdapter {
     private Context context;
     private List<Playlist> playlistList;
     private HashMap<Playlist, List<Song>> songPlaylists;
+    private HashMap<Playlist, Boolean> buttonMap;
+    private MusicPlaylists musicPlaylists;
 
-    public MusicExpandableListAdapter(Context context, HashMap<Playlist, List<Song>> songPlaylists){
+    private LinearLayout layoutVisible, layoutHidden;
+    private ImageView clickEdit, clickDelete;
+
+    public MusicExpandableListAdapter(Context context, HashMap<Playlist, List<Song>> songPlaylists, MusicPlaylists musicPlaylists){
         this.context = context;
         this.playlistList = new ArrayList<>(songPlaylists.keySet());
         this.songPlaylists = songPlaylists;
+        this.musicPlaylists = musicPlaylists;
+        buttonMap = new HashMap<>();
+        for (Playlist playlist : playlistList) buttonMap.put(playlist, false);
     }
 
     @Override
@@ -71,22 +83,50 @@ public class MusicExpandableListAdapter extends BaseExpandableListAdapter {
     @SuppressLint("InflateParams")
     @Override
     public View getGroupView(int i, boolean b, View view, ViewGroup viewGroup) {
-        String playlistName = playlistList.get(i).getPlaylistName();
-
+        Playlist playlist = playlistList.get(i);
         if(view == null)
             view = LayoutInflater.from(context).inflate(R.layout.music_expandable_list_item, null);
 
         TextView nameView = view.findViewById(R.id.musicPlaylistName);
-        ImageView clickEdit = view.findViewById(R.id.clickEdit);
-        ImageView clickDelete = view.findViewById(R.id.clickDelete);
-        nameView.setText(playlistName);
-        clickEdit.setOnClickListener(v -> {
-            Intent intent = new Intent(context, DataMusic.class);
-            intent.putExtra("playlistName", playlistName);
-            context.startActivity(intent);
-        });
+        nameView.setText(playlist.getPlaylistName());
+        initialiseLayouts(view, playlist, i);
+        initialiseButtons(view, playlist);
 
         return view;
+    }
+
+    public void initialiseLayouts(View view, Playlist playlist, int position){
+        layoutVisible = view.findViewById(R.id.layoutVisible);
+        layoutHidden = view.findViewById(R.id.layoutHidden);
+        layoutVisible.setOnLongClickListener(v -> {
+            buttonMap.put(playlist, Boolean.FALSE.equals(buttonMap.get(playlist)));
+            notifyDataSetChanged();
+            return true;
+        });
+        layoutVisible.setOnClickListener(v -> {
+            if(musicPlaylists.getExpandableListView().isGroupExpanded(position))
+                musicPlaylists.getExpandableListView().collapseGroup(position);
+            else
+                musicPlaylists.getExpandableListView().expandGroup(position);
+        });
+        layoutHidden.setVisibility(Boolean.TRUE.equals(buttonMap.get(playlist)) ? View.VISIBLE : View.GONE);
+    }
+
+    public void initialiseButtons(View view, Playlist playlist){
+        clickEdit = view.findViewById(R.id.clickEdit);
+        clickDelete = view.findViewById(R.id.clickDelete);
+        clickEdit.setOnClickListener(v -> {
+            Intent intent = new Intent(context, DataMusic.class);
+            intent.putExtra("playlistName", playlist.getPlaylistName());
+            context.startActivity(intent);
+        });
+        clickDelete.setOnClickListener(view1 -> new AlertDialog.Builder(context)
+                .setTitle("Delete Item")
+                .setMessage("Are you sure you want to delete this item?")
+                .setPositiveButton("Yes", (dialog, which) -> musicPlaylists.getMusicPlaylistsViewModel().deletePlaylist(playlist))
+                .setNegativeButton("No", null)
+                .create()
+                .show());
     }
 
     @SuppressLint({"InflateParams", "SetTextI18n"})
@@ -102,6 +142,8 @@ public class MusicExpandableListAdapter extends BaseExpandableListAdapter {
 
         nameView.setText(song.getSongName());
         lengthView.setText(song.getSongDuration().toString());
+
+        view.setOnClickListener(v -> musicPlaylists.getMusicPlaylistsViewModel().getMusicPlayer().setPlaylist(songPlaylists.get(playlistList.get(i)), i1));
 
         return view;
     }
@@ -122,6 +164,7 @@ public class MusicExpandableListAdapter extends BaseExpandableListAdapter {
     public void sortMusicPlaylists(String data, String order){
         playlistList.sort(getPlaylistComparator(data, order));
         for(List<Song> songList : songPlaylists.values()) songList.sort(getSongComparator(data, order));
+        for (Playlist playlist : playlistList) buttonMap.put(playlist, false);
         notifyDataSetChanged();
     }
 

@@ -44,6 +44,22 @@ public class DataSleep extends AppCompatActivity{
         initialiseAll();
     }
 
+    public void initialiseDate(){
+        Bundle extra = getIntent().getExtras();
+        if(extra == null){
+            Calendar currentDate = Calendar.getInstance();
+            year = currentDate.get(Calendar.YEAR);
+            month = currentDate.get(Calendar.MONTH);
+            day = currentDate.get(Calendar.DAY_OF_MONTH);
+        }
+        else{
+            year = extra.getInt("year");
+            month = extra.getInt("month");
+            day = extra.getInt("day");
+        }
+        fillDateData();
+    }
+
     @SuppressLint({"SetTextI18n", "DefaultLocale"})
     public void fillDateData(){
         date = LocalDate.of(year, month, day).atStartOfDay(TimeZone.getDefault().toZoneId()).toInstant().toEpochMilli();
@@ -86,13 +102,8 @@ public class DataSleep extends AppCompatActivity{
 
     @SuppressLint("DefaultLocale")
     public void initialiseDateButton(){
-        Calendar currentDate = Calendar.getInstance();
-        year = currentDate.get(Calendar.YEAR);
-        month = currentDate.get(Calendar.MONTH);
-        day = currentDate.get(Calendar.DAY_OF_MONTH);
-        fillDateData();
+        initialiseDate();
         buttonDate.setText(String.format("%02d/%02d/%04d", day, month + 1, year));
-
         buttonDate.setOnClickListener(view -> new DatePickerDialog(this, (datePicker, i, i1, i2) -> {
             year = i;
             month = i1;
@@ -125,7 +136,7 @@ public class DataSleep extends AppCompatActivity{
     @SuppressLint("DefaultLocale")
     public boolean calculateSleepDuration(){
         int duration = (wakeHour - sleepHour - 1) * 60 + (60 - sleepMinute + wakeMinute);
-        duration += (wakeHour * 60 + wakeMinute >= sleepHour * 60 + sleepMinute) ? 0 : 1440;
+        duration += (duration >= 0) ? 0 : 1440;
         durationView.setText(duration > 0 ? String.format("%02d:%02d", duration / 60, duration % 60) : "-");
         timeSleep = sleepHour * 60 + sleepMinute;
         timeWake = wakeHour * 60 + wakeMinute;

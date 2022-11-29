@@ -2,20 +2,29 @@ package com.example.myapp.fragments.sleep.sleepList;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.myapp.R;
 import com.example.myapp.databaseFiles.sleep.Sleep;
 import com.example.myapp.databaseFiles.song.Song;
+import com.example.myapp.subActivities.sleep.DataSleep;
 
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -25,13 +34,18 @@ public class SleepRecyclerAdapter extends RecyclerView.Adapter<SleepRecyclerAdap
 
     Context context;
     List<Sleep> sleepList;
+    SleepListViewModel sleepListViewModel;
     HashMap<Sleep, Boolean> visibilityMap;
+    HashMap<Sleep, Boolean> buttonMap;
 
-    public SleepRecyclerAdapter(Context context, List<Sleep> sleepList){
+    public SleepRecyclerAdapter(Context context, List<Sleep> sleepList, SleepListViewModel sleepListViewModel){
         this.context = context;
         this.sleepList = sleepList;
+        this.sleepListViewModel = sleepListViewModel;
         visibilityMap = new HashMap<>();
+        buttonMap = new HashMap<>();
         for(Sleep sleep : sleepList) visibilityMap.put(sleep, false);
+        for(Sleep sleep : sleepList) buttonMap.put(sleep, false);
     }
 
     @NonNull
@@ -53,6 +67,7 @@ public class SleepRecyclerAdapter extends RecyclerView.Adapter<SleepRecyclerAdap
         holder.wakeView.setText(String.valueOf(sleep.getWakeTime()));
         holder.durationView.setText(String.format("%02d:%02d", duration / 60, duration % 60));
         holder.layoutHidden.setVisibility(Boolean.TRUE.equals(visibilityMap.get(sleep)) ? View.VISIBLE : View.GONE);
+        holder.buttonHidden.setVisibility(Boolean.TRUE.equals(buttonMap.get(sleep)) ? View.VISIBLE : View.GONE);
     }
 
     @Override
@@ -69,8 +84,8 @@ public class SleepRecyclerAdapter extends RecyclerView.Adapter<SleepRecyclerAdap
     @SuppressLint("NotifyDataSetChanged")
     public void sortSleepList(String data, String order){
         sleepList.sort(getComparator(data, order));
-        visibilityMap.clear();
         for(Sleep sleep : sleepList) visibilityMap.put(sleep, false);
+        for(Sleep sleep : sleepList) buttonMap.put(sleep, false);
         notifyDataSetChanged();
     }
 
@@ -110,7 +125,8 @@ public class SleepRecyclerAdapter extends RecyclerView.Adapter<SleepRecyclerAdap
     public class SleepRecyclerItemViewHolder extends RecyclerView.ViewHolder {
 
         TextView titleView, dateView, sleepView, wakeView, durationView;
-        LinearLayout layoutVisible, layoutHidden;
+        LinearLayout layoutVisible, layoutHidden, buttonHidden;
+        ImageView clickEdit, clickDelete;
 
         public SleepRecyclerItemViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -121,13 +137,47 @@ public class SleepRecyclerAdapter extends RecyclerView.Adapter<SleepRecyclerAdap
             wakeView = itemView.findViewById(R.id.wakeTime);
             durationView = itemView.findViewById(R.id.sleepDuration);
 
+            initialiseImageButtons();
+            initialiseHiddenLayouts();
+        }
+
+        public void initialiseImageButtons(){
+            clickEdit = itemView.findViewById(R.id.clickEdit);
+            clickEdit.setOnClickListener(v -> {
+                Intent intent = new Intent(context, DataSleep.class);
+                LocalDate date = Instant.ofEpochMilli(sleepList.get(getAdapterPosition()).getDate()).atZone(ZoneId.systemDefault()).toLocalDate();
+                intent.putExtra("year", date.getYear());
+                intent.putExtra("month", date.getMonthValue());
+                intent.putExtra("day", date.getDayOfMonth());
+                context.startActivity(intent);
+            });
+
+            clickDelete = itemView.findViewById(R.id.clickDelete);
+            clickDelete.setOnClickListener(view -> new AlertDialog.Builder(context)
+                    .setTitle("Delete Item")
+                    .setMessage("Are you sure you want to delete this item?")
+                    .setPositiveButton("Yes", (dialog, which) -> sleepListViewModel.delete(sleepList.get(getAdapterPosition())))
+                    .setNegativeButton("No", null)
+                    .create()
+                    .show());
+        }
+
+        public void initialiseHiddenLayouts(){
             layoutVisible = itemView.findViewById(R.id.sleepLayoutVisible);
             layoutHidden = itemView.findViewById(R.id.sleepLayoutHidden);
+            buttonHidden = itemView.findViewById(R.id.buttonHidden);
 
             layoutVisible.setOnClickListener(view -> {
                 Sleep sleep = sleepList.get(getAdapterPosition());
                 visibilityMap.put(sleep, Boolean.FALSE.equals(visibilityMap.get(sleep)));
                 notifyItemChanged(getAdapterPosition());
+            });
+
+            layoutVisible.setOnLongClickListener(v -> {
+                Sleep sleep = sleepList.get(getAdapterPosition());
+                buttonMap.put(sleep, Boolean.FALSE.equals(buttonMap.get(sleep)));
+                notifyItemChanged(getAdapterPosition());
+                return true;
             });
         }
     }

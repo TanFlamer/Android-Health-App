@@ -16,7 +16,13 @@ import android.widget.CalendarView;
 import android.widget.Toast;
 
 import com.example.myapp.R;
+import com.example.myapp.databaseFiles.sleep.Sleep;
 import com.example.myapp.subActivities.sleep.DataSleep;
+
+import java.time.LocalDate;
+import java.util.Calendar;
+import java.util.List;
+import java.util.TimeZone;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -57,6 +63,9 @@ public class SleepCalendar extends Fragment {
     }
 
     SleepCalendarViewModel sleepCalendarViewModel;
+    Button addButton, infoButton;
+    CalendarView calendarView;
+    Intent intent;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -66,6 +75,7 @@ public class SleepCalendar extends Fragment {
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
         sleepCalendarViewModel = new ViewModelProvider(this).get(SleepCalendarViewModel.class);
+        intent = new Intent(getContext(), DataSleep.class);
     }
 
     @Override
@@ -78,16 +88,46 @@ public class SleepCalendar extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        initialiseAll();
+    }
 
-        CalendarView calendarView = requireView().findViewById(R.id.calendarSleep);
-        calendarView.setOnDateChangeListener((calendarView1, i, i1, i2) -> {
-            Toast.makeText(getContext(), i + " " + i1 + " " + i2, Toast.LENGTH_SHORT).show();
-        });
+    public long getCurrentDate(){
+        Calendar currentDate = Calendar.getInstance();
+        int year = currentDate.get(Calendar.YEAR);
+        int month = currentDate.get(Calendar.MONTH);
+        int day = currentDate.get(Calendar.DAY_OF_MONTH);
+        return LocalDate.of(year, month, day).atStartOfDay(TimeZone.getDefault().toZoneId()).toInstant().toEpochMilli();
+    }
 
-        Button button = requireView().findViewById(R.id.calendarSleepButton);
-        button.setOnClickListener(view1 -> {
-            startActivity(new Intent(getContext(), DataSleep.class));
-            getActivity().overridePendingTransition(0, 0);
-        });
+    public void initialiseAll(){
+        initialiseCalendar();
+        initialiseButton();
+        checkDateData(getCurrentDate());
+    }
+
+    public void initialiseCalendar(){
+        calendarView = requireView().findViewById(R.id.calendarSleep);
+        calendarView.setOnDateChangeListener(onDateChangeListener);
+    }
+
+    public void initialiseButton(){
+        addButton = requireView().findViewById(R.id.addButton);
+        addButton.setOnClickListener(view1 -> startActivity(intent));
+        infoButton = requireView().findViewById(R.id.infoButton);
+        infoButton.setOnClickListener(view1 -> startActivity(intent));
+    }
+
+    CalendarView.OnDateChangeListener onDateChangeListener = (view, year, month, day) -> {
+        intent.putExtra("year", year);
+        intent.putExtra("month", month);
+        intent.putExtra("day", day);
+        checkDateData(LocalDate.of(year, month, day).atStartOfDay(TimeZone.getDefault().toZoneId()).toInstant().toEpochMilli());
+    };
+
+    public void checkDateData(long date){
+        List<Sleep> sleepList = sleepCalendarViewModel.findSleep(date);
+        boolean hasData = sleepList.size() > 0;
+        addButton.setEnabled(!hasData);
+        infoButton.setEnabled(hasData);
     }
 }

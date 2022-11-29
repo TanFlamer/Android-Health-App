@@ -92,4 +92,8 @@ public class SportListViewModel extends AndroidViewModel {
     public void delete(TypeSport typeSport){
         typeSportRepository.delete(typeSport);
     }
+
+    public void deleteSport(Sport sport){
+        sportRepository.delete(sport);
+    }
 }

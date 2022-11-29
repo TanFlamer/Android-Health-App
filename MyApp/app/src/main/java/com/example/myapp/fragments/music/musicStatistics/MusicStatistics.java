@@ -107,19 +107,39 @@ public class MusicStatistics extends Fragment {
 
     public void updateResults(Pair<int[], int[]> pair){
         int[] songResults = pair.first;
-        songTotal.setText(String.valueOf(songResults[0]));
-        songNumber.setText(String.valueOf(songResults[1]));
-        songAverage.setText(String.valueOf(songResults[0] / (double) songResults[1]));
-        songLongest.setText(String.valueOf(songResults[2]));
-        songShortest.setText(String.valueOf(songResults[3]));
+        if(songResults[1] == 0){
+            songTotal.setText(String.valueOf(0));
+            songNumber.setText(String.valueOf(0));
+            songAverage.setText(String.valueOf(0));
+            songLongest.setText(String.valueOf(0));
+            songShortest.setText(String.valueOf(0));
+        }
+        else{
+            songTotal.setText(String.valueOf(songResults[0]));
+            songNumber.setText(String.valueOf(songResults[1]));
+            songAverage.setText(String.valueOf(songResults[0] / (double) songResults[1]));
+            songLongest.setText(String.valueOf(songResults[2]));
+            songShortest.setText(String.valueOf(songResults[3]));
+        }
 
         int[] playlistResults = pair.second;
-        playlistNumber.setText(String.valueOf(playlistResults[0]));
-        playlistLength.setText(String.valueOf(playlistResults[3] / (double) playlistResults[0]));
-        playlistCount.setText(String.valueOf(playlistResults[6] / (double) playlistResults[0]));
-        playlistLongest.setText(String.valueOf(playlistResults[4]));
-        playlistShortest.setText(String.valueOf(playlistResults[5]));
-        playlistHighest.setText(String.valueOf(playlistResults[1]));
-        playlistLowest.setText(String.valueOf(playlistResults[2]));
+        if(playlistResults[0] == 0){
+            playlistNumber.setText(String.valueOf(0));
+            playlistLength.setText(String.valueOf(0));
+            playlistCount.setText(String.valueOf(0));
+            playlistLongest.setText(String.valueOf(0));
+            playlistShortest.setText(String.valueOf(0));
+            playlistHighest.setText(String.valueOf(0));
+            playlistLowest.setText(String.valueOf(0));
+        }
+        else{
+            playlistNumber.setText(String.valueOf(playlistResults[0]));
+            playlistLength.setText(String.valueOf(playlistResults[3] / (double) playlistResults[0]));
+            playlistCount.setText(String.valueOf(playlistResults[6] / (double) playlistResults[0]));
+            playlistLongest.setText(String.valueOf(playlistResults[4]));
+            playlistShortest.setText(String.valueOf(playlistResults[5]));
+            playlistHighest.setText(String.valueOf(playlistResults[1]));
+            playlistLowest.setText(String.valueOf(playlistResults[2]));
+        }
     }
 }

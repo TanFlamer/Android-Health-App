@@ -100,10 +100,7 @@ public class MusicPlaylists extends Fragment {
 
     public void initialiseListView(){
         expandableListView = requireView().findViewById(R.id.musicExpandableListView);
-        expandableListView.setOnItemClickListener(onItemClickListener);
-        expandableListView.setOnItemSelectedListener(onItemSelectedListener);
-
-        musicExpandableListAdapter = new MusicExpandableListAdapter(requireContext(), new HashMap<>());
+        musicExpandableListAdapter = new MusicExpandableListAdapter(requireContext(), new HashMap<>(), this);
         expandableListView.setAdapter(musicExpandableListAdapter);
         musicPlaylistsViewModel.getSongPlaylistList().observe(getViewLifecycleOwner(), songPlaylists -> musicExpandableListAdapter.updateMusicPlaylists(musicPlaylistsViewModel.updateMusicPlaylists(songPlaylists), dataSpinner.getSelectedItem().toString(), orderSpinner.getSelectedItem().toString()));
         setListeners(musicExpandableListAdapter);
@@ -127,14 +124,6 @@ public class MusicPlaylists extends Fragment {
             return true;
         });
     }
-
-    public AdapterView.OnItemClickListener onItemClickListener = new AdapterView.OnItemClickListener() {
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            Song song = (Song) expandableListView.getItemAtPosition(position);
-            Toast.makeText(getContext(), song.getSongName() + " clicked", Toast.LENGTH_SHORT).show();
-        }
-    };
 
     public AdapterView.OnItemSelectedListener onItemSelectedListener = new AdapterView.OnItemSelectedListener() {
         @Override
@@ -165,5 +154,13 @@ public class MusicPlaylists extends Fragment {
     public void initialiseFloatingButton(){
         floatingActionButton = requireView().findViewById(R.id.buttonFloating);
         floatingActionButton.setOnClickListener(view1 -> startActivity(new Intent(getContext(), DataMusic.class)));
+    }
+
+    public MusicPlaylistsViewModel getMusicPlaylistsViewModel() {
+        return musicPlaylistsViewModel;
+    }
+
+    public ExpandableListView getExpandableListView() {
+        return expandableListView;
     }
 }

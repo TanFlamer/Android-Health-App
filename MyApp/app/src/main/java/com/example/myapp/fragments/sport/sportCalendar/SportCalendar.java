@@ -2,22 +2,25 @@ package com.example.myapp.fragments.sport.sportCalendar;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.CalendarView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.CalendarView;
-import android.widget.Toast;
-
 import com.example.myapp.R;
-import com.example.myapp.fragments.sport.sportChart.SportChartViewModel;
+import com.example.myapp.databaseFiles.sport.Sport;
 import com.example.myapp.subActivities.sport.DataSport;
+
+import java.time.LocalDate;
+import java.util.Calendar;
+import java.util.List;
+import java.util.TimeZone;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -57,7 +60,10 @@ public class SportCalendar extends Fragment {
         return fragment;
     }
 
-    SportChartViewModel sportChartViewModel;
+    SportCalendarViewModel sportCalendarViewModel;
+    Button addButton, infoButton;
+    CalendarView calendarView;
+    Intent intent;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -66,7 +72,8 @@ public class SportCalendar extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-        sportChartViewModel = new ViewModelProvider(this).get(SportChartViewModel.class);
+        sportCalendarViewModel = new ViewModelProvider(this).get(SportCalendarViewModel.class);
+        intent = new Intent(getContext(), DataSport.class);
     }
 
     @Override
@@ -79,16 +86,46 @@ public class SportCalendar extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        initialiseAll();
+    }
 
-        CalendarView calendarView = requireView().findViewById(R.id.calendarSport);
-        calendarView.setOnDateChangeListener((calendarView1, i, i1, i2) -> {
-            Toast.makeText(getContext(), i + " " + i1 + " " + i2, Toast.LENGTH_SHORT).show();
-        });
+    public long getCurrentDate(){
+        Calendar currentDate = Calendar.getInstance();
+        int year = currentDate.get(Calendar.YEAR);
+        int month = currentDate.get(Calendar.MONTH);
+        int day = currentDate.get(Calendar.DAY_OF_MONTH);
+        return LocalDate.of(year, month, day).atStartOfDay(TimeZone.getDefault().toZoneId()).toInstant().toEpochMilli();
+    }
 
-        Button button = requireView().findViewById(R.id.calendarSportButton);
-        button.setOnClickListener(view1 -> {
-            startActivity(new Intent(getContext(), DataSport.class));
-            getActivity().overridePendingTransition(0, 0);
-        });
+    public void initialiseAll(){
+        initialiseCalendar();
+        initialiseButton();
+        checkDateData(getCurrentDate());
+    }
+
+    public void initialiseCalendar(){
+        calendarView = requireView().findViewById(R.id.calendarSport);
+        calendarView.setOnDateChangeListener(onDateChangeListener);
+    }
+
+    public void initialiseButton(){
+        addButton = requireView().findViewById(R.id.addButton);
+        addButton.setOnClickListener(view1 -> startActivity(intent));
+        infoButton = requireView().findViewById(R.id.infoButton);
+        infoButton.setOnClickListener(view1 -> startActivity(intent));
+    }
+
+    CalendarView.OnDateChangeListener onDateChangeListener = (view, year, month, day) -> {
+        intent.putExtra("year", year);
+        intent.putExtra("month", month);
+        intent.putExtra("day", day);
+        checkDateData(LocalDate.of(year, month, day).atStartOfDay(TimeZone.getDefault().toZoneId()).toInstant().toEpochMilli());
+    };
+
+    public void checkDateData(long date){
+        List<Sport> sportList = sportCalendarViewModel.findSport(date);
+        boolean hasData = sportList.size() > 0;
+        addButton.setEnabled(!hasData);
+        infoButton.setEnabled(hasData);
     }
 }

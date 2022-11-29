@@ -37,7 +37,7 @@ public class SleepStatisticsViewModel extends AndroidViewModel {
             results[4] = (normalised(sleep.getSleepTime()) > normalised(results[4])) ? sleep.getSleepTime() : results[4]; //latest sleep
             results[5] = (normalised(sleep.getWakeTime()) < normalised(results[5])) ? sleep.getWakeTime() : results[5]; //earliest wake
             results[6] = (normalised(sleep.getWakeTime()) > normalised(results[6])) ? sleep.getWakeTime() : results[6]; //latest wake
-            results[7] += 1;
+            results[7] += 1; //sleep days
         }
         return results;
     }

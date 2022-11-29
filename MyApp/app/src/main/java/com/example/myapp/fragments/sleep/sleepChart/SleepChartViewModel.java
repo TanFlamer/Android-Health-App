@@ -65,15 +65,20 @@ public class SleepChartViewModel extends AndroidViewModel {
         barEntryList.clear();
         for(int i = 0; i < currentSleepList.size(); i++){
             Sleep sleep = currentSleepList.get(i);
-            int yValue = data.equals("Sleep Duration") ? getDuration(sleep) : data.equals("Sleep Time") ? normalisedTime(sleep.getSleepTime()) : normalisedTime(sleep.getWakeTime());
+            int yValue = data.equals("Sleep Duration") ? getDuration(sleep) : normalisedTime(sleep, data);
             barEntryList.add(new BarEntry((float) i, (float) yValue / 60));
         }
     }
 
-    public int normalisedTime(int time){
-        time -= 720;
-        if(time < 0) time += 1440;
-        return time;
+    public int normalisedTime(Sleep sleep, String data){
+        if(data.equals("Sleep Time")){
+            int time = sleep.getSleepTime();
+            return time < 720 ? time : time - 1440;
+        }
+        else {
+            int time = sleep.getWakeTime();
+            return time - 720;
+        }
     }
 
     public int getDuration(Sleep sleep){

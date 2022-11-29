@@ -110,31 +110,41 @@ public class SleepChart extends Fragment {
 
         barData = new BarData(barDataSet);
         barChart.setData(barData);
-        barChart.getAxisLeft().setAxisMinimum(0);
-        barChart.getAxisRight().setAxisMinimum(0);
         barChart.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM);
         barChart.getXAxis().setGranularity(1);
+        barChart.getDescription().setEnabled(false);
 
         sleepChartViewModel.getSleepList().observe(getViewLifecycleOwner(), sleepList -> refreshBarChart(sleepChartViewModel.processData(sleepList, dataSpinner.getSelectedItem().toString())));
     }
 
     public void refreshBarChart(Pair<List<String>, List<BarEntry>> pair){
-        List<String> xAxisLabels = pair.first;
+        resetXAxisMin(dataSpinner.getSelectedItem().toString().equals("Sleep Duration"));
         sleepData.clear();
         sleepData.addAll(pair.second);
-        barChart.getXAxis().setValueFormatter(new ValueFormatter() {
-            @Override
-            public String getFormattedValue(float value) {
-                return xAxisLabels.get((int) value);
-            }
-        });
         barDataSet.notifyDataSetChanged();
         barDataSet.setValueFormatter(dataSpinner.getSelectedItem().toString().equals("Sleep Duration") ? new DefaultValueFormatter(2) : yValueFormatter);
         barData.notifyDataChanged();
         barChart.notifyDataSetChanged();
         barChart.invalidate();
         barChart.setVisibleXRangeMaximum(5);
-        barChart.moveViewToX(xAxisLabels.size() - 1);
+        barChart.moveViewToX(pair.first.size() - 1);
+        barChart.getXAxis().setValueFormatter(new ValueFormatter() {
+            @Override
+            public String getFormattedValue(float value) {
+                return pair.first.size() == 0 ? "" : pair.first.get((int) value);
+            }
+        });
+    }
+
+    public void resetXAxisMin(boolean isDuration){
+        if(isDuration){
+            barChart.getAxisLeft().setAxisMinimum(0);
+            barChart.getAxisRight().setAxisMinimum(0);
+        }
+        else{
+            barChart.getAxisLeft().resetAxisMinimum();
+            barChart.getAxisRight().resetAxisMinimum();
+        }
     }
 
     public void initialiseSpinners(){
@@ -161,8 +171,8 @@ public class SleepChart extends Fragment {
         @Override
         public String getFormattedValue(float value) {
             int time = (int) (value * 60);
-            int minutes = time + ((time < 720) ? 720 : -720);
-            return String.format("%02d:%02d", minutes / 60, minutes % 60);
+            time += dataSpinner.getSelectedItem().toString().equals("Wake Time") ? 720 : (time < 0 ? 1440 : 0);
+            return String.format("%02d:%02d", time / 60, time % 60);
         }
     };
 }

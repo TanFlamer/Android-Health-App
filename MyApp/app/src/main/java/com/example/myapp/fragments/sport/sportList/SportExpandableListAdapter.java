@@ -2,19 +2,28 @@ package com.example.myapp.fragments.sport.sportList;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AlertDialog;
 
 import com.example.myapp.R;
 import com.example.myapp.databaseFiles.playlist.Playlist;
-import com.example.myapp.databaseFiles.song.Song;
 import com.example.myapp.databaseFiles.sport.Sport;
 import com.example.myapp.databaseFiles.type.Type;
+import com.example.myapp.subActivities.music.DataMusic;
+import com.example.myapp.subActivities.sport.DataSport;
 
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -26,11 +35,19 @@ public class SportExpandableListAdapter extends BaseExpandableListAdapter {
     private Context context;
     private List<Sport> sportList;
     private HashMap<Sport, List<Pair<Type, Integer>>> typeSports;
+    private HashMap<Sport, Boolean> buttonMap;
+    private SportList sportLists;
 
-    public SportExpandableListAdapter(Context context, HashMap<Sport, List<Pair<Type, Integer>>> typeSports){
+    private LinearLayout layoutVisible, layoutHidden;
+    private ImageView clickEdit, clickDelete;
+
+    public SportExpandableListAdapter(Context context, HashMap<Sport, List<Pair<Type, Integer>>> typeSports, SportList sportLists){
         this.context = context;
         this.sportList = new ArrayList<>(typeSports.keySet());
         this.typeSports = typeSports;
+        this.sportLists = sportLists;
+        buttonMap = new HashMap<>();
+        for(Sport sport : sportList) buttonMap.put(sport, false);
     }
 
     @Override
@@ -71,15 +88,54 @@ public class SportExpandableListAdapter extends BaseExpandableListAdapter {
     @SuppressLint("InflateParams")
     @Override
     public View getGroupView(int i, boolean b, View view, ViewGroup viewGroup) {
-        long sportDate = sportList.get(i).getDate();
+        Sport sport = sportList.get(i);
 
         if(view == null)
             view = LayoutInflater.from(context).inflate(R.layout.sport_expandable_list_item, null);
 
         TextView dateView = view.findViewById(R.id.sportDate);
-        dateView.setText(String.valueOf(sportDate));
+        dateView.setText(String.valueOf(sport.getDate()));
+        initialiseLayouts(view, sport, i);
+        initialiseButtons(view, sport);
 
         return view;
+    }
+
+    public void initialiseLayouts(View view, Sport sport, int position){
+        layoutVisible = view.findViewById(R.id.layoutVisible);
+        layoutHidden = view.findViewById(R.id.layoutHidden);
+        layoutVisible.setOnLongClickListener(v -> {
+            buttonMap.put(sport, Boolean.FALSE.equals(buttonMap.get(sport)));
+            notifyDataSetChanged();
+            return true;
+        });
+        layoutVisible.setOnClickListener(v -> {
+            if(sportLists.getExpandableListView().isGroupExpanded(position))
+                sportLists.getExpandableListView().collapseGroup(position);
+            else
+                sportLists.getExpandableListView().expandGroup(position);
+        });
+        layoutHidden.setVisibility(Boolean.TRUE.equals(buttonMap.get(sport)) ? View.VISIBLE : View.GONE);
+    }
+
+    public void initialiseButtons(View view, Sport sport){
+        LocalDate date = Instant.ofEpochMilli(sport.getDate()).atZone(ZoneId.systemDefault()).toLocalDate();
+        clickEdit = view.findViewById(R.id.clickEdit);
+        clickDelete = view.findViewById(R.id.clickDelete);
+        clickEdit.setOnClickListener(v -> {
+            Intent intent = new Intent(context, DataSport.class);
+            intent.putExtra("year", date.getYear());
+            intent.putExtra("month", date.getMonthValue());
+            intent.putExtra("day", date.getDayOfMonth());
+            context.startActivity(intent);
+        });
+        clickDelete.setOnClickListener(view1 -> new AlertDialog.Builder(context)
+                .setTitle("Delete Item")
+                .setMessage("Are you sure you want to delete this item?")
+                .setPositiveButton("Yes", (dialog, which) -> sportLists.getSportListViewModel().deleteSport(sport))
+                .setNegativeButton("No", null)
+                .create()
+                .show());
     }
 
     @SuppressLint("InflateParams")
@@ -119,6 +175,7 @@ public class SportExpandableListAdapter extends BaseExpandableListAdapter {
     public void sortSportList(String data, String order){
         sportList.sort(getSportComparator(data, order));
         for(List<Pair<Type, Integer>> pairList : typeSports.values()) pairList.sort(getTypeComparator(data, order));
+        for(Sport sport : sportList) buttonMap.put(sport, false);
         notifyDataSetChanged();
     }
 

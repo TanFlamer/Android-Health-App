@@ -7,6 +7,7 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
 import com.example.myapp.MainApplication;
+import com.example.myapp.MusicPlayer;
 import com.example.myapp.databaseFiles.playlist.Playlist;
 import com.example.myapp.databaseFiles.song.Song;
 import com.example.myapp.databaseFiles.songPlaylist.SongPlaylist;
@@ -25,6 +26,7 @@ public class MusicPlaylistsViewModel extends AndroidViewModel {
     private SongRepository songRepository;
     private SongPlaylistRepository songPlaylistRepository;
     private LiveData<List<SongPlaylist>> songPlaylistList;
+    private MusicPlayer musicPlayer;
     private int userID;
 
     private HashMap<Integer, Playlist> playlistList;
@@ -39,6 +41,7 @@ public class MusicPlaylistsViewModel extends AndroidViewModel {
         songPlaylistList = songPlaylistRepository.getAllSongPlaylist(userID);
         playlistList = new HashMap<>();
         songList = new HashMap<>();
+        musicPlayer = ((MainApplication) getApplication()).getMusicPlayer();
     }
 
     public void insert(SongPlaylist songPlaylist){
@@ -51,6 +54,10 @@ public class MusicPlaylistsViewModel extends AndroidViewModel {
 
     public void delete(SongPlaylist songPlaylist){
         songPlaylistRepository.delete(songPlaylist);
+    }
+
+    public void deletePlaylist(Playlist playlist){
+        playlistRepository.delete(playlist);
     }
 
     public List<SongPlaylist> findSongPlaylist(int playlistID, int songID){
@@ -80,5 +87,9 @@ public class MusicPlaylistsViewModel extends AndroidViewModel {
 
     public LiveData<List<SongPlaylist>> getSongPlaylistList() {
         return songPlaylistList;
+    }
+
+    public MusicPlayer getMusicPlayer() {
+        return musicPlayer;
     }
 }

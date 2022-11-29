@@ -32,14 +32,9 @@ public class MusicDataListAdapter extends ArrayAdapter<Pair<Song, Boolean>> {
             currentItemView = LayoutInflater.from(getContext()).inflate(R.layout.data_music_list_item, parent, false);
 
         Pair<Song, Boolean> songBooleanPair = getItem(position);
-
         Song song = songBooleanPair.first;
-
         TextView nameView = currentItemView.findViewById(R.id.musicName);
-        TextView lengthView = currentItemView.findViewById(R.id.musicLength);
-
         nameView.setText(song.getSongName());
-        lengthView.setText(String.valueOf(song.getSongDuration()));
 
         Boolean selected = songBooleanPair.second;
         currentItemView.setBackgroundColor(selected ? Color.BLUE : Color.WHITE);

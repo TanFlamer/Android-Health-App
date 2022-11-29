@@ -62,6 +62,22 @@ public class DataSport extends AppCompatActivity {
         initialiseAll();
     }
 
+    public void initialiseDate(){
+        Bundle extra = getIntent().getExtras();
+        if(extra == null){
+            Calendar currentDate = Calendar.getInstance();
+            year = currentDate.get(Calendar.YEAR);
+            month = currentDate.get(Calendar.MONTH);
+            day = currentDate.get(Calendar.DAY_OF_MONTH);
+        }
+        else{
+            year = extra.getInt("year");
+            month = extra.getInt("month");
+            day = extra.getInt("day");
+        }
+        populateLists(LocalDate.of(year, month, day).atStartOfDay(TimeZone.getDefault().toZoneId()).toInstant().toEpochMilli());
+    }
+
     public void populateLists(long date){
         Pair<List<Pair<Type, Integer>>, List<Type>> listPair = dataSportViewModel.populateList(date);
 
@@ -201,11 +217,7 @@ public class DataSport extends AppCompatActivity {
 
     @SuppressLint("DefaultLocale")
     public void initialiseDateButton(){
-        Calendar currentDate = Calendar.getInstance();
-        year = currentDate.get(Calendar.YEAR);
-        month = currentDate.get(Calendar.MONTH);
-        day = currentDate.get(Calendar.DAY_OF_MONTH);
-        populateLists(LocalDate.of(year, month, day).atStartOfDay(TimeZone.getDefault().toZoneId()).toInstant().toEpochMilli());
+        initialiseDate();
         buttonDate.setText(String.format("%02d/%02d/%04d", day, month + 1, year));
 
         buttonDate.setOnClickListener(view -> new DatePickerDialog(this, (datePicker, i, i1, i2) -> {

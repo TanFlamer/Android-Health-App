@@ -16,15 +16,11 @@ import java.util.List;
 public class SportCalendarViewModel extends AndroidViewModel {
 
     private SportRepository sportRepository;
-    private TypeRepository typeRepository;
-    private TypeSportRepository typeSportRepository;
     private int userID;
 
     public SportCalendarViewModel(@NonNull Application application) {
         super(application);
         sportRepository = new SportRepository(application);
-        typeRepository = new TypeRepository(application);
-        typeSportRepository = new TypeSportRepository(application);
         userID = ((MainApplication) getApplication()).getUserID();
     }
 

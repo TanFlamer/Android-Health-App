@@ -91,14 +91,27 @@ public class SleepStatistics extends Fragment {
     }
 
     public void updateResults(int[] results){
-        sleepTotal.setText(String.valueOf(results[0]));
-        dayTotal.setText(String.valueOf(results[7]));
-        sleepLongest.setText(String.valueOf(results[1]));
-        sleepShortest.setText(String.valueOf(results[2]));
-        sleepAverage.setText(String.valueOf(results[0] / (double) results[7]));
-        sleepEarliest.setText(String.valueOf(results[3]));
-        sleepLatest.setText(String.valueOf(results[4]));
-        wakeEarliest.setText(String.valueOf(results[5]));
-        wakeLatest.setText(String.valueOf(results[6]));
+        if(results[7] == 0){
+            sleepTotal.setText(String.valueOf(0));
+            dayTotal.setText(String.valueOf(0));
+            sleepLongest.setText(String.valueOf(0));
+            sleepShortest.setText(String.valueOf(0));
+            sleepAverage.setText(String.valueOf(0));
+            sleepEarliest.setText(String.valueOf(0));
+            sleepLatest.setText(String.valueOf(0));
+            wakeEarliest.setText(String.valueOf(0));
+            wakeLatest.setText(String.valueOf(0));
+        }
+        else{
+            sleepTotal.setText(String.valueOf(results[0]));
+            dayTotal.setText(String.valueOf(results[7]));
+            sleepLongest.setText(String.valueOf(results[1]));
+            sleepShortest.setText(String.valueOf(results[2]));
+            sleepAverage.setText(String.valueOf(results[0] / (double) results[7]));
+            sleepEarliest.setText(String.valueOf(results[3]));
+            sleepLatest.setText(String.valueOf(results[4]));
+            wakeEarliest.setText(String.valueOf(results[5]));
+            wakeLatest.setText(String.valueOf(results[6]));
+        }
     }
 }
