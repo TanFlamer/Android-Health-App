@@ -4,22 +4,15 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Pair;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.myapp.R;
-import com.example.myapp.databasefiles.user.User;
-import com.example.myapp.mainActivities.account.AccountActivity;
 import com.google.android.material.textfield.TextInputLayout;
-
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -75,23 +68,17 @@ public class LoginActivity extends AppCompatActivity {
 
     public void initialiseLoginButton(){
         buttonLogin.setOnClickListener(view -> {
-            User user = loginViewModel.validateUser(username.getText().toString(), password.getText().toString());
-            if(user == null)
-                Toast.makeText(this, "Invalid Login Credentials", Toast.LENGTH_SHORT).show();
-            else {
-                Intent intent = new Intent(getApplicationContext(), AccountActivity.class);
-                intent.putExtra("userID", user.getUserID());
-                startActivity(intent);
-            }
+            String usernameText = username.getText().toString();
+            String passwordText = password.getText().toString();
+            Intent intent = loginViewModel.validateUser(usernameText, passwordText);
+            if(intent != null) startActivity(intent);
             clearTextFields();
         });
     }
 
     public void initialiseNewButton(){
         buttonNew.setOnClickListener(v -> {
-            Intent intent = new Intent(getApplicationContext(), AccountActivity.class);
-            intent.putExtra("userID", -1);
-            startActivity(intent);
+            startActivity(loginViewModel.loginNewUser());
             clearTextFields();
         });
     }
@@ -101,9 +88,7 @@ public class LoginActivity extends AppCompatActivity {
                 .setTitle("Guest Login")
                 .setMessage("Are you sure you want to login as guest? Any changes made will not be saved.")
                 .setPositiveButton("Yes", (dialogInterface, i) -> {
-                    Intent intent = new Intent(getApplicationContext(), AccountActivity.class);
-                    intent.putExtra("userID", 0);
-                    startActivity(intent);
+                    startActivity(loginViewModel.loginGuest());
                     clearTextFields();
                 })
                 .setNegativeButton("No", null)

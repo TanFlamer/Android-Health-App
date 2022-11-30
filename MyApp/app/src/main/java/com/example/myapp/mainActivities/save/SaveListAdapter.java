@@ -20,7 +20,7 @@ import java.util.List;
 
 public class SaveListAdapter extends ArrayAdapter<Pair<String, LocalDateTime>> {
 
-    private List<Pair<String, LocalDateTime>> saveLogs;
+    private final List<Pair<String, LocalDateTime>> saveLogs;
 
     public SaveListAdapter(@NonNull Context context, int resource, List<Pair<String, LocalDateTime>> saveLogs) {
         super(context, resource, saveLogs);
@@ -35,18 +35,24 @@ public class SaveListAdapter extends ArrayAdapter<Pair<String, LocalDateTime>> {
         if(currentItemView == null)
             currentItemView = LayoutInflater.from(getContext()).inflate(R.layout.save_list_item, parent, false);
 
-        Pair<String, LocalDateTime> saveLog = getItem(position);
-
-        TextView logView = currentItemView.findViewById(R.id.saveLog);
-        TextView timeView = currentItemView.findViewById(R.id.saveTime);
-
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        String formattedDateTime = saveLog.second.format(dateTimeFormatter);
-
-        logView.setText(saveLog.first);
-        timeView.setText(formattedDateTime);
-
+        initialiseAll(currentItemView, getItem(position));
         return currentItemView;
+    }
+
+    public void initialiseAll(View view, Pair<String, LocalDateTime> saveLog){
+        String formattedDateTime = saveLog.second.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        initialiseLogView(view, saveLog.first);
+        initialiseTimeView(view, formattedDateTime);
+    }
+
+    public void initialiseLogView(View view, String log){
+        TextView logView = view.findViewById(R.id.saveLog);
+        logView.setText(log);
+    }
+
+    public void initialiseTimeView(View view, String time){
+        TextView timeView = view.findViewById(R.id.saveTime);
+        timeView.setText(time);
     }
 
     public void updateSaveLogs(Pair<String, LocalDateTime> newSaveLogs){

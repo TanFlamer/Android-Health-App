@@ -102,7 +102,7 @@ public class SportListFragment extends Fragment {
 
         sportListAdapter = new SportListAdapter(requireContext(), new HashMap<>(), this);
         expandableListView.setAdapter(sportListAdapter);
-        sportListViewModel.getSportDateMerger().observe(getViewLifecycleOwner(), sportListHashMap -> sportListAdapter.updateSportList(sportListHashMap, dataSpinner.getSelectedItem().toString(), orderSpinner.getSelectedItem().toString()));
+        sportListViewModel.getSportDataMerger().observe(getViewLifecycleOwner(), sportListHashMap -> sportListAdapter.updateSportList(sportListHashMap, dataSpinner.getSelectedItem().toString(), orderSpinner.getSelectedItem().toString()));
         setListeners(sportListAdapter);
     }
 

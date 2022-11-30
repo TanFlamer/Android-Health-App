@@ -22,5 +22,5 @@ public interface SportScheduleDao {
     void delete(SportSchedule sportSchedule);
 
     @Query("SELECT * FROM SportSchedule WHERE userID=:userID")
-    LiveData<List<SportSchedule>> getAllTypeSport(int userID);
+    LiveData<List<SportSchedule>> getAllSportSchedule(int userID);
 }

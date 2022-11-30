@@ -34,9 +34,9 @@ public class MusicDataViewModel extends AndroidViewModel {
     public MusicDataViewModel(@NonNull Application application) {
         super(application);
         playlistRepository = ((MainApplication) getApplication()).getPlaylistRepository();
-        songCatalogueRepository = ((MainApplication) getApplication()).getSongPlaylistRepository();
+        songCatalogueRepository = ((MainApplication) getApplication()).getSongCatalogueRepository();
 
-        songCatalogueList = ((MainApplication) getApplication()).getSongPlaylistList();
+        songCatalogueList = ((MainApplication) getApplication()).getSongCatalogueList();
         songList = ((MainApplication) getApplication()).getSongList();
 
         songMap = new HashMap<>();

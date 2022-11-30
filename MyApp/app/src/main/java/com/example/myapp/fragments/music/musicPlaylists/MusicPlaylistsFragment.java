@@ -23,43 +23,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.HashMap;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link MusicPlaylistsFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class MusicPlaylistsFragment extends Fragment {
-
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-    public MusicPlaylistsFragment() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment Playlists.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static MusicPlaylistsFragment newInstance(String param1, String param2) {
-        MusicPlaylistsFragment fragment = new MusicPlaylistsFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
 
     MusicPlaylistsViewModel musicPlaylistsViewModel;
     FloatingActionButton floatingActionButton;
@@ -70,10 +34,6 @@ public class MusicPlaylistsFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
         musicPlaylistsViewModel = new ViewModelProvider(this).get(MusicPlaylistsViewModel.class);
     }
 
@@ -91,49 +51,20 @@ public class MusicPlaylistsFragment extends Fragment {
     }
 
     public void initialiseAll(){
-        initialiseListView();
         initialiseSpinners();
+        initialiseListView();
         initialiseFloatingButton();
     }
 
     public void initialiseListView(){
+        String data = dataSpinner.getSelectedItem().toString();
+        String order = orderSpinner.getSelectedItem().toString();
         expandableListView = requireView().findViewById(R.id.musicExpandableListView);
         musicPlaylistsAdapter = new MusicPlaylistsAdapter(requireContext(), new HashMap<>(), this);
         expandableListView.setAdapter(musicPlaylistsAdapter);
-        musicPlaylistsViewModel.getSongPlaylistList().observe(getViewLifecycleOwner(), songPlaylists -> musicPlaylistsAdapter.updateMusicPlaylists(musicPlaylistsViewModel.updateMusicPlaylists(songPlaylists), dataSpinner.getSelectedItem().toString(), orderSpinner.getSelectedItem().toString()));
-        setListeners(musicPlaylistsAdapter);
+        expandableListView.setOnGroupExpandListener(onGroupExpandListener);
+        musicPlaylistsViewModel.getMusicDateMerger().observe(getViewLifecycleOwner(), songCatalogueHashMap -> musicPlaylistsAdapter.updateMusicPlaylists(songCatalogueHashMap, data, order));
     }
-
-    public void setListeners(MusicPlaylistsAdapter musicPlaylistsAdapter){
-        expandableListView.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
-            int lastExpandedPosition = -1;
-            @Override
-            public void onGroupExpand(int i) {
-                if(lastExpandedPosition != -1 && i != lastExpandedPosition){
-                    expandableListView.collapseGroup(lastExpandedPosition);
-                }
-                lastExpandedPosition = i;
-            }
-        });
-
-        expandableListView.setOnChildClickListener((expandableListView1, view1, i, i1, l) -> {
-            String selected = musicPlaylistsAdapter.getChild(i, i1).toString();
-            Toast.makeText(getContext(), selected, Toast.LENGTH_SHORT).show();
-            return true;
-        });
-    }
-
-    public AdapterView.OnItemSelectedListener onItemSelectedListener = new AdapterView.OnItemSelectedListener() {
-        @Override
-        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-            musicPlaylistsAdapter.sortMusicPlaylists(dataSpinner.getSelectedItem().toString(), orderSpinner.getSelectedItem().toString());
-        }
-
-        @Override
-        public void onNothingSelected(AdapterView<?> parent) {
-
-        }
-    };
 
     public void initialiseSpinners(){
         String[] data = new String[] {"Date Added", "Name", "Length"};
@@ -161,4 +92,27 @@ public class MusicPlaylistsFragment extends Fragment {
     public ExpandableListView getExpandableListView() {
         return expandableListView;
     }
+
+    public AdapterView.OnItemSelectedListener onItemSelectedListener = new AdapterView.OnItemSelectedListener() {
+        @Override
+        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+            musicPlaylistsAdapter.sortMusicPlaylists(dataSpinner.getSelectedItem().toString(), orderSpinner.getSelectedItem().toString());
+        }
+
+        @Override
+        public void onNothingSelected(AdapterView<?> parent) {
+
+        }
+    };
+
+    public ExpandableListView.OnGroupExpandListener onGroupExpandListener = new ExpandableListView.OnGroupExpandListener() {
+        int lastExpandedPosition = -1;
+        @Override
+        public void onGroupExpand(int groupPosition) {
+            if(lastExpandedPosition != -1 && groupPosition != lastExpandedPosition){
+                expandableListView.collapseGroup(lastExpandedPosition);
+            }
+            lastExpandedPosition = groupPosition;
+        }
+    };
 }

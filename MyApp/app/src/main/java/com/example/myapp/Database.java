@@ -68,6 +68,7 @@ public abstract class Database extends RoomDatabase {
         }
         protected void execute(){
             service.execute(() -> userDao.insert(new User(0, "GUEST", "")));
+            service.execute(() -> userDao.insert(new User(-1, "NEW USER", "")));
         }
     }
 }

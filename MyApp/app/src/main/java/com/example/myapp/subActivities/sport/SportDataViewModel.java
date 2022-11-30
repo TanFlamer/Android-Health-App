@@ -36,9 +36,9 @@ public class SportDataViewModel extends AndroidViewModel {
         MainApplication mainApplication = this.getApplication();
 
         sportRepository = mainApplication.getSportRepository();
-        sportScheduleRepository = mainApplication.getTypeSportRepository();
+        sportScheduleRepository = mainApplication.getSportScheduleRepository();
 
-        sportScheduleList = mainApplication.getTypeSportList();
+        sportScheduleList = mainApplication.getSportScheduleList();
         typeList = mainApplication.getTypeList();
 
         typeMap = new HashMap<>();

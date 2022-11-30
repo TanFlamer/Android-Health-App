@@ -70,14 +70,14 @@ public class SportChartViewModel extends AndroidViewModel {
     public void initialiseLists(){
         sportLiveData = sportRepository.getAllSport(userID);
         typeLiveData = typeRepository.getAllTypes(userID);
-        typeSportLiveData = sportScheduleRepository.getAllTypeSport(userID);
+        typeSportLiveData = sportScheduleRepository.getAllSportSchedule(userID);
     }
 
     public void initialiseLiveDataMerger(){
         sportDateMerger = new MediatorLiveData<>();
-        sportDateMerger.addSource(sportLiveData, sportList -> sportDateMerger.setValue(processResults(((MainApplication) getApplication()).getSportList(), ((MainApplication) getApplication()).getTypeList(), ((MainApplication) getApplication()).getTypeSportList())));
-        sportDateMerger.addSource(typeLiveData, typeList -> sportDateMerger.setValue(processResults(((MainApplication) getApplication()).getSportList(), ((MainApplication) getApplication()).getTypeList(), ((MainApplication) getApplication()).getTypeSportList())));
-        sportDateMerger.addSource(typeSportLiveData, typeSportList -> sportDateMerger.setValue(processResults(((MainApplication) getApplication()).getSportList(), ((MainApplication) getApplication()).getTypeList(), ((MainApplication) getApplication()).getTypeSportList())));
+        sportDateMerger.addSource(sportLiveData, sportList -> sportDateMerger.setValue(processResults(((MainApplication) getApplication()).getSportList(), ((MainApplication) getApplication()).getTypeList(), ((MainApplication) getApplication()).getSportScheduleList())));
+        sportDateMerger.addSource(typeLiveData, typeList -> sportDateMerger.setValue(processResults(((MainApplication) getApplication()).getSportList(), ((MainApplication) getApplication()).getTypeList(), ((MainApplication) getApplication()).getSportScheduleList())));
+        sportDateMerger.addSource(typeSportLiveData, typeSportList -> sportDateMerger.setValue(processResults(((MainApplication) getApplication()).getSportList(), ((MainApplication) getApplication()).getTypeList(), ((MainApplication) getApplication()).getSportScheduleList())));
     }
 
     public HashMap<Sport, List<Pair<Type, Integer>>> processResults(List<Sport> sportList, List<Type> typeList, List<SportSchedule> sportScheduleList){

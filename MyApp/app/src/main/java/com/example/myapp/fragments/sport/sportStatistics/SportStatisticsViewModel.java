@@ -30,7 +30,7 @@ public class SportStatisticsViewModel extends AndroidViewModel {
     public SportStatisticsViewModel(@NonNull Application application) {
         super(application);
         typeRepository = ((MainApplication) getApplication()).getTypeRepository();
-        sportScheduleRepository = ((MainApplication) getApplication()).getTypeSportRepository();
+        sportScheduleRepository = ((MainApplication) getApplication()).getSportScheduleRepository();
         userID = ((MainApplication) getApplication()).getUserID();
         initialiseLists();
         initialiseLiveDataMerger();
@@ -38,13 +38,13 @@ public class SportStatisticsViewModel extends AndroidViewModel {
 
     public void initialiseLists(){
         typeLiveData = typeRepository.getAllTypes(userID);
-        typeSportLiveData = sportScheduleRepository.getAllTypeSport(userID);
+        typeSportLiveData = sportScheduleRepository.getAllSportSchedule(userID);
     }
 
     public void initialiseLiveDataMerger(){
         sportDateMerger = new MediatorLiveData<>();
-        sportDateMerger.addSource(typeLiveData, typeList -> sportDateMerger.setValue(processResults(((MainApplication) getApplication()).getTypeList(), ((MainApplication) getApplication()).getTypeSportList())));
-        sportDateMerger.addSource(typeSportLiveData, typeSportList -> sportDateMerger.setValue(processResults(((MainApplication) getApplication()).getTypeList(), ((MainApplication) getApplication()).getTypeSportList())));
+        sportDateMerger.addSource(typeLiveData, typeList -> sportDateMerger.setValue(processResults(((MainApplication) getApplication()).getTypeList(), ((MainApplication) getApplication()).getSportScheduleList())));
+        sportDateMerger.addSource(typeSportLiveData, typeSportList -> sportDateMerger.setValue(processResults(((MainApplication) getApplication()).getTypeList(), ((MainApplication) getApplication()).getSportScheduleList())));
     }
 
     public HashMap<Type, int[]> processResults(List<Type> typeList, List<SportSchedule> sportScheduleList){

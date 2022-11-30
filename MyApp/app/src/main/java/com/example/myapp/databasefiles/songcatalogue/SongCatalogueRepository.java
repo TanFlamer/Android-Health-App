@@ -31,8 +31,8 @@ public class SongCatalogueRepository {
         new DeleteSongPlaylistExecutorTask(songCatalogueDao).execute(songCatalogue);
     }
 
-    public LiveData<List<SongCatalogue>> getAllSongPlaylist(int userID) {
-        return songCatalogueDao.getAllSongPlaylist(userID);
+    public LiveData<List<SongCatalogue>> getAllSongCatalogue(int userID) {
+        return songCatalogueDao.getAllSongCatalogue(userID);
     }
 
     private static class InsertSongPlaylistExecutorTask {

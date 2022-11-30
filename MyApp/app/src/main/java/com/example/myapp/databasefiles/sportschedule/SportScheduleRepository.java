@@ -31,8 +31,8 @@ public class SportScheduleRepository {
         new DeleteTypeSportExecutorTask(sportScheduleDao).execute(sportSchedule);
     }
 
-    public LiveData<List<SportSchedule>> getAllTypeSport(int userID) {
-        return sportScheduleDao.getAllTypeSport(userID);
+    public LiveData<List<SportSchedule>> getAllSportSchedule(int userID) {
+        return sportScheduleDao.getAllSportSchedule(userID);
     }
 
     private static class InsertTypeSportExecutorTask {

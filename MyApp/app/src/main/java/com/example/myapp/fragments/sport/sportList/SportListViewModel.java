@@ -23,38 +23,40 @@ import java.util.Objects;
 
 public class SportListViewModel extends AndroidViewModel {
 
-    private SportRepository sportRepository;
-    private TypeRepository typeRepository;
-    private SportScheduleRepository sportScheduleRepository;
+    private MainApplication mainApplication;
+    private final SportRepository sportRepository;
+    private final TypeRepository typeRepository;
+    private final SportScheduleRepository sportScheduleRepository;
 
-    private MediatorLiveData<HashMap<Sport, List<Pair<Type, Integer>>>> sportDateMerger;
+    private MediatorLiveData<HashMap<Sport, List<Pair<Type, Integer>>>> sportDataMerger;
     private LiveData<List<Sport>> sportLiveData;
     private LiveData<List<Type>> typeLiveData;
     private LiveData<List<SportSchedule>> typeSportLiveData;
 
-    private int userID;
+    private final int userID;
 
     public SportListViewModel(@NonNull Application application) {
         super(application);
-        sportRepository = ((MainApplication) getApplication()).getSportRepository();
-        typeRepository = ((MainApplication) getApplication()).getTypeRepository();
-        sportScheduleRepository = ((MainApplication) getApplication()).getTypeSportRepository();
-        initialiseLists();
+        mainApplication = (MainApplication) getApplication();
+        sportRepository = mainApplication.getSportRepository();
+        typeRepository = mainApplication.getTypeRepository();
+        sportScheduleRepository = mainApplication.getSportScheduleRepository();
+        userID = mainApplication.getUserID();
+        initialiseLiveData();
         initialiseLiveDataMerger();
-        userID = ((MainApplication) getApplication()).getUserID();
     }
 
-    public void initialiseLists(){
+    public void initialiseLiveData(){
         sportLiveData = sportRepository.getAllSport(userID);
         typeLiveData = typeRepository.getAllTypes(userID);
-        typeSportLiveData = sportScheduleRepository.getAllTypeSport(userID);
+        typeSportLiveData = sportScheduleRepository.getAllSportSchedule(userID);
     }
 
     public void initialiseLiveDataMerger(){
-        sportDateMerger = new MediatorLiveData<>();
-        sportDateMerger.addSource(sportLiveData, sportList -> sportDateMerger.setValue(processResults(((MainApplication) getApplication()).getSportList(), ((MainApplication) getApplication()).getTypeList(), ((MainApplication) getApplication()).getTypeSportList())));
-        sportDateMerger.addSource(typeLiveData, typeList -> sportDateMerger.setValue(processResults(((MainApplication) getApplication()).getSportList(), ((MainApplication) getApplication()).getTypeList(), ((MainApplication) getApplication()).getTypeSportList())));
-        sportDateMerger.addSource(typeSportLiveData, typeSportList -> sportDateMerger.setValue(processResults(((MainApplication) getApplication()).getSportList(), ((MainApplication) getApplication()).getTypeList(), ((MainApplication) getApplication()).getTypeSportList())));
+        sportDataMerger = new MediatorLiveData<>();
+        sportDataMerger.addSource(sportLiveData, sportList -> sportDataMerger.setValue(processResults(mainApplication.getSportList(), mainApplication.getTypeList(), mainApplication.getSportScheduleList())));
+        sportDataMerger.addSource(typeLiveData, typeList -> sportDataMerger.setValue(processResults(mainApplication.getSportList(), mainApplication.getTypeList(), mainApplication.getSportScheduleList())));
+        sportDataMerger.addSource(typeSportLiveData, typeSportList -> sportDataMerger.setValue(processResults(mainApplication.getSportList(), mainApplication.getTypeList(), mainApplication.getSportScheduleList())));
     }
 
     public HashMap<Sport, List<Pair<Type, Integer>>> processResults(List<Sport> sportList, List<Type> typeList, List<SportSchedule> sportScheduleList){
@@ -66,19 +68,19 @@ public class SportListViewModel extends AndroidViewModel {
         HashMap<Integer, Type> typeHashMap = new HashMap<>();
         for(Type type : typeList) typeHashMap.put(type.getTypeID(), type);
 
-        HashMap<Sport, List<Pair<Type, Integer>>> newTypeSport = new HashMap<>();
+        HashMap<Sport, List<Pair<Type, Integer>>> sportScheduleHashMap = new HashMap<>();
         for(SportSchedule sportSchedule : sportScheduleList){
             Sport sport = sportHashMap.get(sportSchedule.getSportID());
             Type type = typeHashMap.get(sportSchedule.getTypeID());
             int duration = sportSchedule.getSportDuration();
-            newTypeSport.putIfAbsent(sport, new ArrayList<>());
-            Objects.requireNonNull(newTypeSport.get(sport)).add(new Pair<>(type, duration));
+            sportScheduleHashMap.putIfAbsent(sport, new ArrayList<>());
+            Objects.requireNonNull(sportScheduleHashMap.get(sport)).add(new Pair<>(type, duration));
         }
-        return newTypeSport;
+        return sportScheduleHashMap;
     }
 
-    public MediatorLiveData<HashMap<Sport, List<Pair<Type, Integer>>>> getSportDateMerger() {
-        return sportDateMerger;
+    public MediatorLiveData<HashMap<Sport, List<Pair<Type, Integer>>>> getSportDataMerger() {
+        return sportDataMerger;
     }
 
     public void insert(SportSchedule sportSchedule){

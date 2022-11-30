@@ -22,5 +22,5 @@ public interface SongCatalogueDao {
     void delete(SongCatalogue songCatalogue);
 
     @Query("SELECT * FROM SongCatalogue WHERE userID=:userID")
-    LiveData<List<SongCatalogue>> getAllSongPlaylist(int userID);
+    LiveData<List<SongCatalogue>> getAllSongCatalogue(int userID);
 }

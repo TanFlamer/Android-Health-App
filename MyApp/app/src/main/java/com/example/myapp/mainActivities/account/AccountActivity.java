@@ -1,31 +1,24 @@
 package com.example.myapp.mainActivities.account;
 
 import android.annotation.SuppressLint;
-import android.content.Intent;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Pair;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.example.myapp.MainApplication;
 import com.example.myapp.R;
 import com.example.myapp.databasefiles.user.User;
-import com.example.myapp.mainActivities.MusicActivity;
 import com.google.android.material.textfield.TextInputLayout;
 
-import java.io.File;
-import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -185,11 +178,8 @@ public class AccountActivity extends AppCompatActivity {
         newUserButton.setOnClickListener(v -> {
             String usernameText = newUsername.getText().toString();
             String passwordText = newPassword.getText().toString();
-            accountViewModel.insert(new User(usernameText, passwordText));
-            createMusicFolder();
-            createLogsFile();
+            accountViewModel.createUser(usernameText, passwordText);
             reloadPage();
-            accountViewModel.updateSaveLogs(new Pair<>(usernameText + "account created", LocalDateTime.now()));
         });
     }
 
@@ -197,9 +187,7 @@ public class AccountActivity extends AppCompatActivity {
         changeUsernameButton.setOnClickListener(v -> {
             String usernameText = changeUsername.getText().toString();
             accountViewModel.changeUsername(usernameText);
-            Toast.makeText(getApplicationContext(), "Username changed", Toast.LENGTH_SHORT).show();
             reloadPage();
-            accountViewModel.updateSaveLogs(new Pair<>("Username changed", LocalDateTime.now()));
         });
     }
 
@@ -207,7 +195,6 @@ public class AccountActivity extends AppCompatActivity {
         changePasswordButton.setOnClickListener(v -> {
             String passwordText = changePassword.getText().toString();
             accountViewModel.changePassword(passwordText);
-            Toast.makeText(getApplicationContext(), "Password changed", Toast.LENGTH_SHORT).show();
             reloadPage();
         });
     }
@@ -217,10 +204,8 @@ public class AccountActivity extends AppCompatActivity {
                 .setTitle("Account Deletion")
                 .setMessage("Are you sure you want to delete your account? There is no way to recover your account once deleted.")
                 .setPositiveButton("Yes", (dialog, which) -> {
-                    int userID = accountViewModel.delete();
-                    deleteFolder(userID);
+                    accountViewModel.deleteUser();
                     reloadPage();
-                    accountViewModel.updateSaveLogs(new Pair<>("Account deleted", LocalDateTime.now()));
                 })
                 .setNegativeButton("No", null)
                 .create()
@@ -228,22 +213,17 @@ public class AccountActivity extends AppCompatActivity {
     }
 
     public void initialiseLoginButton(){
-        loginButton.setOnClickListener(v -> {
-            ((MainApplication) this.getApplication()).setUserID(accountViewModel.getUser().getUserID());
-            startActivity(new Intent(getApplicationContext(), MusicActivity.class));
-            Toast.makeText(getApplicationContext(), "Welcome " + accountViewModel.getUser().getUsername(), Toast.LENGTH_SHORT).show();
-        });
+        loginButton.setOnClickListener(v -> startActivity(accountViewModel.loginUser()));
     }
 
     @SuppressLint("SetTextI18n")
     public void reloadPage(){
         User user = accountViewModel.getUser();
-        int userID = user.getUserID();
         titleText.setText("Welcome " + user.getUsername());
-        loginButton.setEnabled(userID >= 0);
+        loginButton.setEnabled(user.getUserID() >= 0);
         clearTextFields();
         clearFocus();
-        hideLayouts(userID);
+        hideLayouts(user.getUserID());
     }
 
     public void hideLayouts(int userID){
@@ -258,43 +238,6 @@ public class AccountActivity extends AppCompatActivity {
         layoutVisible.setEnabled(clickable);
         int paintFlags = clickable ? title.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG) : title.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG;
         title.setPaintFlags(paintFlags);
-    }
-
-    public void createMusicFolder(){
-        int userID = accountViewModel.getUser().getUserID();
-        String musicFolderPath = accountViewModel.getMusicFilePath() + userID;
-        File musicFolder = new File(musicFolderPath);
-        boolean musicFolderCreation = musicFolder.mkdirs();
-        Toast.makeText(getApplicationContext(), "Folder creation " + (musicFolderCreation ? "successful" : "failed"), Toast.LENGTH_SHORT).show();
-    }
-
-    public void createLogsFile(){
-        int userID = accountViewModel.getUser().getUserID();
-        try{
-            File logFile = new File(accountViewModel.getLogsFilePath(), userID + ".txt");
-            boolean logFileCreation = logFile.createNewFile();
-            Toast.makeText(getApplicationContext(), "File creation " + (logFileCreation ? "successful" : "failed"), Toast.LENGTH_SHORT).show();
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void deleteFolder(int userID){
-        File musicFolder = new File(accountViewModel.getMusicFilePath() + userID);
-        if(musicFolder.isDirectory()){
-            String[] children = musicFolder.list();
-            for (String child : children) {
-                System.out.println(child);
-                new File(musicFolder, child).delete();
-            }
-        }
-        boolean folderDeletion = musicFolder.delete();
-        Toast.makeText(getApplicationContext(), "Folder deletion " + (folderDeletion ? "successful" : "failed"), Toast.LENGTH_SHORT).show();
-
-        File logFile = new File(new File(accountViewModel.getLogsFilePath()), userID + ".txt");
-        boolean fileDeletion = logFile.delete();
-        Toast.makeText(getApplicationContext(), "File deletion " + (fileDeletion ? "successful" : "failed"), Toast.LENGTH_SHORT).show();
     }
 
     public void clearTextFields(){

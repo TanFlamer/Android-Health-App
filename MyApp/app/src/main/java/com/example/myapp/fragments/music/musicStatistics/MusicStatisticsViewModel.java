@@ -9,6 +9,8 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
 
 import com.example.myapp.MainApplication;
+import com.example.myapp.databasefiles.playlist.Playlist;
+import com.example.myapp.databasefiles.playlist.PlaylistRepository;
 import com.example.myapp.databasefiles.song.Song;
 import com.example.myapp.databasefiles.song.SongRepository;
 import com.example.myapp.databasefiles.songcatalogue.SongCatalogue;
@@ -21,56 +23,67 @@ import java.util.Objects;
 
 public class MusicStatisticsViewModel extends AndroidViewModel {
 
-    private SongRepository songRepository;
-    private SongCatalogueRepository songCatalogueRepository;
+    private final MainApplication mainApplication;
+    private final SongRepository songRepository;
+    private final SongCatalogueRepository songCatalogueRepository;
 
-    private MediatorLiveData<Pair<int[], int[]>> songDateMerger;
+    private MediatorLiveData<Pair<int[], int[]>> musicDateMerger;
     private LiveData<List<Song>> songLiveData;
-    private LiveData<List<SongCatalogue>> songPlaylistLiveData;
+    private LiveData<List<SongCatalogue>> songCatalogueLiveData;
 
-    private int userID;
+    private final int userID;
 
     public MusicStatisticsViewModel(@NonNull Application application) {
         super(application);
-        songRepository = ((MainApplication) getApplication()).getSongRepository();
-        songCatalogueRepository = ((MainApplication) getApplication()).getSongPlaylistRepository();
-        userID = ((MainApplication) getApplication()).getUserID();
-        initialiseLists();
+        mainApplication = (MainApplication) getApplication();
+        songRepository = mainApplication.getSongRepository();
+        songCatalogueRepository = mainApplication.getSongCatalogueRepository();
+        userID = mainApplication.getUserID();
+        initialiseLiveData();
         initialiseLiveDataMerger();
     }
 
-    public void initialiseLists(){
+    public void initialiseLiveData(){
         songLiveData = songRepository.getAllSongs(userID);
-        songPlaylistLiveData = songCatalogueRepository.getAllSongPlaylist(userID);
+        songCatalogueLiveData = songCatalogueRepository.getAllSongCatalogue(userID);
     }
 
     public void initialiseLiveDataMerger(){
-        songDateMerger = new MediatorLiveData<>();
-        songDateMerger.addSource(songLiveData, typeList -> songDateMerger.setValue(processResults(((MainApplication) getApplication()).getSongList(), ((MainApplication) getApplication()).getSongPlaylistList())));
-        songDateMerger.addSource(songPlaylistLiveData, typeSportList -> songDateMerger.setValue(processResults(((MainApplication) getApplication()).getSongList(), ((MainApplication) getApplication()).getSongPlaylistList())));
+        musicDateMerger = new MediatorLiveData<>();
+        musicDateMerger.addSource(songLiveData, songs -> musicDateMerger.setValue(processResults(mainApplication.getSongList(), mainApplication.getSongCatalogueList())));
+        musicDateMerger.addSource(songCatalogueLiveData, songCatalogues -> musicDateMerger.setValue(processResults(mainApplication.getSongList(), mainApplication.getSongCatalogueList())));
     }
 
-    public Pair<int[], int[]> processResults(List<Song> songList, List<SongCatalogue> songCatalogueList){
-        int[] songResults = new int[] {0, 0, Integer.MIN_VALUE, Integer.MAX_VALUE};
+    public Pair<int[], int[]> processResults(List<Song> songs, List<SongCatalogue> songCatalogues){
+        if(songs.size() == 0 || songCatalogues.size() == 0) return new Pair<>(new int[4], new int[7]);
+
         HashMap<Integer, Song> songHashMap = new HashMap<>();
+        for(Song song : songs) songHashMap.put(song.getSongID(), song);
+
+        HashMap<Integer, List<Song>> songCatalogueHashMap = new HashMap<>();
+        for(SongCatalogue songCatalogue : songCatalogues){
+            int playlistID = songCatalogue.getPlaylistID();
+            Song song = songHashMap.get(songCatalogue.getSongID());
+            songCatalogueHashMap.putIfAbsent(playlistID, new ArrayList<>());
+            Objects.requireNonNull(songCatalogueHashMap.get(playlistID)).add(song);
+        }
+        return new Pair<>(compileSongResults(songs), compilePlaylistResults(songCatalogueHashMap));
+    }
+
+    public int[] compileSongResults(List<Song> songList){
+        int[] songResults = new int[] {0, 0, Integer.MIN_VALUE, Integer.MAX_VALUE};
         for(Song song : songList){
-            songHashMap.put(song.getSongID(), song);
             songResults[0] += song.getSongDuration(); //total song duration
             songResults[1] += 1; //total song count
             songResults[2] = Math.max(song.getSongDuration(), songResults[2]); //longest song
             songResults[3] = Math.min(song.getSongDuration(), songResults[3]); //shortest song
         }
+        return songResults;
+    }
 
-        HashMap<Integer, List<Song>> playlistHashMap = new HashMap<>();
-        for(SongCatalogue songCatalogue : songCatalogueList){
-            int playlistID = songCatalogue.getPlaylistID();
-            int songID = songCatalogue.getSongID();
-            playlistHashMap.putIfAbsent(playlistID, new ArrayList<>());
-            Objects.requireNonNull(playlistHashMap.get(playlistID)).add(songHashMap.get(songID));
-        }
-
+    public int[] compilePlaylistResults(HashMap<Integer, List<Song>> songCatalogueHashMap){
         int[] playlistResults = new int[] {0, Integer.MIN_VALUE, Integer.MAX_VALUE, 0, Integer.MIN_VALUE, Integer.MAX_VALUE, 0};
-        for(List<Song> songs : playlistHashMap.values()){
+        for(List<Song> songs : songCatalogueHashMap.values()){
             int songDuration = 0;
             int songCount = 0;
             for(Song song : songs){
@@ -85,10 +98,10 @@ public class MusicStatisticsViewModel extends AndroidViewModel {
             playlistResults[5] = Math.min(songDuration, playlistResults[5]); //shortest playlist
             playlistResults[6] += songCount; //total song count
         }
-        return new Pair<>(songResults, playlistResults);
+        return playlistResults;
     }
 
-    public MediatorLiveData<Pair<int[], int[]>> getSongDateMerger() {
-        return songDateMerger;
+    public MediatorLiveData<Pair<int[], int[]>> getMusicDateMerger() {
+        return musicDateMerger;
     }
 }

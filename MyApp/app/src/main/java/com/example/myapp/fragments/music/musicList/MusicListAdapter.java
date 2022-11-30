@@ -23,17 +23,14 @@ import java.util.List;
 
 public class MusicListAdapter extends ArrayAdapter<Song> {
 
-    private List<Song> songList;
-    LinearLayout layoutVisible, layoutHidden;
-    TextView nameView, lengthView;
-    ImageView clickDelete;
-    HashMap<Song, Boolean> buttonMap;
-    MusicListFragment musicListFragment;
+    private final List<Song> songList;
+    private final HashMap<Song, Boolean> buttonMap;
+    private final MusicListViewModel musicListViewModel;
 
-    public MusicListAdapter(@NonNull Context context, int resource, List<Song> songList, MusicListFragment musicListFragment) {
+    public MusicListAdapter(@NonNull Context context, int resource, List<Song> songList, MusicListViewModel musicListViewModel) {
         super(context, resource, songList);
         this.songList = songList;
-        this.musicListFragment = musicListFragment;
+        this.musicListViewModel = musicListViewModel;
         buttonMap = new HashMap<>();
         for(Song song : songList) buttonMap.put(song, false);
     }
@@ -48,39 +45,51 @@ public class MusicListAdapter extends ArrayAdapter<Song> {
             currentItemView = LayoutInflater.from(getContext()).inflate(R.layout.music_list_item, parent, false);
         }
 
-        Song song = songList.get(position);
-        initialiseLayouts(currentItemView, position);
-        initialiseData(currentItemView, song);
-        initialiseDeleteButton(currentItemView, song);
+        initialiseAll(currentItemView, position);
         return currentItemView;
     }
 
-    public void initialiseLayouts(View currentItemView, int position){
+    public void initialiseAll(View view, int position){
         Song song = songList.get(position);
-        layoutVisible = currentItemView.findViewById(R.id.layoutVisible);
-        layoutHidden = currentItemView.findViewById(R.id.layoutHidden);
+        initialiseVisibleLayout(view, position);
+        initialiseHiddenLayout(view, song);
+        initialiseNameView(view, song);
+        initialiseLengthView(view, song);
+        initialiseDeleteButton(view, song);
+    }
+
+    public void initialiseVisibleLayout(View view, int position){
+        LinearLayout layoutVisible = view.findViewById(R.id.layoutVisible);
+        layoutVisible.setOnClickListener(v -> musicListViewModel.getMusicPlayer().setPlaylist(songList, position));
         layoutVisible.setOnLongClickListener(v -> {
+            Song song = songList.get(position);
             buttonMap.put(song, Boolean.FALSE.equals(buttonMap.get(song)));
             notifyDataSetChanged();
             return true;
         });
-        layoutVisible.setOnClickListener(v -> musicListFragment.getMusicListViewModel().getMusicPlayer().setPlaylist(songList, position));
+    }
+
+    public void initialiseHiddenLayout(View view, Song song){
+        LinearLayout layoutHidden = view.findViewById(R.id.layoutHidden);
         layoutHidden.setVisibility(Boolean.TRUE.equals(buttonMap.get(song)) ? View.VISIBLE : View.GONE);
     }
 
-    public void initialiseData(View currentItemView, Song song){
-        nameView = currentItemView.findViewById(R.id.musicName);
-        lengthView = currentItemView.findViewById(R.id.musicLength);
+    public void initialiseNameView(View view, Song song){
+        TextView nameView = view.findViewById(R.id.musicName);
         nameView.setText(song.getSongName());
+    }
+
+    public void initialiseLengthView(View view, Song song){
+        TextView lengthView = view.findViewById(R.id.musicLength);
         lengthView.setText(String.valueOf(song.getSongDuration()));
     }
 
     public void initialiseDeleteButton(View currentItemView, Song song){
-        clickDelete = currentItemView.findViewById(R.id.clickDelete);
+        ImageView clickDelete = currentItemView.findViewById(R.id.clickDelete);
         clickDelete.setOnClickListener(view -> new AlertDialog.Builder(currentItemView.getContext())
                 .setTitle("Delete Item")
                 .setMessage("Are you sure you want to delete this item?")
-                .setPositiveButton("Yes", (dialog, which) -> musicListFragment.deleteFile(song))
+                .setPositiveButton("Yes", (dialog, which) -> musicListViewModel.deleteFile(song))
                 .setNegativeButton("No", null)
                 .create()
                 .show());
