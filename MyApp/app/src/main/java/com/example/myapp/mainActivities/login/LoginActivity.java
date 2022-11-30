@@ -32,28 +32,37 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-
         loginViewModel = new ViewModelProvider(this).get(LoginViewModel.class);
         initialiseAll();
-        loginViewModel.updateSaveLogs(new Pair<>("Entered Login screen.", LocalDateTime.now()));
     }
 
     public void initialiseAll(){
-        initialiseUsername();
-        initialisePassword();
+        initialiseViewByID();
+        initialiseTextInputs();
         initialiseButtons();
     }
 
-    public void initialiseUsername(){
+    public void initialiseViewByID(){
         username = findViewById(R.id.username);
         usernameInput = findViewById(R.id.playlistNameInput);
+        password = findViewById(R.id.password);
+        passwordInput = findViewById(R.id.passwordInput);
+        buttonLogin = findViewById(R.id.buttonLogin);
+        buttonNew = findViewById(R.id.buttonNew);
+        buttonGuest = findViewById(R.id.buttonGuest);
+    }
+
+    public void initialiseTextInputs(){
+        initialiseUsername();
+        initialisePassword();
+    }
+
+    public void initialiseUsername(){
         username.addTextChangedListener(loginTextWatcher);
         username.setOnFocusChangeListener((v, hasFocus) -> validateInput(usernameInput, username));
     }
 
     public void initialisePassword(){
-        password = findViewById(R.id.password);
-        passwordInput = findViewById(R.id.passwordInput);
         password.addTextChangedListener(loginTextWatcher);
         password.setOnFocusChangeListener((v, hasFocus) -> validateInput(passwordInput, password));
     }
@@ -65,15 +74,13 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void initialiseLoginButton(){
-        buttonLogin = findViewById(R.id.buttonLogin);
         buttonLogin.setOnClickListener(view -> {
             User user = loginViewModel.validateUser(username.getText().toString(), password.getText().toString());
             if(user == null)
                 Toast.makeText(this, "Invalid Login Credentials", Toast.LENGTH_SHORT).show();
             else {
                 Intent intent = new Intent(getApplicationContext(), AccountActivity.class);
-                sendUserData(intent, user);
-                Toast.makeText(this, "Login Successful", Toast.LENGTH_SHORT).show();
+                intent.putExtra("userID", user.getUserID());
                 startActivity(intent);
             }
             clearTextFields();
@@ -81,37 +88,27 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void initialiseNewButton(){
-        buttonNew = findViewById(R.id.buttonNew);
         buttonNew.setOnClickListener(v -> {
             Intent intent = new Intent(getApplicationContext(), AccountActivity.class);
-            User user = new User(-1, "User", null);
-            sendUserData(intent, user);
+            intent.putExtra("userID", -1);
             startActivity(intent);
             clearTextFields();
         });
     }
 
     public void initialiseGuestButton(){
-        buttonGuest = findViewById(R.id.buttonGuest);
         buttonGuest.setOnClickListener(view -> new AlertDialog.Builder(this)
                 .setTitle("Guest Login")
                 .setMessage("Are you sure you want to login as guest? Any changes made will not be saved.")
                 .setPositiveButton("Yes", (dialogInterface, i) -> {
                     Intent intent = new Intent(getApplicationContext(), AccountActivity.class);
-                    User user = new User(0, "Guest", null);
-                    sendUserData(intent, user);
+                    intent.putExtra("userID", 0);
                     startActivity(intent);
                     clearTextFields();
                 })
                 .setNegativeButton("No", null)
                 .create()
                 .show());
-    }
-
-    public void sendUserData(Intent intent, User user){
-        intent.putExtra("userID", user.getUserID());
-        intent.putExtra("username", user.getUsername());
-        intent.putExtra("password", user.getPassword());
     }
 
     public void clearTextFields(){

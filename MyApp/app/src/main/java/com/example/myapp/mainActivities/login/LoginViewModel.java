@@ -19,15 +19,12 @@ public class LoginViewModel extends AndroidViewModel {
 
     public LoginViewModel(@NonNull Application application) {
         super(application);
-        userRepository = ((MainApplication) getApplication()).getUserRepository();
+        MainApplication mainApplication = (MainApplication) getApplication();
+        userRepository = mainApplication.getUserRepository();
     }
 
     public User validateUser(String username, String password){
         User user = userRepository.findUser(username);
         return (user != null && user.getPassword().equals(password)) ? user : null;
-    }
-
-    public void updateSaveLogs(Pair<String, LocalDateTime> newSaveLog){
-        ((MainApplication) getApplication()).updateSaveLogs(newSaveLog);
     }
 }

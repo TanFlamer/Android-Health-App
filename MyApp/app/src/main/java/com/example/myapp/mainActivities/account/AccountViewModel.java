@@ -17,17 +17,18 @@ public class AccountViewModel extends AndroidViewModel {
 
     private final UserRepository userRepository;
     private final String filePath;
+    private final User newUser;
     private User user;
 
     public AccountViewModel(@NonNull Application application) {
         super(application);
         userRepository = ((MainApplication) getApplication()).getUserRepository();
         filePath = getApplication().getFilesDir().toString();
-        user = new User(-1, "User", null);
+        newUser = new User(-1, "User", "");
     }
 
-    public void loadUser(Integer userID, String username, String password){
-        user = new User(userID, username, password);
+    public void loadUser(Integer userID){
+        user = userID < 0 ? newUser : userRepository.getUser(userID);
     }
 
     public void insert(User newUser) {
@@ -38,7 +39,7 @@ public class AccountViewModel extends AndroidViewModel {
     public int delete(){
         int userID = user.getUserID();
         userRepository.delete(user);
-        user = new User(-1, "User", null);
+        user = newUser;
         return userID;
     }
 
