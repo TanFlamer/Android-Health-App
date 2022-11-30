@@ -1,4 +1,4 @@
-package com.example.myapp.databaseFiles.user;
+package com.example.myapp.databasefiles.user;
 
 import androidx.room.Entity;
 import androidx.room.Ignore;

@@ -7,8 +7,8 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
 import com.example.myapp.MainApplication;
-import com.example.myapp.databaseFiles.sleep.Sleep;
-import com.example.myapp.databaseFiles.sleep.SleepRepository;
+import com.example.myapp.databasefiles.sleep.Sleep;
+import com.example.myapp.databasefiles.sleep.SleepRepository;
 
 import java.util.List;
 
@@ -37,7 +37,7 @@ public class SleepListViewModel extends AndroidViewModel {
         sleepRepository.delete(sleep);
     }
 
-    public List<Sleep> findSleep(int userID, Long date){
+    public Sleep findSleep(int userID, Long date){
         return sleepRepository.findSleep(userID, date);
     }
 

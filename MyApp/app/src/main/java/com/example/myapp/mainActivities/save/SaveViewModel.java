@@ -8,16 +8,8 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.myapp.MainApplication;
-import com.example.myapp.databaseFiles.playlist.PlaylistRepository;
-import com.example.myapp.databaseFiles.sleep.SleepRepository;
-import com.example.myapp.databaseFiles.songPlaylist.SongPlaylistRepository;
-import com.example.myapp.databaseFiles.song.SongRepository;
-import com.example.myapp.databaseFiles.sport.SportRepository;
-import com.example.myapp.databaseFiles.type.TypeRepository;
-import com.example.myapp.databaseFiles.typeSport.TypeSportRepository;
 
-import java.time.LocalTime;
-import java.util.List;
+import java.time.LocalDateTime;
 
 public class SaveViewModel extends AndroidViewModel {
 
@@ -30,7 +22,7 @@ public class SaveViewModel extends AndroidViewModel {
         filePath = getApplication().getFilesDir().toString() + "/logs/";
     }
 
-    public MutableLiveData<Pair<String, LocalTime>> getSaveLog() {
+    public MutableLiveData<Pair<String, LocalDateTime>> getSaveLog() {
         return ((MainApplication) getApplication()).getSaveLog();
     }
 

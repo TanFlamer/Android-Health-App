@@ -8,12 +8,12 @@ import androidx.lifecycle.LiveData;
 
 import com.example.myapp.MainApplication;
 import com.example.myapp.MusicPlayer;
-import com.example.myapp.databaseFiles.playlist.Playlist;
-import com.example.myapp.databaseFiles.song.Song;
-import com.example.myapp.databaseFiles.songPlaylist.SongPlaylist;
-import com.example.myapp.databaseFiles.playlist.PlaylistRepository;
-import com.example.myapp.databaseFiles.songPlaylist.SongPlaylistRepository;
-import com.example.myapp.databaseFiles.song.SongRepository;
+import com.example.myapp.databasefiles.playlist.Playlist;
+import com.example.myapp.databasefiles.song.Song;
+import com.example.myapp.databasefiles.songcatalogue.SongCatalogue;
+import com.example.myapp.databasefiles.playlist.PlaylistRepository;
+import com.example.myapp.databasefiles.songcatalogue.SongCatalogueRepository;
+import com.example.myapp.databasefiles.song.SongRepository;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -24,8 +24,8 @@ public class MusicPlaylistsViewModel extends AndroidViewModel {
 
     private PlaylistRepository playlistRepository;
     private SongRepository songRepository;
-    private SongPlaylistRepository songPlaylistRepository;
-    private LiveData<List<SongPlaylist>> songPlaylistList;
+    private SongCatalogueRepository songCatalogueRepository;
+    private LiveData<List<SongCatalogue>> songPlaylistList;
     private MusicPlayer musicPlayer;
     private int userID;
 
@@ -36,47 +36,43 @@ public class MusicPlaylistsViewModel extends AndroidViewModel {
         super(application);
         playlistRepository = new PlaylistRepository(application);
         songRepository = new SongRepository(application);
-        songPlaylistRepository = new SongPlaylistRepository(application);
+        songCatalogueRepository = new SongCatalogueRepository(application);
         userID = ((MainApplication) getApplication()).getUserID();
-        songPlaylistList = songPlaylistRepository.getAllSongPlaylist(userID);
+        songPlaylistList = songCatalogueRepository.getAllSongPlaylist(userID);
         playlistList = new HashMap<>();
         songList = new HashMap<>();
         musicPlayer = ((MainApplication) getApplication()).getMusicPlayer();
     }
 
-    public void insert(SongPlaylist songPlaylist){
-        songPlaylistRepository.insert(songPlaylist);
+    public void insert(SongCatalogue songCatalogue){
+        songCatalogueRepository.insert(songCatalogue);
     }
 
-    public void update(SongPlaylist songPlaylist){
-        songPlaylistRepository.update(songPlaylist);
+    public void update(SongCatalogue songCatalogue){
+        songCatalogueRepository.update(songCatalogue);
     }
 
-    public void delete(SongPlaylist songPlaylist){
-        songPlaylistRepository.delete(songPlaylist);
+    public void delete(SongCatalogue songCatalogue){
+        songCatalogueRepository.delete(songCatalogue);
     }
 
     public void deletePlaylist(Playlist playlist){
         playlistRepository.delete(playlist);
     }
 
-    public List<SongPlaylist> findSongPlaylist(int playlistID, int songID){
-        return songPlaylistRepository.findSongPlaylist(playlistID, songID);
-    }
+    public HashMap<Playlist, List<Song>> updateMusicPlaylists(List<SongCatalogue> songCatalogues){
 
-    public HashMap<Playlist, List<Song>> updateMusicPlaylists(List<SongPlaylist> songPlaylists){
-
-        if(songPlaylists.size() == 0) return new HashMap<>();
+        if(songCatalogues.size() == 0) return new HashMap<>();
         HashMap<Playlist, List<Song>> newSongPlaylist = new HashMap<>();
 
-        for(SongPlaylist songPlaylist : songPlaylists){
-            int playlistID = songPlaylist.getPlaylistID();
-            int songID = songPlaylist.getSongID();
+        for(SongCatalogue songCatalogue : songCatalogues){
+            int playlistID = songCatalogue.getPlaylistID();
+            int songID = songCatalogue.getSongID();
 
-            Playlist playlist = playlistList.containsKey(playlistID) ? playlistList.get(playlistID) : playlistRepository.getPlaylist(playlistID).get(0);
+            Playlist playlist = playlistList.containsKey(playlistID) ? playlistList.get(playlistID) : playlistRepository.getPlaylist(playlistID);
             playlistList.putIfAbsent(playlistID, playlist);
 
-            Song song = songList.containsKey(songID) ? songList.get(songID) : songRepository.getSong(songID).get(0);
+            Song song = songList.containsKey(songID) ? songList.get(songID) : songRepository.getSong(songID);
             songList.putIfAbsent(songID, song);
 
             newSongPlaylist.putIfAbsent(playlist, new ArrayList<>());
@@ -85,7 +81,7 @@ public class MusicPlaylistsViewModel extends AndroidViewModel {
         return newSongPlaylist;
     }
 
-    public LiveData<List<SongPlaylist>> getSongPlaylistList() {
+    public LiveData<List<SongCatalogue>> getSongPlaylistList() {
         return songPlaylistList;
     }
 

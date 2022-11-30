@@ -13,14 +13,16 @@ import androidx.annotation.Nullable;
 
 import com.example.myapp.R;
 
+import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-public class SaveListAdapter extends ArrayAdapter<Pair<String, LocalTime>> {
+public class SaveListAdapter extends ArrayAdapter<Pair<String, LocalDateTime>> {
 
-    private List<Pair<String, LocalTime>> saveLogs;
+    private List<Pair<String, LocalDateTime>> saveLogs;
 
-    public SaveListAdapter(@NonNull Context context, int resource, List<Pair<String, LocalTime>> saveLogs) {
+    public SaveListAdapter(@NonNull Context context, int resource, List<Pair<String, LocalDateTime>> saveLogs) {
         super(context, resource, saveLogs);
         this.saveLogs = saveLogs;
     }
@@ -33,18 +35,21 @@ public class SaveListAdapter extends ArrayAdapter<Pair<String, LocalTime>> {
         if(currentItemView == null)
             currentItemView = LayoutInflater.from(getContext()).inflate(R.layout.save_list_item, parent, false);
 
-        Pair<String, LocalTime> saveLog = getItem(position);
+        Pair<String, LocalDateTime> saveLog = getItem(position);
 
         TextView logView = currentItemView.findViewById(R.id.saveLog);
         TextView timeView = currentItemView.findViewById(R.id.saveTime);
 
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        String formattedDateTime = saveLog.second.format(dateTimeFormatter);
+
         logView.setText(saveLog.first);
-        timeView.setText(saveLog.second.toString());
+        timeView.setText(formattedDateTime);
 
         return currentItemView;
     }
 
-    public void updateSaveLogs(Pair<String, LocalTime> newSaveLogs){
+    public void updateSaveLogs(Pair<String, LocalDateTime> newSaveLogs){
         saveLogs.add(newSaveLogs);
         notifyDataSetChanged();
     }

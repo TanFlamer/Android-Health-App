@@ -7,9 +7,10 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 
 import com.example.myapp.MainApplication;
-import com.example.myapp.databaseFiles.user.User;
-import com.example.myapp.databaseFiles.user.UserRepository;
+import com.example.myapp.databasefiles.user.User;
+import com.example.myapp.databasefiles.user.UserRepository;
 
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 public class AccountViewModel extends AndroidViewModel {
@@ -52,7 +53,7 @@ public class AccountViewModel extends AndroidViewModel {
     }
 
     public boolean validateUsername(String username){
-        return userRepository.findUser(username).size() == 0;
+        return userRepository.findUser(username) == null;
     }
 
     public User getUser() {
@@ -67,7 +68,7 @@ public class AccountViewModel extends AndroidViewModel {
         return filePath + "/logs";
     }
 
-    public void updateSaveLogs(Pair<String, LocalTime> newSaveLog){
+    public void updateSaveLogs(Pair<String, LocalDateTime> newSaveLog){
         ((MainApplication) getApplication()).updateSaveLogs(newSaveLog);
     }
 }

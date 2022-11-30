@@ -1,4 +1,4 @@
-package com.example.myapp.databaseFiles.sleep;
+package com.example.myapp.databasefiles.sleep;
 
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
@@ -21,8 +21,11 @@ public interface SleepDao {
     @Delete
     void delete(Sleep sleep);
 
+    @Query("SELECT * FROM Sleep WHERE sleepID=:sleepID")
+    Sleep getSleep(int sleepID);
+
     @Query("SELECT * FROM Sleep WHERE userID=:userID AND date=:date")
-    List<Sleep> findSleep(int userID, long date);
+    Sleep findSleep(int userID, long date);
 
     @Query("SELECT * FROM Sleep WHERE userID=:userID")
     LiveData<List<Sleep>> getAllSleep(int userID);

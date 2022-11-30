@@ -1,12 +1,10 @@
-package com.example.myapp.databaseFiles.user;
+package com.example.myapp.databasefiles.user;
 
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.Update;
-
-import java.util.List;
 
 @Dao
 public interface UserDao {
@@ -20,6 +18,9 @@ public interface UserDao {
     @Delete
     void delete(User user);
 
+    @Query("SELECT * FROM Users WHERE userID=:userID")
+    User getUser(int userID);
+
     @Query("SELECT * FROM Users WHERE username=:username")
-    List<User> findUser(String username);
+    User findUser(String username);
 }

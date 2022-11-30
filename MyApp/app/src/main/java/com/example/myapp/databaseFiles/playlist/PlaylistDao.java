@@ -1,4 +1,4 @@
-package com.example.myapp.databaseFiles.playlist;
+package com.example.myapp.databasefiles.playlist;
 
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
@@ -22,10 +22,10 @@ public interface PlaylistDao {
     void delete(Playlist playlist);
 
     @Query("SELECT * FROM Playlists WHERE playlistID=:playlistID")
-    List<Playlist> getPlaylist(int playlistID);
+    Playlist getPlaylist(int playlistID);
 
     @Query("SELECT * FROM Playlists WHERE userID=:userID AND playlistName=:playlistName")
-    List<Playlist> findPlaylist(int userID, String playlistName);
+    Playlist findPlaylist(int userID, String playlistName);
 
     @Query("SELECT * FROM Playlists WHERE userID=:userID")
     LiveData<List<Playlist>> getAllPlaylists(int userID);

@@ -6,10 +6,8 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 
 import com.example.myapp.MainApplication;
-import com.example.myapp.databaseFiles.sleep.Sleep;
-import com.example.myapp.databaseFiles.sleep.SleepRepository;
-
-import java.util.List;
+import com.example.myapp.databasefiles.sleep.Sleep;
+import com.example.myapp.databasefiles.sleep.SleepRepository;
 
 public class SleepCalendarViewModel extends AndroidViewModel {
 
@@ -22,7 +20,7 @@ public class SleepCalendarViewModel extends AndroidViewModel {
         userID = ((MainApplication) getApplication()).getUserID();
     }
 
-    public List<Sleep> findSleep(Long date){
+    public Sleep findSleep(Long date){
         return sleepRepository.findSleep(userID, date);
     }
 }

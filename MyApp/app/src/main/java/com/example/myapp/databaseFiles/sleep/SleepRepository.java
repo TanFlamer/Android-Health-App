@@ -1,12 +1,10 @@
-package com.example.myapp.databaseFiles.sleep;
+package com.example.myapp.databasefiles.sleep;
 
 import android.app.Application;
 
 import androidx.lifecycle.LiveData;
 
 import com.example.myapp.Database;
-import com.example.myapp.databaseFiles.sleep.SleepDao;
-import com.example.myapp.databaseFiles.sleep.Sleep;
 
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -15,7 +13,7 @@ import java.util.concurrent.Executors;
 
 public class SleepRepository {
 
-    private SleepDao sleepDao;
+    private final SleepDao sleepDao;
 
     public SleepRepository(Application application) {
         Database database = Database.getInstance(application);
@@ -34,8 +32,12 @@ public class SleepRepository {
         new DeleteSleepExecutorTask(sleepDao).execute(sleep);
     }
 
-    public List<Sleep> findSleep(int userID, long date) {
-        return new FindSleepExecutorTask(sleepDao).get(userID, date);
+    public Sleep getSleep(int sleepID) {
+        return new FindSleepExecutorTask(sleepDao).get(sleepID);
+    }
+
+    public Sleep findSleep(int userID, long date) {
+        return new FindSleepExecutorTask(sleepDao).find(userID, date);
     }
 
     public LiveData<List<Sleep>> getAllSleep(int userID) {
@@ -44,7 +46,7 @@ public class SleepRepository {
 
     private static class InsertSleepExecutorTask {
         private final ExecutorService service = Executors.newSingleThreadExecutor();
-        private SleepDao sleepDao;
+        private final SleepDao sleepDao;
         private InsertSleepExecutorTask(SleepDao sleepDao) {
             this.sleepDao = sleepDao;
         }
@@ -55,7 +57,7 @@ public class SleepRepository {
 
     private static class UpdateSleepExecutorTask {
         private final ExecutorService service = Executors.newSingleThreadExecutor();
-        private SleepDao sleepDao;
+        private final SleepDao sleepDao;
         private UpdateSleepExecutorTask(SleepDao sleepDao) {
             this.sleepDao = sleepDao;
         }
@@ -66,7 +68,7 @@ public class SleepRepository {
 
     private static class DeleteSleepExecutorTask {
         private final ExecutorService service = Executors.newSingleThreadExecutor();
-        private SleepDao sleepDao;
+        private final SleepDao sleepDao;
         private DeleteSleepExecutorTask(SleepDao sleepDao) {
             this.sleepDao = sleepDao;
         }
@@ -77,13 +79,21 @@ public class SleepRepository {
 
     private static class FindSleepExecutorTask {
         private final ExecutorService service = Executors.newSingleThreadExecutor();
-        private SleepDao sleepDao;
+        private final SleepDao sleepDao;
         private FindSleepExecutorTask(SleepDao sleepDao) {
             this.sleepDao = sleepDao;
         }
-        protected List<Sleep> get(int userID, long date) {
+        protected Sleep find(int userID, long date) {
             try {
                 return service.submit(() -> sleepDao.findSleep(userID, date)).get();
+            } catch (ExecutionException | InterruptedException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+        protected Sleep get(int sleepID) {
+            try {
+                return service.submit(() -> sleepDao.getSleep(sleepID)).get();
             } catch (ExecutionException | InterruptedException e) {
                 e.printStackTrace();
             }

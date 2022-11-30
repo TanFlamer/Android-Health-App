@@ -9,48 +9,49 @@ import android.widget.Toast;
 
 import androidx.lifecycle.MutableLiveData;
 
-import com.example.myapp.databaseFiles.playlist.Playlist;
-import com.example.myapp.databaseFiles.playlist.PlaylistRepository;
-import com.example.myapp.databaseFiles.sleep.Sleep;
-import com.example.myapp.databaseFiles.sleep.SleepRepository;
-import com.example.myapp.databaseFiles.song.Song;
-import com.example.myapp.databaseFiles.songPlaylist.SongPlaylist;
-import com.example.myapp.databaseFiles.songPlaylist.SongPlaylistRepository;
-import com.example.myapp.databaseFiles.sport.Sport;
-import com.example.myapp.databaseFiles.type.Type;
-import com.example.myapp.databaseFiles.typeSport.TypeSport;
-import com.example.myapp.databaseFiles.song.SongRepository;
-import com.example.myapp.databaseFiles.sport.SportRepository;
-import com.example.myapp.databaseFiles.type.TypeRepository;
-import com.example.myapp.databaseFiles.typeSport.TypeSportRepository;
-import com.example.myapp.databaseFiles.user.UserRepository;
+import com.example.myapp.databasefiles.playlist.Playlist;
+import com.example.myapp.databasefiles.playlist.PlaylistRepository;
+import com.example.myapp.databasefiles.sleep.Sleep;
+import com.example.myapp.databasefiles.sleep.SleepRepository;
+import com.example.myapp.databasefiles.song.Song;
+import com.example.myapp.databasefiles.songcatalogue.SongCatalogue;
+import com.example.myapp.databasefiles.songcatalogue.SongCatalogueRepository;
+import com.example.myapp.databasefiles.sport.Sport;
+import com.example.myapp.databasefiles.type.Type;
+import com.example.myapp.databasefiles.sportschedule.SportSchedule;
+import com.example.myapp.databasefiles.song.SongRepository;
+import com.example.myapp.databasefiles.sport.SportRepository;
+import com.example.myapp.databasefiles.type.TypeRepository;
+import com.example.myapp.databasefiles.sportschedule.SportScheduleRepository;
+import com.example.myapp.databasefiles.user.UserRepository;
 
 import java.io.File;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
 public class MainApplication extends Application {
 
-    private MutableLiveData<Pair<String, LocalTime>> saveLog;
+    private MutableLiveData<Pair<String, LocalDateTime>> saveLog;
     private int userID;
 
     private UserRepository userRepository;
     private SleepRepository sleepRepository;
     private SongRepository songRepository;
     private PlaylistRepository playlistRepository;
-    private SongPlaylistRepository songPlaylistRepository;
+    private SongCatalogueRepository songCatalogueRepository;
     private SportRepository sportRepository;
     private TypeRepository typeRepository;
-    private TypeSportRepository typeSportRepository;
+    private SportScheduleRepository sportScheduleRepository;
 
     private List<Sleep> sleepList;
     private List<Song> songList;
     private List<Playlist> playlistList;
-    private List<SongPlaylist> songPlaylistList;
+    private List<SongCatalogue> songCatalogueList;
     private List<Type> typeList;
     private List<Sport> sportList;
-    private List<TypeSport> typeSportList;
+    private List<SportSchedule> sportScheduleList;
 
     private MusicPlayer musicPlayer;
 
@@ -79,7 +80,7 @@ public class MainApplication extends Application {
         Toast.makeText(context, "Folder creation " + (folderCreation ? "successful" : "failed"), Toast.LENGTH_SHORT).show();
     }
 
-    public void updateSaveLogs(Pair<String, LocalTime> newSaveLog){
+    public void updateSaveLogs(Pair<String, LocalDateTime> newSaveLog){
         saveLog.setValue(newSaveLog);
     }
 
@@ -116,13 +117,13 @@ public class MainApplication extends Application {
         return playlistRepository;
     }
 
-    public SongPlaylistRepository getSongPlaylistRepository(){
-        if(songPlaylistRepository == null) {
-            songPlaylistList = new ArrayList<>();
-            songPlaylistRepository = new SongPlaylistRepository(this);
-            songPlaylistRepository.getAllSongPlaylist(userID).observeForever(newSongPlaylistList -> songPlaylistList = newSongPlaylistList);
+    public SongCatalogueRepository getSongPlaylistRepository(){
+        if(songCatalogueRepository == null) {
+            songCatalogueList = new ArrayList<>();
+            songCatalogueRepository = new SongCatalogueRepository(this);
+            songCatalogueRepository.getAllSongPlaylist(userID).observeForever(newSongPlaylistList -> songCatalogueList = newSongPlaylistList);
         }
-        return songPlaylistRepository;
+        return songCatalogueRepository;
     }
 
     public SportRepository getSportRepository(){
@@ -143,16 +144,16 @@ public class MainApplication extends Application {
         return typeRepository;
     }
 
-    public TypeSportRepository getTypeSportRepository(){
-        if(typeSportRepository == null) {
-            typeSportList = new ArrayList<>();
-            typeSportRepository = new TypeSportRepository(this);
-            typeSportRepository.getAllTypeSport(userID).observeForever(newTypeSportList -> typeSportList = newTypeSportList);
+    public SportScheduleRepository getTypeSportRepository(){
+        if(sportScheduleRepository == null) {
+            sportScheduleList = new ArrayList<>();
+            sportScheduleRepository = new SportScheduleRepository(this);
+            sportScheduleRepository.getAllTypeSport(userID).observeForever(newTypeSportList -> sportScheduleList = newTypeSportList);
         }
-        return typeSportRepository;
+        return sportScheduleRepository;
     }
 
-    public MutableLiveData<Pair<String, LocalTime>> getSaveLog() {
+    public MutableLiveData<Pair<String, LocalDateTime>> getSaveLog() {
         return saveLog;
     }
 
@@ -172,8 +173,8 @@ public class MainApplication extends Application {
         return playlistList;
     }
 
-    public List<SongPlaylist> getSongPlaylistList() {
-        return songPlaylistList;
+    public List<SongCatalogue> getSongPlaylistList() {
+        return songCatalogueList;
     }
 
     public List<Type> getTypeList() {
@@ -184,8 +185,8 @@ public class MainApplication extends Application {
         return sportList;
     }
 
-    public List<TypeSport> getTypeSportList() {
-        return typeSportList;
+    public List<SportSchedule> getTypeSportList() {
+        return sportScheduleList;
     }
 
     public MusicPlayer getMusicPlayer() {

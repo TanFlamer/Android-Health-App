@@ -6,12 +6,8 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 
 import com.example.myapp.MainApplication;
-import com.example.myapp.databaseFiles.sport.Sport;
-import com.example.myapp.databaseFiles.sport.SportRepository;
-import com.example.myapp.databaseFiles.type.TypeRepository;
-import com.example.myapp.databaseFiles.typeSport.TypeSportRepository;
-
-import java.util.List;
+import com.example.myapp.databasefiles.sport.Sport;
+import com.example.myapp.databasefiles.sport.SportRepository;
 
 public class SportCalendarViewModel extends AndroidViewModel {
 
@@ -24,7 +20,7 @@ public class SportCalendarViewModel extends AndroidViewModel {
         userID = ((MainApplication) getApplication()).getUserID();
     }
 
-    public List<Sport> findSport(long date){
+    public Sport findSport(long date){
         return sportRepository.findSport(userID, date);
     }
 }

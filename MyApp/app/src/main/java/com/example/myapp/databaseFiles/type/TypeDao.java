@@ -1,4 +1,4 @@
-package com.example.myapp.databaseFiles.type;
+package com.example.myapp.databasefiles.type;
 
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
@@ -22,10 +22,10 @@ public interface TypeDao {
     void delete(Type type);
 
     @Query("SELECT * FROM Types WHERE typeID=:typeID")
-    List<Type> getType(int typeID);
+    Type getType(int typeID);
 
     @Query("SELECT * FROM Types WHERE userID=:userID AND typeName=:typeName")
-    List<Type> findType(int userID, String typeName);
+    Type findType(int userID, String typeName);
 
     @Query("SELECT * FROM Types WHERE userID=:userID")
     LiveData<List<Type>> getAllTypes(int userID);

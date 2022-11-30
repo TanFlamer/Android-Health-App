@@ -7,8 +7,8 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
 import com.example.myapp.MainApplication;
-import com.example.myapp.databaseFiles.type.Type;
-import com.example.myapp.databaseFiles.type.TypeRepository;
+import com.example.myapp.databasefiles.type.Type;
+import com.example.myapp.databasefiles.type.TypeRepository;
 
 import java.util.List;
 
@@ -37,7 +37,7 @@ public class SportTypeViewModel extends AndroidViewModel {
         typeRepository.delete(type);
     }
 
-    public List<Type> findType(int userID, String typeName){
+    public Type findType(int userID, String typeName){
         return typeRepository.findType(userID, typeName);
     }
 

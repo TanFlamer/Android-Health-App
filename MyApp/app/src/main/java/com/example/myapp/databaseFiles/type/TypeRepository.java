@@ -1,12 +1,10 @@
-package com.example.myapp.databaseFiles.type;
+package com.example.myapp.databasefiles.type;
 
 import android.app.Application;
 
 import androidx.lifecycle.LiveData;
 
 import com.example.myapp.Database;
-import com.example.myapp.databaseFiles.type.TypeDao;
-import com.example.myapp.databaseFiles.type.Type;
 
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -15,7 +13,7 @@ import java.util.concurrent.Executors;
 
 public class TypeRepository {
 
-    private TypeDao typeDao;
+    private final TypeDao typeDao;
 
     public TypeRepository(Application application) {
         Database database = Database.getInstance(application);
@@ -34,11 +32,11 @@ public class TypeRepository {
         new DeleteTypeExecutorTask(typeDao).execute(type);
     }
 
-    public List<Type> findType(int userID, String typeName) {
+    public Type findType(int userID, String typeName) {
         return new FindTypeExecutorTask(typeDao).find(userID, typeName);
     }
 
-    public List<Type> getType(int typeID) {
+    public Type getType(int typeID) {
         return new FindTypeExecutorTask(typeDao).get(typeID);
     }
 
@@ -48,7 +46,7 @@ public class TypeRepository {
 
     private static class InsertTypeExecutorTask {
         private final ExecutorService service = Executors.newSingleThreadExecutor();
-        private TypeDao typeDao;
+        private final TypeDao typeDao;
         private InsertTypeExecutorTask(TypeDao typeDao) {
             this.typeDao = typeDao;
         }
@@ -59,7 +57,7 @@ public class TypeRepository {
 
     private static class UpdateTypeExecutorTask {
         private final ExecutorService service = Executors.newSingleThreadExecutor();
-        private TypeDao typeDao;
+        private final TypeDao typeDao;
         private UpdateTypeExecutorTask(TypeDao typeDao) {
             this.typeDao = typeDao;
         }
@@ -70,7 +68,7 @@ public class TypeRepository {
 
     private static class DeleteTypeExecutorTask {
         private final ExecutorService service = Executors.newSingleThreadExecutor();
-        private TypeDao typeDao;
+        private final TypeDao typeDao;
         private DeleteTypeExecutorTask(TypeDao typeDao) {
             this.typeDao = typeDao;
         }
@@ -81,11 +79,11 @@ public class TypeRepository {
 
     private static class FindTypeExecutorTask {
         private final ExecutorService service = Executors.newSingleThreadExecutor();
-        private TypeDao typeDao;
+        private final TypeDao typeDao;
         private FindTypeExecutorTask(TypeDao typeDao) {
             this.typeDao = typeDao;
         }
-        protected List<Type> find(int userID, String typeName) {
+        protected Type find(int userID, String typeName) {
             try {
                 return service.submit(() -> typeDao.findType(userID, typeName)).get();
             } catch (ExecutionException | InterruptedException e) {
@@ -93,7 +91,7 @@ public class TypeRepository {
             }
             return null;
         }
-        protected List<Type> get(int typeID) {
+        protected Type get(int typeID) {
             try {
                 return service.submit(() -> typeDao.getType(typeID)).get();
             } catch (ExecutionException | InterruptedException e) {

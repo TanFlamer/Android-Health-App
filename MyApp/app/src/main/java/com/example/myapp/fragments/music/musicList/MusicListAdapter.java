@@ -2,14 +2,12 @@ package com.example.myapp.fragments.music.musicList;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -17,10 +15,8 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 
 import com.example.myapp.R;
-import com.example.myapp.databaseFiles.sleep.Sleep;
-import com.example.myapp.databaseFiles.song.Song;
+import com.example.myapp.databasefiles.song.Song;
 
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -32,12 +28,12 @@ public class MusicListAdapter extends ArrayAdapter<Song> {
     TextView nameView, lengthView;
     ImageView clickDelete;
     HashMap<Song, Boolean> buttonMap;
-    MusicList musicList;
+    MusicListFragment musicListFragment;
 
-    public MusicListAdapter(@NonNull Context context, int resource, List<Song> songList, MusicList musicList) {
+    public MusicListAdapter(@NonNull Context context, int resource, List<Song> songList, MusicListFragment musicListFragment) {
         super(context, resource, songList);
         this.songList = songList;
-        this.musicList = musicList;
+        this.musicListFragment = musicListFragment;
         buttonMap = new HashMap<>();
         for(Song song : songList) buttonMap.put(song, false);
     }
@@ -68,7 +64,7 @@ public class MusicListAdapter extends ArrayAdapter<Song> {
             notifyDataSetChanged();
             return true;
         });
-        layoutVisible.setOnClickListener(v -> musicList.getMusicListViewModel().getMusicPlayer().setPlaylist(songList, position));
+        layoutVisible.setOnClickListener(v -> musicListFragment.getMusicListViewModel().getMusicPlayer().setPlaylist(songList, position));
         layoutHidden.setVisibility(Boolean.TRUE.equals(buttonMap.get(song)) ? View.VISIBLE : View.GONE);
     }
 
@@ -84,7 +80,7 @@ public class MusicListAdapter extends ArrayAdapter<Song> {
         clickDelete.setOnClickListener(view -> new AlertDialog.Builder(currentItemView.getContext())
                 .setTitle("Delete Item")
                 .setMessage("Are you sure you want to delete this item?")
-                .setPositiveButton("Yes", (dialog, which) -> musicList.deleteFile(song))
+                .setPositiveButton("Yes", (dialog, which) -> musicListFragment.deleteFile(song))
                 .setNegativeButton("No", null)
                 .create()
                 .show());

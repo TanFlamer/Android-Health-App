@@ -1,7 +1,6 @@
 package com.example.myapp.fragments.sport.sportStatistics;
 
 import android.app.Application;
-import android.util.Pair;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -9,34 +8,29 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
 
 import com.example.myapp.MainApplication;
-import com.example.myapp.databaseFiles.sport.Sport;
-import com.example.myapp.databaseFiles.type.Type;
-import com.example.myapp.databaseFiles.typeSport.TypeSport;
-import com.example.myapp.databaseFiles.sport.SportRepository;
-import com.example.myapp.databaseFiles.type.TypeRepository;
-import com.example.myapp.databaseFiles.typeSport.TypeSportRepository;
+import com.example.myapp.databasefiles.type.Type;
+import com.example.myapp.databasefiles.sportschedule.SportSchedule;
+import com.example.myapp.databasefiles.type.TypeRepository;
+import com.example.myapp.databasefiles.sportschedule.SportScheduleRepository;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
 
 public class SportStatisticsViewModel extends AndroidViewModel {
 
     private TypeRepository typeRepository;
-    private TypeSportRepository typeSportRepository;
+    private SportScheduleRepository sportScheduleRepository;
 
     private MediatorLiveData<HashMap<Type, int[]>> sportDateMerger;
     private LiveData<List<Type>> typeLiveData;
-    private LiveData<List<TypeSport>> typeSportLiveData;
+    private LiveData<List<SportSchedule>> typeSportLiveData;
 
     private int userID;
 
     public SportStatisticsViewModel(@NonNull Application application) {
         super(application);
         typeRepository = ((MainApplication) getApplication()).getTypeRepository();
-        typeSportRepository = ((MainApplication) getApplication()).getTypeSportRepository();
+        sportScheduleRepository = ((MainApplication) getApplication()).getTypeSportRepository();
         userID = ((MainApplication) getApplication()).getUserID();
         initialiseLists();
         initialiseLiveDataMerger();
@@ -44,7 +38,7 @@ public class SportStatisticsViewModel extends AndroidViewModel {
 
     public void initialiseLists(){
         typeLiveData = typeRepository.getAllTypes(userID);
-        typeSportLiveData = typeSportRepository.getAllTypeSport(userID);
+        typeSportLiveData = sportScheduleRepository.getAllTypeSport(userID);
     }
 
     public void initialiseLiveDataMerger(){
@@ -53,16 +47,16 @@ public class SportStatisticsViewModel extends AndroidViewModel {
         sportDateMerger.addSource(typeSportLiveData, typeSportList -> sportDateMerger.setValue(processResults(((MainApplication) getApplication()).getTypeList(), ((MainApplication) getApplication()).getTypeSportList())));
     }
 
-    public HashMap<Type, int[]> processResults(List<Type> typeList, List<TypeSport> typeSportList){
-        if(typeList.size() == 0 || typeSportList.size() == 0) return new HashMap<>();
+    public HashMap<Type, int[]> processResults(List<Type> typeList, List<SportSchedule> sportScheduleList){
+        if(typeList.size() == 0 || sportScheduleList.size() == 0) return new HashMap<>();
 
         HashMap<Integer, Type> typeHashMap = new HashMap<>();
         for(Type type : typeList) typeHashMap.put(type.getTypeID(), type);
 
         HashMap<Type, int[]> sportResults = new HashMap<>();
-        for(TypeSport typeSport : typeSportList){
-            Type type = typeHashMap.get(typeSport.getTypeID());
-            int duration = typeSport.getSportDuration();
+        for(SportSchedule sportSchedule : sportScheduleList){
+            Type type = typeHashMap.get(sportSchedule.getTypeID());
+            int duration = sportSchedule.getSportDuration();
             sportResults.putIfAbsent(type, new int[] {0, Integer.MIN_VALUE, Integer.MAX_VALUE, 0});
             int[] results = sportResults.get(type);
             results[0] += duration; //total duration

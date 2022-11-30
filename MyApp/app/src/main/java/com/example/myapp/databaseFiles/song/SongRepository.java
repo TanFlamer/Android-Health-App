@@ -1,12 +1,10 @@
-package com.example.myapp.databaseFiles.song;
+package com.example.myapp.databasefiles.song;
 
 import android.app.Application;
 
 import androidx.lifecycle.LiveData;
 
 import com.example.myapp.Database;
-import com.example.myapp.databaseFiles.song.SongDao;
-import com.example.myapp.databaseFiles.song.Song;
 
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -15,7 +13,7 @@ import java.util.concurrent.Executors;
 
 public class SongRepository {
 
-    private SongDao songDao;
+    private final SongDao songDao;
 
     public SongRepository(Application application) {
         Database database = Database.getInstance(application);
@@ -34,11 +32,11 @@ public class SongRepository {
         new DeleteSongExecutorTask(songDao).execute(song);
     }
 
-    public List<Song> getSong(int songID) {
+    public Song getSong(int songID) {
         return new FindSongExecutorTask(songDao).get(songID);
     }
 
-    public List<Song> findSong(int userID, String songName) {
+    public Song findSong(int userID, String songName) {
         return new FindSongExecutorTask(songDao).find(userID, songName);
     }
 
@@ -48,7 +46,7 @@ public class SongRepository {
 
     private static class InsertSongExecutorTask {
         private final ExecutorService service = Executors.newSingleThreadExecutor();
-        private SongDao songDao;
+        private final SongDao songDao;
         private InsertSongExecutorTask(SongDao songDao) {
             this.songDao = songDao;
         }
@@ -59,7 +57,7 @@ public class SongRepository {
 
     private static class UpdateSongExecutorTask {
         private final ExecutorService service = Executors.newSingleThreadExecutor();
-        private SongDao songDao;
+        private final SongDao songDao;
         private UpdateSongExecutorTask(SongDao songDao) {
             this.songDao = songDao;
         }
@@ -70,7 +68,7 @@ public class SongRepository {
 
     private static class DeleteSongExecutorTask {
         private final ExecutorService service = Executors.newSingleThreadExecutor();
-        private SongDao songDao;
+        private final SongDao songDao;
         private DeleteSongExecutorTask(SongDao songDao) {
             this.songDao = songDao;
         }
@@ -81,11 +79,11 @@ public class SongRepository {
 
     private static class FindSongExecutorTask {
         private final ExecutorService service = Executors.newSingleThreadExecutor();
-        private SongDao songDao;
+        private final SongDao songDao;
         private FindSongExecutorTask(SongDao songDao) {
             this.songDao = songDao;
         }
-        protected List<Song> find(int userID, String songName) {
+        protected Song find(int userID, String songName) {
             try {
                 return service.submit(() -> songDao.findSong(userID, songName)).get();
             } catch (ExecutionException | InterruptedException e) {
@@ -93,7 +91,7 @@ public class SongRepository {
             }
             return null;
         }
-        protected List<Song> get(int songID) {
+        protected Song get(int songID) {
             try {
                 return service.submit(() -> songDao.getSong(songID)).get();
             } catch (ExecutionException | InterruptedException e) {

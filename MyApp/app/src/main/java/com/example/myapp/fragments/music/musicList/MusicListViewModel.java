@@ -10,8 +10,8 @@ import androidx.lifecycle.LiveData;
 
 import com.example.myapp.MainApplication;
 import com.example.myapp.MusicPlayer;
-import com.example.myapp.databaseFiles.song.Song;
-import com.example.myapp.databaseFiles.song.SongRepository;
+import com.example.myapp.databasefiles.song.Song;
+import com.example.myapp.databasefiles.song.SongRepository;
 
 import java.util.List;
 
@@ -35,18 +35,18 @@ public class MusicListViewModel extends AndroidViewModel {
     }
 
     public void processFile(String fileName, Uri uri){
-        List<Song> songList = findSong(userID, fileName);
-        if(songList.size() == 0)
+        Song song = findSong(userID, fileName);
+        if(song == null)
             songRepository.insert(new Song(fileName, getSongDuration(uri), userID));
         else
-            songRepository.update(songList.get(0));
+            songRepository.update(song);
     }
 
     public void delete(Song song){
         songRepository.delete(song);
     }
 
-    public List<Song> findSong(int userID, String songName){
+    public Song findSong(int userID, String songName){
         return songRepository.findSong(userID, songName);
     }
 

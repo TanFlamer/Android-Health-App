@@ -1,4 +1,4 @@
-package com.example.myapp.databaseFiles.sport;
+package com.example.myapp.databasefiles.sport;
 
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
@@ -22,10 +22,10 @@ public interface SportDao {
     void delete(Sport sport);
 
     @Query("SELECT * FROM Sport WHERE sportID=:sportID")
-    List<Sport> getSport(int sportID);
+    Sport getSport(int sportID);
 
     @Query("SELECT * FROM Sport WHERE userID=:userID AND date=:date")
-    List<Sport> findSport(int userID, long date);
+    Sport findSport(int userID, long date);
 
     @Query("SELECT * FROM Sport WHERE userID=:userID")
     LiveData<List<Sport>> getAllSport(int userID);

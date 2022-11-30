@@ -1,12 +1,9 @@
-package com.example.myapp.databaseFiles.user;
+package com.example.myapp.databasefiles.user;
 
 import android.app.Application;
 
 import com.example.myapp.Database;
-import com.example.myapp.databaseFiles.user.UserDao;
-import com.example.myapp.databaseFiles.user.User;
 
-import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -14,7 +11,7 @@ import java.util.concurrent.Executors;
 
 public class UserRepository {
 
-    private UserDao userDao;
+    private final UserDao userDao;
 
     public UserRepository(Application application) {
         Database database = Database.getInstance(application);
@@ -33,13 +30,17 @@ public class UserRepository {
         new DeleteUserExecutorTask(userDao).execute(user);
     }
 
-    public List<User> findUser(String username) {
-        return new FindUserExecutorTask(userDao).get(username);
+    public User findUser(String username) {
+        return new FindUserExecutorTask(userDao).find(username);
+    }
+
+    public User getUser(int userID) {
+        return new FindUserExecutorTask(userDao).get(userID);
     }
 
     private static class InsertUserExecutorTask {
         private final ExecutorService service = Executors.newSingleThreadExecutor();
-        private UserDao userDao;
+        private final UserDao userDao;
         private InsertUserExecutorTask(UserDao userDao) {
             this.userDao = userDao;
         }
@@ -55,7 +56,7 @@ public class UserRepository {
 
     private static class UpdateUserExecutorTask {
         private final ExecutorService service = Executors.newSingleThreadExecutor();
-        private UserDao userDao;
+        private final UserDao userDao;
         private UpdateUserExecutorTask(UserDao userDao) {
             this.userDao = userDao;
         }
@@ -66,7 +67,7 @@ public class UserRepository {
 
     private static class DeleteUserExecutorTask {
         private final ExecutorService service = Executors.newSingleThreadExecutor();
-        private UserDao userDao;
+        private final UserDao userDao;
         private DeleteUserExecutorTask(UserDao userDao) {
             this.userDao = userDao;
         }
@@ -77,13 +78,21 @@ public class UserRepository {
 
     private static class FindUserExecutorTask {
         private final ExecutorService service = Executors.newSingleThreadExecutor();
-        private UserDao userDao;
+        private final UserDao userDao;
         private FindUserExecutorTask(UserDao userDao) {
             this.userDao = userDao;
         }
-        protected List<User> get(String username) {
+        protected User find(String username) {
             try {
                 return service.submit(() -> userDao.findUser(username)).get();
+            } catch (ExecutionException | InterruptedException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+        protected User get(int userID) {
+            try {
+                return service.submit(() -> userDao.getUser(userID)).get();
             } catch (ExecutionException | InterruptedException e) {
                 e.printStackTrace();
             }

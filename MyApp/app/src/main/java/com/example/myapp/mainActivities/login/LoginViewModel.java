@@ -7,11 +7,11 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 
 import com.example.myapp.MainApplication;
-import com.example.myapp.databaseFiles.user.User;
-import com.example.myapp.databaseFiles.user.UserRepository;
+import com.example.myapp.databasefiles.user.User;
+import com.example.myapp.databasefiles.user.UserRepository;
 
+import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.List;
 
 public class LoginViewModel extends AndroidViewModel {
 
@@ -23,11 +23,11 @@ public class LoginViewModel extends AndroidViewModel {
     }
 
     public User validateUser(String username, String password){
-        List<User> user = userRepository.findUser(username);
-        return (user.size() != 0 && user.get(0).getPassword().equals(password)) ? user.get(0) : null;
+        User user = userRepository.findUser(username);
+        return (user != null && user.getPassword().equals(password)) ? user : null;
     }
 
-    public void updateSaveLogs(Pair<String, LocalTime> newSaveLog){
+    public void updateSaveLogs(Pair<String, LocalDateTime> newSaveLog){
         ((MainApplication) getApplication()).updateSaveLogs(newSaveLog);
     }
 }
