@@ -2,7 +2,6 @@ package com.example.myapp.fragments.music.musicPlaylists;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,13 +10,10 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import androidx.appcompat.app.AlertDialog;
-
 import com.example.myapp.MusicPlayer;
 import com.example.myapp.R;
 import com.example.myapp.databasefiles.playlist.Playlist;
 import com.example.myapp.databasefiles.song.Song;
-import com.example.myapp.subActivities.music.MusicDataActivity;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -127,21 +123,15 @@ public class MusicPlaylistsAdapter extends BaseExpandableListAdapter {
     public void initialiseEditButton(View view, Playlist playlist){
         ImageView clickEdit = view.findViewById(R.id.clickEdit);
         clickEdit.setOnClickListener(v -> {
-            Intent intent = new Intent(context, MusicDataActivity.class);
-            intent.putExtra("playlistName", playlist.getPlaylistName());
-            context.startActivity(intent);
+            MusicPlaylistsViewModel musicPlaylistsViewModel = musicPlaylistsFragment.getMusicPlaylistsViewModel();
+            context.startActivity(musicPlaylistsViewModel.editPlaylist(playlist.getPlaylistName()));
         });
     }
 
     public void initialiseDeleteButton(View view, Playlist playlist){
+        MusicPlaylistsViewModel musicPlaylistsViewModel = musicPlaylistsFragment.getMusicPlaylistsViewModel();
         ImageView clickDelete = view.findViewById(R.id.clickDelete);
-        clickDelete.setOnClickListener(view1 -> new AlertDialog.Builder(context)
-                .setTitle("Delete Item")
-                .setMessage("Are you sure you want to delete this item?")
-                .setPositiveButton("Yes", (dialog, which) -> musicPlaylistsFragment.getMusicPlaylistsViewModel().deletePlaylist(playlist))
-                .setNegativeButton("No", null)
-                .create()
-                .show());
+        clickDelete.setOnClickListener(view1 -> musicPlaylistsViewModel.deletePlaylist(context, playlist).show());
     }
 
     @SuppressLint({"InflateParams", "SetTextI18n"})
@@ -193,9 +183,10 @@ public class MusicPlaylistsAdapter extends BaseExpandableListAdapter {
     }
 
     public void sortMusicPlaylists(String data, String order){
+        //MusicPlaylistsViewModel musicPlaylistsViewModel = musicPlaylistsFragment.getMusicPlaylistsViewModel();
         playlistList.sort(getPlaylistComparator(data, order));
         for(List<Song> songList : songPlaylists.values()) songList.sort(getSongComparator(data, order));
-        for (Playlist playlist : playlistList) buttonMap.put(playlist, false);
+        for(Playlist playlist : playlistList) buttonMap.put(playlist, false);
         notifyDataSetChanged();
     }
 
@@ -230,6 +221,7 @@ public class MusicPlaylistsAdapter extends BaseExpandableListAdapter {
         }
         return order.equals("Ascending") ? songComparator : songComparator.reversed();
     }
+
 
     public int getPlaylistLength(Playlist playlist){
         int duration = 0;

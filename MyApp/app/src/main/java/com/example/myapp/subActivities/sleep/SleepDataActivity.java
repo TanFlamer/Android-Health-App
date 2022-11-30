@@ -15,7 +15,9 @@ import androidx.lifecycle.ViewModelProvider;
 import com.example.myapp.R;
 import com.example.myapp.databasefiles.sleep.Sleep;
 
+import java.time.Instant;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Calendar;
 import java.util.Objects;
 import java.util.TimeZone;
@@ -44,25 +46,9 @@ public class SleepDataActivity extends AppCompatActivity{
         initialiseAll();
     }
 
-    public void initialiseDate(){
-        Bundle extra = getIntent().getExtras();
-        if(extra == null){
-            Calendar currentDate = Calendar.getInstance();
-            year = currentDate.get(Calendar.YEAR);
-            month = currentDate.get(Calendar.MONTH);
-            day = currentDate.get(Calendar.DAY_OF_MONTH);
-        }
-        else{
-            year = extra.getInt("year");
-            month = extra.getInt("month");
-            day = extra.getInt("day");
-        }
-        fillDateData();
-    }
-
     @SuppressLint({"SetTextI18n", "DefaultLocale"})
-    public void fillDateData(){
-        date = LocalDate.of(year, month, day).atStartOfDay(TimeZone.getDefault().toZoneId()).toInstant().toEpochMilli();
+    public void fillDateData(long date){
+        this.date = date;
         initialiseTime(sleepDataViewModel.loadSleepData(date));
         sleepTime.setText(String.format("%02d:%02d", sleepHour, sleepMinute));
         wakeTime.setText(String.format("%02d:%02d", wakeHour, wakeMinute));
@@ -108,7 +94,7 @@ public class SleepDataActivity extends AppCompatActivity{
             year = i;
             month = i1;
             day = i2;
-            fillDateData();
+            fillDateData(LocalDate.of(year, month, day).atStartOfDay(TimeZone.getDefault().toZoneId()).toInstant().toEpochMilli());
             buttonDate.setText(String.format("%02d/%02d/%04d", day, month + 1, year));
         }, year, month, day).show());
     }
@@ -152,6 +138,25 @@ public class SleepDataActivity extends AppCompatActivity{
             finish();
         });
         buttonReturn.setOnClickListener(v -> finish());
+    }
+
+    public void initialiseDate(){
+        Bundle extra = getIntent().getExtras();
+        if(extra == null){
+            Calendar currentDate = Calendar.getInstance();
+            year = currentDate.get(Calendar.YEAR);
+            month = currentDate.get(Calendar.MONTH);
+            day = currentDate.get(Calendar.DAY_OF_MONTH);
+            fillDateData(currentDate.toInstant().toEpochMilli());
+        }
+        else{
+            long dateMillis = getIntent().getExtras().getLong("date");
+            LocalDate date = Instant.ofEpochMilli(dateMillis).atZone(ZoneId.systemDefault()).toLocalDate();
+            year = date.getYear();
+            month = date.getMonthValue() - 1;
+            day = date.getDayOfMonth();
+            fillDateData(dateMillis);
+        }
     }
 
     @Override

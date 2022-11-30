@@ -102,28 +102,8 @@ public class MusicListAdapter extends ArrayAdapter<Song> {
     }
 
     public void sortSongList(String data, String order){
-        songList.sort(getComparator(data, order));
+        songList.sort(musicListViewModel.getComparator(data, order));
         for(Song song : songList) buttonMap.put(song, false);
         notifyDataSetChanged();
-    }
-
-    public List<Song> getSongList() {
-        return songList;
-    }
-
-    public Comparator<Song> getComparator(String data, String order){
-        Comparator<Song> songComparator = Comparator.comparingInt(Song::getSongID);
-        switch (data) {
-            case "Date Added":
-                songComparator = Comparator.comparingInt(Song::getSongID);
-                break;
-            case "Name":
-                songComparator = Comparator.comparing(Song::getSongName);
-                break;
-            case "Length":
-                songComparator = Comparator.comparing(Song::getSongDuration);
-                break;
-        }
-        return order.equals("Ascending") ? songComparator : songComparator.reversed();
     }
 }

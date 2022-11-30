@@ -26,6 +26,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.Comparator;
 import java.util.List;
 
 public class MusicListViewModel extends AndroidViewModel {
@@ -95,5 +96,21 @@ public class MusicListViewModel extends AndroidViewModel {
         mediaMetadataRetriever.setDataSource(getApplication(), uri);
         String duration = mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
         return Integer.parseInt(duration) / 1000;
+    }
+
+    public Comparator<Song> getComparator(String data, String order){
+        Comparator<Song> songComparator = Comparator.comparingInt(Song::getSongID);
+        switch (data) {
+            case "Date Added":
+                songComparator = Comparator.comparingInt(Song::getSongID);
+                break;
+            case "Name":
+                songComparator = Comparator.comparing(Song::getSongName);
+                break;
+            case "Length":
+                songComparator = Comparator.comparing(Song::getSongDuration);
+                break;
+        }
+        return order.equals("Ascending") ? songComparator : songComparator.reversed();
     }
 }

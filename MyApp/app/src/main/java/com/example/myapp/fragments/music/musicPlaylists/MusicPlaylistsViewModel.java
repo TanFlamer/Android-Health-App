@@ -1,6 +1,9 @@
 package com.example.myapp.fragments.music.musicPlaylists;
 
+import android.app.AlertDialog;
 import android.app.Application;
+import android.content.Context;
+import android.content.Intent;
 import android.util.Pair;
 
 import androidx.annotation.NonNull;
@@ -18,8 +21,10 @@ import com.example.myapp.databasefiles.songcatalogue.SongCatalogueRepository;
 import com.example.myapp.databasefiles.song.SongRepository;
 import com.example.myapp.databasefiles.sport.Sport;
 import com.example.myapp.databasefiles.type.Type;
+import com.example.myapp.subActivities.music.MusicDataActivity;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
@@ -83,10 +88,6 @@ public class MusicPlaylistsViewModel extends AndroidViewModel {
         return songCatalogueHashMap;
     }
 
-    public void deletePlaylist(Playlist playlist){
-        playlistRepository.delete(playlist);
-    }
-
     public MusicPlayer getMusicPlayer() {
         return musicPlayer;
     }
@@ -94,4 +95,58 @@ public class MusicPlaylistsViewModel extends AndroidViewModel {
     public MediatorLiveData<HashMap<Playlist, List<Song>>> getMusicDateMerger() {
         return musicDateMerger;
     }
+
+    public Intent editPlaylist(String playlistName){
+        Intent intent = new Intent(getApplication(), MusicDataActivity.class);
+        intent.putExtra("playlistName", playlistName);
+        return intent;
+    }
+
+    public AlertDialog deletePlaylist(Context context, Playlist playlist){
+        return new AlertDialog.Builder(context)
+                .setTitle("Delete Item")
+                .setMessage("Are you sure you want to delete this item?")
+                .setPositiveButton("Yes", (dialog, which) -> playlistRepository.delete(playlist))
+                .setNegativeButton("No", null)
+                .create();
+    }
+
+    /*public Comparator<Playlist> getPlaylistComparator(String data, String order){
+        Comparator<Playlist> playlistComparator = Comparator.comparingInt(Playlist::getPlaylistID);
+        switch (data) {
+            case "Date Added":
+                playlistComparator = Comparator.comparingInt(Playlist::getPlaylistID);
+                break;
+            case "Name":
+                playlistComparator = Comparator.comparing(Playlist::getPlaylistName);
+                break;
+            case "Length":
+                playlistComparator = Comparator.comparing(this::getPlaylistLength);
+                break;
+        }
+        return order.equals("Ascending") ? playlistComparator : playlistComparator.reversed();
+    }
+
+    public Comparator<Song> getSongComparator(String data, String order){
+        Comparator<Song> songComparator = Comparator.comparingInt(Song::getSongID);
+        switch (data) {
+            case "Date Added":
+                songComparator = Comparator.comparingInt(Song::getSongID);
+                break;
+            case "Name":
+                songComparator = Comparator.comparing(Song::getSongName);
+                break;
+            case "Length":
+                songComparator = Comparator.comparing(Song::getSongDuration);
+                break;
+        }
+        return order.equals("Ascending") ? songComparator : songComparator.reversed();
+    }
+
+    public int getPlaylistLength(Playlist playlist){
+        int duration = 0;
+        for(Song song : Objects.requireNonNull(songPlaylists.get(playlist)))
+            duration += song.getSongDuration();
+        return duration;
+    }*/
 }

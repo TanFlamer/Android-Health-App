@@ -54,8 +54,7 @@ public class SleepListAdapter extends RecyclerView.Adapter<SleepListAdapter.Slee
     @Override
     public void onBindViewHolder(@NonNull SleepRecyclerItemViewHolder holder, int position) {
         Sleep sleep = sleepList.get(position);
-        int duration = (sleep.getWakeTime() - sleep.getSleepTime());
-        duration += (duration >= 0) ? 0 : 1440;
+        int duration = sleepListViewModel.getDuration(sleep);
         holder.titleView.setText(String.valueOf(sleep.getDate()));
         holder.dateView.setText(String.valueOf(sleep.getDate()));
         holder.sleepView.setText(String.valueOf(sleep.getSleepTime()));
@@ -78,43 +77,10 @@ public class SleepListAdapter extends RecyclerView.Adapter<SleepListAdapter.Slee
 
     @SuppressLint("NotifyDataSetChanged")
     public void sortSleepList(String data, String order){
-        sleepList.sort(getComparator(data, order));
+        sleepList.sort(sleepListViewModel.getComparator(data, order));
         for(Sleep sleep : sleepList) visibilityMap.put(sleep, false);
         for(Sleep sleep : sleepList) buttonMap.put(sleep, false);
         notifyDataSetChanged();
-    }
-
-    public Comparator<Sleep> getComparator(String data, String order){
-        Comparator<Sleep> sleepComparator = Comparator.comparingInt(Sleep::getSleepID);
-        switch (data) {
-            case "Date Added":
-                sleepComparator = Comparator.comparingInt(Sleep::getSleepID);
-                break;
-            case "Sleep Date":
-                sleepComparator = Comparator.comparingLong(Sleep::getDate);
-                break;
-            case "Sleep Time":
-                sleepComparator = Comparator.comparingInt(a -> normalisedTime(a.getSleepTime()));
-                break;
-            case "Wake Time":
-                sleepComparator = Comparator.comparingInt(a -> normalisedTime(a.getWakeTime()));
-                break;
-            case "Sleep Duration":
-                sleepComparator = Comparator.comparing(this::getDuration);
-                break;
-        }
-        return order.equals("Ascending") ? sleepComparator : sleepComparator.reversed();
-    }
-
-    public int normalisedTime(int time){
-        time -= 720;
-        if(time < 0) time += 1440;
-        return time;
-    }
-
-    public int getDuration(Sleep sleep){
-        int duration = sleep.getWakeTime() - sleep.getSleepTime();
-        return (duration >= 0) ? duration : duration + 1440;
     }
 
     public class SleepRecyclerItemViewHolder extends RecyclerView.ViewHolder {
@@ -125,29 +91,50 @@ public class SleepListAdapter extends RecyclerView.Adapter<SleepListAdapter.Slee
 
         public SleepRecyclerItemViewHolder(@NonNull View itemView) {
             super(itemView);
+            initialiseAll();
+        }
 
+        public void initialiseAll(){
+            initialiseViewByID();
+            initialiseEditButton();
+            initialiseDeleteButtons();
+            initialiseOnClickListener();
+            initialiseOnLongClickListener();
+        }
+
+        public void initialiseViewByID(){
+            initialiseTextViews();
+            initialiseImageButtons();
+            initialiseLayouts();
+        }
+
+        private void initialiseTextViews(){
             titleView = itemView.findViewById(R.id.sleepTitle);
             dateView = itemView.findViewById(R.id.sleepDate);
             sleepView = itemView.findViewById(R.id.sleepTime);
             wakeView = itemView.findViewById(R.id.wakeTime);
             durationView = itemView.findViewById(R.id.sleepDuration);
-
-            initialiseImageButtons();
-            initialiseHiddenLayouts();
         }
 
         public void initialiseImageButtons(){
             clickEdit = itemView.findViewById(R.id.clickEdit);
-            clickEdit.setOnClickListener(v -> {
-                Intent intent = new Intent(context, SleepDataActivity.class);
-                LocalDate date = Instant.ofEpochMilli(sleepList.get(getAdapterPosition()).getDate()).atZone(ZoneId.systemDefault()).toLocalDate();
-                intent.putExtra("year", date.getYear());
-                intent.putExtra("month", date.getMonthValue());
-                intent.putExtra("day", date.getDayOfMonth());
-                context.startActivity(intent);
-            });
-
             clickDelete = itemView.findViewById(R.id.clickDelete);
+        }
+
+        public void initialiseLayouts(){
+            layoutVisible = itemView.findViewById(R.id.sleepLayoutVisible);
+            layoutHidden = itemView.findViewById(R.id.sleepLayoutHidden);
+            buttonHidden = itemView.findViewById(R.id.buttonHidden);
+        }
+
+        public void initialiseEditButton(){
+            clickEdit.setOnClickListener(v -> {
+                long date = sleepList.get(getAdapterPosition()).getDate();
+                context.startActivity(sleepListViewModel.sleepEdit(date));
+            });
+        }
+
+        public void initialiseDeleteButtons(){
             clickDelete.setOnClickListener(view -> new AlertDialog.Builder(context)
                     .setTitle("Delete Item")
                     .setMessage("Are you sure you want to delete this item?")
@@ -157,17 +144,15 @@ public class SleepListAdapter extends RecyclerView.Adapter<SleepListAdapter.Slee
                     .show());
         }
 
-        public void initialiseHiddenLayouts(){
-            layoutVisible = itemView.findViewById(R.id.sleepLayoutVisible);
-            layoutHidden = itemView.findViewById(R.id.sleepLayoutHidden);
-            buttonHidden = itemView.findViewById(R.id.buttonHidden);
-
+        public void initialiseOnClickListener(){
             layoutVisible.setOnClickListener(view -> {
                 Sleep sleep = sleepList.get(getAdapterPosition());
                 visibilityMap.put(sleep, Boolean.FALSE.equals(visibilityMap.get(sleep)));
                 notifyItemChanged(getAdapterPosition());
             });
+        }
 
+        public void initialiseOnLongClickListener(){
             layoutVisible.setOnLongClickListener(v -> {
                 Sleep sleep = sleepList.get(getAdapterPosition());
                 buttonMap.put(sleep, Boolean.FALSE.equals(buttonMap.get(sleep)));
