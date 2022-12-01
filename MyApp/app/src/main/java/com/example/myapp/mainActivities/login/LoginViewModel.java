@@ -1,6 +1,8 @@
 package com.example.myapp.mainActivities.login;
 
+import android.app.AlertDialog;
 import android.app.Application;
+import android.content.Context;
 import android.content.Intent;
 import android.util.Pair;
 import android.widget.Toast;
@@ -40,6 +42,17 @@ public class LoginViewModel extends AndroidViewModel {
         Intent intent = new Intent(getApplication(), AccountActivity.class);
         intent.putExtra("userID", 0);
         return intent;
+    }
+
+    public AlertDialog guestDialog(Context context){
+        return new AlertDialog.Builder(context)
+                .setTitle("Guest Login")
+                .setMessage("Are you sure you want to login as guest? Any changes made will not be saved.")
+                .setPositiveButton("Yes", (dialogInterface, i) -> {
+                    context.startActivity(loginGuest());
+                })
+                .setNegativeButton("No", null)
+                .create();
     }
 
     public Intent loginNewUser(){

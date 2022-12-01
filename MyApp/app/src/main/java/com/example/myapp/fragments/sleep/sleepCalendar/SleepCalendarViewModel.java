@@ -22,7 +22,7 @@ public class SleepCalendarViewModel extends AndroidViewModel {
         userID = ((MainApplication) getApplication()).getUserID();
     }
 
-    public Sleep findSleep(Long date){
+    public Sleep findSleep(long date){
         return sleepRepository.findSleep(userID, date);
     }
 

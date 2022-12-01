@@ -1,18 +1,14 @@
 package com.example.myapp.fragments.music.musicStatistics;
 
 import android.app.Application;
-import android.util.Pair;
 
 import androidx.annotation.NonNull;
-import androidx.arch.core.util.Function;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.Transformations;
 
 import com.example.myapp.MainApplication;
-import com.example.myapp.databasefiles.playlist.Playlist;
-import com.example.myapp.databasefiles.playlist.PlaylistRepository;
 import com.example.myapp.databasefiles.song.Song;
 import com.example.myapp.databasefiles.song.SongRepository;
 import com.example.myapp.databasefiles.songcatalogue.SongCatalogue;

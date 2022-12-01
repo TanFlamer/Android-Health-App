@@ -77,7 +77,7 @@ public class SleepListAdapter extends RecyclerView.Adapter<SleepListAdapter.Slee
 
     @SuppressLint("NotifyDataSetChanged")
     public void sortSleepList(String data, String order){
-        sleepList.sort(sleepListViewModel.getComparator(data, order));
+        sleepListViewModel.sortSleepList(sleepList, data, order);
         for(Sleep sleep : sleepList) visibilityMap.put(sleep, false);
         for(Sleep sleep : sleepList) buttonMap.put(sleep, false);
         notifyDataSetChanged();
@@ -135,13 +135,10 @@ public class SleepListAdapter extends RecyclerView.Adapter<SleepListAdapter.Slee
         }
 
         public void initialiseDeleteButtons(){
-            clickDelete.setOnClickListener(view -> new AlertDialog.Builder(context)
-                    .setTitle("Delete Item")
-                    .setMessage("Are you sure you want to delete this item?")
-                    .setPositiveButton("Yes", (dialog, which) -> sleepListViewModel.delete(sleepList.get(getAdapterPosition())))
-                    .setNegativeButton("No", null)
-                    .create()
-                    .show());
+            clickDelete.setOnClickListener(view -> {
+                Sleep sleep = sleepList.get(getAdapterPosition());
+                sleepListViewModel.deleteDialog(context, sleep).show();
+            });
         }
 
         public void initialiseOnClickListener(){

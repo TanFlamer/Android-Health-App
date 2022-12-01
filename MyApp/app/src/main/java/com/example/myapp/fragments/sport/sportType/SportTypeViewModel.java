@@ -14,14 +14,15 @@ import java.util.List;
 
 public class SportTypeViewModel extends AndroidViewModel {
 
-    private TypeRepository typeRepository;
-    private LiveData<List<Type>> typeList;
-    private int userID;
+    private final TypeRepository typeRepository;
+    private final LiveData<List<Type>> typeList;
+    private final int userID;
 
     public SportTypeViewModel(@NonNull Application application) {
         super(application);
-        typeRepository = ((MainApplication) getApplication()).getTypeRepository();
-        userID = ((MainApplication) getApplication()).getUserID();
+        MainApplication mainApplication = (MainApplication) getApplication();
+        typeRepository = mainApplication.getTypeRepository();
+        userID = mainApplication.getUserID();
         typeList = typeRepository.getAllTypes(userID);
     }
 
@@ -35,10 +36,6 @@ public class SportTypeViewModel extends AndroidViewModel {
 
     public void delete(Type type){
         typeRepository.delete(type);
-    }
-
-    public Type findType(int userID, String typeName){
-        return typeRepository.findType(userID, typeName);
     }
 
     public LiveData<List<Type>> getTypeList(){

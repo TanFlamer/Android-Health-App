@@ -24,12 +24,10 @@ import java.util.List;
 
 public class SportTypeAdapter extends ArrayAdapter<Type> {
 
-    private List<Type> typeList;
-    Context context;
-    SportTypeViewModel sportTypeViewModel;
-    LinearLayout layoutVisible, layoutHidden;
-    ImageView clickEdit, clickDelete;
-    HashMap<Type, Boolean> buttonMap;
+    private final List<Type> typeList;
+    private final Context context;
+    private final SportTypeViewModel sportTypeViewModel;
+    private final HashMap<Type, Boolean> buttonMap;
 
     public SportTypeAdapter(@NonNull Context context, int resource, List<Type> typeList, SportTypeViewModel sportTypeViewModel) {
         super(context, resource, typeList);
@@ -56,10 +54,34 @@ public class SportTypeAdapter extends ArrayAdapter<Type> {
         return currentItemView;
     }
 
+    public void initialiseAll(){
+
+    }
+
+    public void initialiseLayouts(){
+
+    }
+
+    public void initialiseNameView(){
+
+    }
+
+    public void initialiseCalorieView(){
+
+    }
+
+    public void initialiseEditButton(){
+
+    }
+
+    public void initialiseDeleteButton(){
+        
+    }
+
     public void initialiseLayouts(View currentItemView, int position){
         Type type = typeList.get(position);
-        layoutVisible = currentItemView.findViewById(R.id.layoutVisible);
-        layoutHidden = currentItemView.findViewById(R.id.layoutHidden);
+        LinearLayout layoutVisible = currentItemView.findViewById(R.id.layoutVisible);
+        LinearLayout layoutHidden = currentItemView.findViewById(R.id.layoutHidden);
         layoutVisible.setOnLongClickListener(v -> {
             buttonMap.put(type, Boolean.FALSE.equals(buttonMap.get(type)));
             notifyDataSetChanged();
@@ -77,13 +99,13 @@ public class SportTypeAdapter extends ArrayAdapter<Type> {
     }
 
     public void initialiseEditButton(View currentItemView, Type type){
-        clickEdit = currentItemView.findViewById(R.id.clickEdit);
+        ImageView clickEdit = currentItemView.findViewById(R.id.clickEdit);
         clickEdit.setOnClickListener(v -> {
             Intent intent = new Intent(context, TypeDataActivity.class);
             intent.putExtra("typeName", type.getTypeName());
             context.startActivity(intent);
         });
-        clickDelete = currentItemView.findViewById(R.id.clickDelete);
+        ImageView clickDelete = currentItemView.findViewById(R.id.clickDelete);
     }
 
     public void initialiseDeleteButton(View currentItemView, Type type){

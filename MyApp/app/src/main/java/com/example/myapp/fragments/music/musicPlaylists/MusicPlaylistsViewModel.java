@@ -4,7 +4,6 @@ import android.app.AlertDialog;
 import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Pair;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -14,13 +13,11 @@ import androidx.lifecycle.MediatorLiveData;
 import com.example.myapp.MainApplication;
 import com.example.myapp.MusicPlayer;
 import com.example.myapp.databasefiles.playlist.Playlist;
-import com.example.myapp.databasefiles.song.Song;
-import com.example.myapp.databasefiles.songcatalogue.SongCatalogue;
 import com.example.myapp.databasefiles.playlist.PlaylistRepository;
-import com.example.myapp.databasefiles.songcatalogue.SongCatalogueRepository;
+import com.example.myapp.databasefiles.song.Song;
 import com.example.myapp.databasefiles.song.SongRepository;
-import com.example.myapp.databasefiles.sport.Sport;
-import com.example.myapp.databasefiles.type.Type;
+import com.example.myapp.databasefiles.songcatalogue.SongCatalogue;
+import com.example.myapp.databasefiles.songcatalogue.SongCatalogueRepository;
 import com.example.myapp.subActivities.music.MusicDataActivity;
 
 import java.util.ArrayList;
@@ -111,7 +108,14 @@ public class MusicPlaylistsViewModel extends AndroidViewModel {
                 .create();
     }
 
-    /*public Comparator<Playlist> getPlaylistComparator(String data, String order){
+    public void sortPlaylists(List<Playlist> playlists, HashMap<Playlist, List<Song>> songPlaylists, String data, String order){
+        Comparator<Playlist> playlistComparator = getPlaylistComparator(data, order, songPlaylists);
+        playlists.sort(playlistComparator);
+        Comparator<Song> songComparator = getSongComparator(data, order);
+        for(List<Song> songList : songPlaylists.values()) songList.sort(songComparator);
+    }
+
+    public Comparator<Playlist> getPlaylistComparator(String data, String order, HashMap<Playlist, List<Song>> songPlaylists){
         Comparator<Playlist> playlistComparator = Comparator.comparingInt(Playlist::getPlaylistID);
         switch (data) {
             case "Date Added":
@@ -121,7 +125,7 @@ public class MusicPlaylistsViewModel extends AndroidViewModel {
                 playlistComparator = Comparator.comparing(Playlist::getPlaylistName);
                 break;
             case "Length":
-                playlistComparator = Comparator.comparing(this::getPlaylistLength);
+                playlistComparator = Comparator.comparing(playlist -> getPlaylistLength(playlist, songPlaylists));
                 break;
         }
         return order.equals("Ascending") ? playlistComparator : playlistComparator.reversed();
@@ -143,10 +147,10 @@ public class MusicPlaylistsViewModel extends AndroidViewModel {
         return order.equals("Ascending") ? songComparator : songComparator.reversed();
     }
 
-    public int getPlaylistLength(Playlist playlist){
+    public int getPlaylistLength(Playlist playlist, HashMap<Playlist, List<Song>> songPlaylists){
         int duration = 0;
         for(Song song : Objects.requireNonNull(songPlaylists.get(playlist)))
             duration += song.getSongDuration();
         return duration;
-    }*/
+    }
 }

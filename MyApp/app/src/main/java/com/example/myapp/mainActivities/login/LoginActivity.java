@@ -84,16 +84,10 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void initialiseGuestButton(){
-        buttonGuest.setOnClickListener(view -> new AlertDialog.Builder(this)
-                .setTitle("Guest Login")
-                .setMessage("Are you sure you want to login as guest? Any changes made will not be saved.")
-                .setPositiveButton("Yes", (dialogInterface, i) -> {
-                    startActivity(loginViewModel.loginGuest());
-                    clearTextFields();
-                })
-                .setNegativeButton("No", null)
-                .create()
-                .show());
+        buttonGuest.setOnClickListener(view -> {
+            loginViewModel.guestDialog(view.getContext()).show();
+            clearTextFields();
+        });
     }
 
     public void clearTextFields(){

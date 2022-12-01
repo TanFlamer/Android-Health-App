@@ -27,21 +27,21 @@ import java.util.Objects;
 
 public class SportChartViewModel extends AndroidViewModel {
 
-    private SportRepository sportRepository;
-    private TypeRepository typeRepository;
-    private SportScheduleRepository sportScheduleRepository;
+    private final SportRepository sportRepository;
+    private final TypeRepository typeRepository;
+    private final SportScheduleRepository sportScheduleRepository;
 
     private MediatorLiveData<HashMap<Sport, List<Pair<Type, Integer>>>> sportDateMerger;
     private LiveData<List<Sport>> sportLiveData;
     private LiveData<List<Type>> typeLiveData;
     private LiveData<List<SportSchedule>> typeSportLiveData;
 
-    private HashMap<Sport, List<Pair<Type, Integer>>> currentSportMap;
-    private List<Sport> sportList;
-    private List<String> xAxisLabels;
-    private List<BarEntry> barEntryList;
+    private final HashMap<Sport, List<Pair<Type, Integer>>> currentSportMap;
+    private final List<Sport> sportList;
+    private final List<String> xAxisLabels;
+    private final List<BarEntry> barEntryList;
 
-    private int userID;
+    private final int userID;
 
     public SportChartViewModel(@NonNull Application application) {
         super(application);
@@ -101,8 +101,10 @@ public class SportChartViewModel extends AndroidViewModel {
     }
 
     public Pair<List<String>, List<BarEntry>> processData(HashMap<Sport, List<Pair<Type, Integer>>> newSportMap, String data){
-        currentSportMap = newSportMap;
-        sportList = new ArrayList<>(currentSportMap.keySet());
+        currentSportMap.clear();
+        currentSportMap.putAll(newSportMap);
+        sportList.clear();
+        sportList.addAll(currentSportMap.keySet());
         sportList.sort(Comparator.comparingLong(Sport::getDate));
         xAxisLabels.clear();
         for(Sport sport : sportList) xAxisLabels.add(String.valueOf(Instant.ofEpochMilli(sport.getDate()).atZone(ZoneId.systemDefault()).toLocalDate()));
@@ -117,16 +119,31 @@ public class SportChartViewModel extends AndroidViewModel {
 
     public void refreshBarEntryList(String data){
         barEntryList.clear();
+        if(data.equals("Sport Duration"))
+            getTotalDuration();
+        else
+            getTotalCalorie();
+    }
+
+    public void getTotalDuration(){
         for(int i = 0; i < sportList.size(); i++){
             List<Pair<Type, Integer>> pairList = currentSportMap.get(sportList.get(i));
             int totalDuration = 0;
-            float totalCalorie = 0;
             for(Pair<Type, Integer> pair : pairList){
                 totalDuration += pair.second;
+            }
+            barEntryList.add(new BarEntry((float) i, totalDuration));
+        }
+    }
+
+    public void getTotalCalorie(){
+        for(int i = 0; i < sportList.size(); i++){
+            List<Pair<Type, Integer>> pairList = currentSportMap.get(sportList.get(i));
+            float totalCalorie = 0;
+            for(Pair<Type, Integer> pair : pairList){
                 totalCalorie += pair.first.getCaloriePerMinute() * pair.second;
             }
-            float yValue = data.equals("Sport Duration") ? totalDuration : totalCalorie;
-            barEntryList.add(new BarEntry((float) i, yValue ));
+            barEntryList.add(new BarEntry((float) i, totalCalorie));
         }
     }
 }

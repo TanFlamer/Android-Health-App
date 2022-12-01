@@ -1,6 +1,8 @@
 package com.example.myapp.fragments.sleep.sleepList;
 
+import android.app.AlertDialog;
 import android.app.Application;
+import android.content.Context;
 import android.content.Intent;
 
 import androidx.annotation.NonNull;
@@ -44,6 +46,20 @@ public class SleepListViewModel extends AndroidViewModel {
 
     public void delete(Sleep sleep){
         sleepRepository.delete(sleep);
+    }
+
+    public AlertDialog deleteDialog(Context context, Sleep sleep){
+        return new AlertDialog.Builder(context)
+                .setTitle("Delete Item")
+                .setMessage("Are you sure you want to delete this item?")
+                .setPositiveButton("Yes", (dialog, which) -> sleepRepository.delete(sleep))
+                .setNegativeButton("No", null)
+                .create();
+    }
+
+    public void sortSleepList(List<Sleep> sleepList, String data, String order){
+        Comparator<Sleep> sleepComparator = getComparator(data, order);
+        sleepList.sort(sleepComparator);
     }
 
     public Comparator<Sleep> getComparator(String data, String order){

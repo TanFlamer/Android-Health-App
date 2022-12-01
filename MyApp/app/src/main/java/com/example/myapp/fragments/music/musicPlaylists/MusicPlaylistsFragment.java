@@ -2,12 +2,6 @@ package com.example.myapp.fragments.music.musicPlaylists;
 
 import android.content.Intent;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +9,11 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ExpandableListView;
 import android.widget.Spinner;
-import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.example.myapp.R;
 import com.example.myapp.subActivities.music.MusicDataActivity;
@@ -60,10 +58,9 @@ public class MusicPlaylistsFragment extends Fragment {
         String data = dataSpinner.getSelectedItem().toString();
         String order = orderSpinner.getSelectedItem().toString();
         expandableListView = requireView().findViewById(R.id.musicExpandableListView);
-        musicPlaylistsAdapter = new MusicPlaylistsAdapter(requireContext(), new HashMap<>(), this);
+        musicPlaylistsAdapter = new MusicPlaylistsAdapter(requireContext(), new HashMap<>(), musicPlaylistsViewModel);
         expandableListView.setAdapter(musicPlaylistsAdapter);
         expandableListView.setOnItemLongClickListener(onItemLongClickListener);
-        expandableListView.setOnGroupExpandListener(onGroupExpandListener);
         musicPlaylistsViewModel.getMusicDateMerger().observe(getViewLifecycleOwner(), songCatalogueHashMap -> musicPlaylistsAdapter.updateMusicPlaylists(songCatalogueHashMap, data, order));
     }
 
@@ -86,13 +83,6 @@ public class MusicPlaylistsFragment extends Fragment {
         floatingActionButton.setOnClickListener(view1 -> startActivity(new Intent(getContext(), MusicDataActivity.class)));
     }
 
-    public MusicPlaylistsViewModel getMusicPlaylistsViewModel() {
-        return musicPlaylistsViewModel;
-    }
-
-    public ExpandableListView getExpandableListView() {
-        return expandableListView;
-    }
 
     AdapterView.OnItemLongClickListener onItemLongClickListener = new AdapterView.OnItemLongClickListener() {
         @Override
@@ -105,6 +95,7 @@ public class MusicPlaylistsFragment extends Fragment {
     public AdapterView.OnItemSelectedListener onItemSelectedListener = new AdapterView.OnItemSelectedListener() {
         @Override
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+            collapseAllGroups();
             String data = dataSpinner.getSelectedItem().toString();
             String order = orderSpinner.getSelectedItem().toString();
             musicPlaylistsAdapter.sortMusicPlaylists(data, order);
@@ -116,14 +107,8 @@ public class MusicPlaylistsFragment extends Fragment {
         }
     };
 
-    public ExpandableListView.OnGroupExpandListener onGroupExpandListener = new ExpandableListView.OnGroupExpandListener() {
-        int lastExpandedPosition = -1;
-        @Override
-        public void onGroupExpand(int groupPosition) {
-            if(lastExpandedPosition != -1 && groupPosition != lastExpandedPosition){
-                expandableListView.collapseGroup(lastExpandedPosition);
-            }
-            lastExpandedPosition = groupPosition;
-        }
-    };
+    public void collapseAllGroups(){
+        int count = musicPlaylistsAdapter.getGroupCount();
+        for(int i = 0; i < count; i++) expandableListView.collapseGroup(i);
+    }
 }

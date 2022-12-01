@@ -5,6 +5,7 @@ import android.app.Application;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Transformations;
 
 import com.example.myapp.MainApplication;
 import com.example.myapp.databasefiles.sleep.Sleep;
@@ -25,7 +26,9 @@ public class SleepStatisticsViewModel extends AndroidViewModel {
         sleepList = sleepRepository.getAllSleep(userID);
     }
 
-    public int[] processResults(List<Sleep> sleepList){
+    public double[] processResults(List<Sleep> sleepList){
+        if(sleepList.size() == 0) return new double[9];
+
         int[] results = new int[] {0, 0, 1440, 1440, 0, 1440, 0, 0};
         for(Sleep sleep : sleepList){
             int duration = sleep.getWakeTime() - sleep.getSleepTime();
@@ -39,7 +42,8 @@ public class SleepStatisticsViewModel extends AndroidViewModel {
             results[6] = (normalised(sleep.getWakeTime()) > normalised(results[6])) ? sleep.getWakeTime() : results[6]; //latest wake
             results[7] += 1; //sleep days
         }
-        return results;
+        return new double[] { results[0], results[7], results[1], results[2],
+                (double) results[0] / results[7], results[3], results[4], results[5], results[6] };
     }
 
     public int normalised(int time){
@@ -48,8 +52,8 @@ public class SleepStatisticsViewModel extends AndroidViewModel {
         return time;
     }
 
-    public LiveData<List<Sleep>> getSleepList(){
-        return sleepList;
+    public LiveData<double[]> getSleepLiveData(){
+        return Transformations.map(sleepList, this::processResults);
     }
 
     public int getUserID() {

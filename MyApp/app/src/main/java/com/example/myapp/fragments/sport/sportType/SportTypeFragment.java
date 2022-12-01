@@ -23,43 +23,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link SportTypeFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class SportTypeFragment extends Fragment {
-
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-    public SportTypeFragment() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment SportType.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static SportTypeFragment newInstance(String param1, String param2) {
-        SportTypeFragment fragment = new SportTypeFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
 
     SportTypeViewModel sportTypeViewModel;
     FloatingActionButton floatingActionButton;
@@ -70,10 +34,6 @@ public class SportTypeFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
         sportTypeViewModel = new ViewModelProvider(this).get(SportTypeViewModel.class);
     }
 
@@ -98,32 +58,11 @@ public class SportTypeFragment extends Fragment {
 
     public void initialiseListView(){
         listView = requireView().findViewById(R.id.sportListView);
-        listView.setOnItemClickListener(onItemClickListener);
-
         sportTypeAdapter = new SportTypeAdapter(requireContext(), 0, new ArrayList<>(), sportTypeViewModel);
         listView.setAdapter(sportTypeAdapter);
+        listView.setOnItemLongClickListener(onItemLongClickListener);
         sportTypeViewModel.getTypeList().observe(getViewLifecycleOwner(), typeList -> sportTypeAdapter.updateTypeList(typeList, dataSpinner.getSelectedItem().toString(), orderSpinner.getSelectedItem().toString()));
     }
-
-    public AdapterView.OnItemClickListener onItemClickListener = new AdapterView.OnItemClickListener() {
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            Type type = (Type) listView.getItemAtPosition(position);
-            Toast.makeText(getContext(), type.getTypeName() + " clicked", Toast.LENGTH_SHORT).show();
-        }
-    };
-
-    public AdapterView.OnItemSelectedListener onItemSelectedListener = new AdapterView.OnItemSelectedListener() {
-        @Override
-        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-            sportTypeAdapter.sortTypeList(dataSpinner.getSelectedItem().toString(), orderSpinner.getSelectedItem().toString());
-        }
-
-        @Override
-        public void onNothingSelected(AdapterView<?> parent) {
-
-        }
-    };
 
     public void initialiseSpinners(){
         String[] data = new String[] {"Date Added", "Name", "Calorie"};
@@ -143,4 +82,24 @@ public class SportTypeFragment extends Fragment {
         floatingActionButton = requireView().findViewById(R.id.buttonFloating);
         floatingActionButton.setOnClickListener(view1 -> startActivity(new Intent(getContext(), TypeDataActivity.class)));
     }
+
+    public AdapterView.OnItemLongClickListener onItemLongClickListener = new AdapterView.OnItemLongClickListener() {
+        @Override
+        public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+
+            return true;
+        }
+    };
+
+    public AdapterView.OnItemSelectedListener onItemSelectedListener = new AdapterView.OnItemSelectedListener() {
+        @Override
+        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+            sportTypeAdapter.sortTypeList(dataSpinner.getSelectedItem().toString(), orderSpinner.getSelectedItem().toString());
+        }
+
+        @Override
+        public void onNothingSelected(AdapterView<?> parent) {
+
+        }
+    };
 }

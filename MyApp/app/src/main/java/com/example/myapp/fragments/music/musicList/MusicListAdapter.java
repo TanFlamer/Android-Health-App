@@ -12,24 +12,24 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 
 import com.example.myapp.MusicPlayer;
 import com.example.myapp.R;
 import com.example.myapp.databasefiles.song.Song;
 
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
 public class MusicListAdapter extends ArrayAdapter<Song> {
 
+    private final Context context;
     private final List<Song> songList;
     private final HashMap<Song, Boolean> buttonMap;
     private final MusicListViewModel musicListViewModel;
 
     public MusicListAdapter(@NonNull Context context, int resource, List<Song> songList, MusicListViewModel musicListViewModel) {
         super(context, resource, songList);
+        this.context = context;
         this.songList = songList;
         this.musicListViewModel = musicListViewModel;
         buttonMap = new HashMap<>();
@@ -85,7 +85,7 @@ public class MusicListAdapter extends ArrayAdapter<Song> {
 
     public void initialiseDeleteButton(View currentItemView, Song song){
         ImageView clickDelete = currentItemView.findViewById(R.id.clickDelete);
-        clickDelete.setOnClickListener(view -> musicListViewModel.deleteSong(currentItemView.getContext(), song).show());
+        clickDelete.setOnClickListener(view -> musicListViewModel.deleteSong(context, song).show());
     }
 
     public void updateSongList(List<Song> newSongList, String data, String order){
