@@ -14,6 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 
+import com.example.myapp.MusicPlayer;
 import com.example.myapp.R;
 import com.example.myapp.databasefiles.song.Song;
 
@@ -51,25 +52,23 @@ public class MusicListAdapter extends ArrayAdapter<Song> {
 
     public void initialiseAll(View view, int position){
         Song song = songList.get(position);
-        initialiseVisibleLayout(view, position);
-        initialiseHiddenLayout(view, song);
+        initialiseLayouts(view, song);
         initialiseNameView(view, song);
         initialiseLengthView(view, song);
         initialiseDeleteButton(view, song);
     }
 
-    public void initialiseVisibleLayout(View view, int position){
-        LinearLayout layoutVisible = view.findViewById(R.id.layoutVisible);
-        layoutVisible.setOnClickListener(v -> musicListViewModel.getMusicPlayer().setPlaylist(songList, position));
-        layoutVisible.setOnLongClickListener(v -> {
-            Song song = songList.get(position);
-            buttonMap.put(song, Boolean.FALSE.equals(buttonMap.get(song)));
-            notifyDataSetChanged();
-            return true;
-        });
+    public void onClick(MusicPlayer musicPlayer, int position){
+        musicPlayer.setPlaylist(songList, position);
     }
 
-    public void initialiseHiddenLayout(View view, Song song){
+    public void onLongClick(int position){
+        Song song = songList.get(position);
+        buttonMap.put(song, Boolean.FALSE.equals(buttonMap.get(song)));
+        notifyDataSetChanged();
+    }
+
+    public void initialiseLayouts(View view, Song song){
         LinearLayout layoutHidden = view.findViewById(R.id.layoutHidden);
         layoutHidden.setVisibility(Boolean.TRUE.equals(buttonMap.get(song)) ? View.VISIBLE : View.GONE);
     }
@@ -86,13 +85,7 @@ public class MusicListAdapter extends ArrayAdapter<Song> {
 
     public void initialiseDeleteButton(View currentItemView, Song song){
         ImageView clickDelete = currentItemView.findViewById(R.id.clickDelete);
-        clickDelete.setOnClickListener(view -> new AlertDialog.Builder(currentItemView.getContext())
-                .setTitle("Delete Item")
-                .setMessage("Are you sure you want to delete this item?")
-                .setPositiveButton("Yes", (dialog, which) -> musicListViewModel.deleteFile(song))
-                .setNegativeButton("No", null)
-                .create()
-                .show());
+        clickDelete.setOnClickListener(view -> musicListViewModel.deleteSong(currentItemView.getContext(), song).show());
     }
 
     public void updateSongList(List<Song> newSongList, String data, String order){
@@ -102,7 +95,7 @@ public class MusicListAdapter extends ArrayAdapter<Song> {
     }
 
     public void sortSongList(String data, String order){
-        songList.sort(musicListViewModel.getComparator(data, order));
+        musicListViewModel.sortSongList(songList, data, order);
         for(Song song : songList) buttonMap.put(song, false);
         notifyDataSetChanged();
     }

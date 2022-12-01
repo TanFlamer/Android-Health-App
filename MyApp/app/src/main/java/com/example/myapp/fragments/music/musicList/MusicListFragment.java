@@ -18,6 +18,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.example.myapp.MusicPlayer;
 import com.example.myapp.R;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -61,6 +62,8 @@ public class MusicListFragment extends Fragment {
         listView = requireView().findViewById(R.id.musicListView);
         musicListAdapter = new MusicListAdapter(requireContext(), 0, new ArrayList<>(), musicListViewModel);
         listView.setAdapter(musicListAdapter);
+        listView.setOnItemClickListener(onItemClickListener);
+        listView.setOnItemLongClickListener(onItemLongClickListener);
         musicListViewModel.getSongList().observe(getViewLifecycleOwner(), songList -> {
             String data = dataSpinner.getSelectedItem().toString();
             String order = orderSpinner.getSelectedItem().toString();
@@ -87,7 +90,23 @@ public class MusicListFragment extends Fragment {
         floatingActionButton.setOnClickListener(view1 -> musicListViewModel.getMusicFile(mGetContent, requestPermissionLauncher));
     }
 
-    public AdapterView.OnItemSelectedListener onItemSelectedListener = new AdapterView.OnItemSelectedListener() {
+    AdapterView.OnItemClickListener onItemClickListener = new AdapterView.OnItemClickListener() {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            MusicPlayer musicPlayer = musicListViewModel.getMusicPlayer();
+            musicListAdapter.onClick(musicPlayer, position);
+        }
+    };
+
+    AdapterView.OnItemLongClickListener onItemLongClickListener = new AdapterView.OnItemLongClickListener() {
+        @Override
+        public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+            musicListAdapter.onLongClick(position);
+            return true;
+        }
+    };
+
+    AdapterView.OnItemSelectedListener onItemSelectedListener = new AdapterView.OnItemSelectedListener() {
         @Override
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
             String data = dataSpinner.getSelectedItem().toString();

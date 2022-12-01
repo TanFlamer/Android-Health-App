@@ -62,6 +62,7 @@ public class MusicPlaylistsFragment extends Fragment {
         expandableListView = requireView().findViewById(R.id.musicExpandableListView);
         musicPlaylistsAdapter = new MusicPlaylistsAdapter(requireContext(), new HashMap<>(), this);
         expandableListView.setAdapter(musicPlaylistsAdapter);
+        expandableListView.setOnItemLongClickListener(onItemLongClickListener);
         expandableListView.setOnGroupExpandListener(onGroupExpandListener);
         musicPlaylistsViewModel.getMusicDateMerger().observe(getViewLifecycleOwner(), songCatalogueHashMap -> musicPlaylistsAdapter.updateMusicPlaylists(songCatalogueHashMap, data, order));
     }
@@ -93,10 +94,20 @@ public class MusicPlaylistsFragment extends Fragment {
         return expandableListView;
     }
 
+    AdapterView.OnItemLongClickListener onItemLongClickListener = new AdapterView.OnItemLongClickListener() {
+        @Override
+        public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+            musicPlaylistsAdapter.onLongClick(position);
+            return true;
+        }
+    };
+
     public AdapterView.OnItemSelectedListener onItemSelectedListener = new AdapterView.OnItemSelectedListener() {
         @Override
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-            musicPlaylistsAdapter.sortMusicPlaylists(dataSpinner.getSelectedItem().toString(), orderSpinner.getSelectedItem().toString());
+            String data = dataSpinner.getSelectedItem().toString();
+            String order = orderSpinner.getSelectedItem().toString();
+            musicPlaylistsAdapter.sortMusicPlaylists(data, order);
         }
 
         @Override

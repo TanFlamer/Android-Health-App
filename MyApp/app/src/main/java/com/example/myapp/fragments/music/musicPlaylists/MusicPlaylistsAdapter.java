@@ -100,22 +100,28 @@ public class MusicPlaylistsAdapter extends BaseExpandableListAdapter {
     }
 
     public void initialiseVisibleLayout(View view, int position){
-        LinearLayout layoutVisible = view.findViewById(R.id.layoutVisible);
-        layoutVisible.setOnClickListener(v -> {
+        /*layoutVisible.setOnClickListener(v -> {
             if(musicPlaylistsFragment.getExpandableListView().isGroupExpanded(position))
                 musicPlaylistsFragment.getExpandableListView().collapseGroup(position);
             else
                 musicPlaylistsFragment.getExpandableListView().expandGroup(position);
-        });
-        layoutVisible.setOnLongClickListener(v -> {
+        });*/
+        /*layoutVisible.setOnLongClickListener(v -> {
             Playlist playlist = playlistList.get(position);
             buttonMap.put(playlist, Boolean.FALSE.equals(buttonMap.get(playlist)));
             notifyDataSetChanged();
-            return true;
-        });
+            return false;
+        });*/
+    }
+
+    public void onLongClick(int position){
+        Playlist playlist = playlistList.get(position);
+        buttonMap.put(playlist, Boolean.FALSE.equals(buttonMap.get(playlist)));
+        notifyDataSetChanged();
     }
 
     public void initialiseHiddenLayout(View view, Playlist playlist){
+        LinearLayout layoutVisible = view.findViewById(R.id.layoutVisible);
         LinearLayout layoutHidden = view.findViewById(R.id.layoutHidden);
         layoutHidden.setVisibility(Boolean.TRUE.equals(buttonMap.get(playlist)) ? View.VISIBLE : View.GONE);
     }

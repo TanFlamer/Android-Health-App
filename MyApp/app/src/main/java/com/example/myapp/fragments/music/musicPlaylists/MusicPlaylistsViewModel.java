@@ -46,7 +46,7 @@ public class MusicPlaylistsViewModel extends AndroidViewModel {
 
     public MusicPlaylistsViewModel(@NonNull Application application) {
         super(application);
-        mainApplication = (MainApplication) getApplication();
+        mainApplication = getApplication();
         playlistRepository = mainApplication.getPlaylistRepository();
         songRepository = mainApplication.getSongRepository();
         songCatalogueRepository = mainApplication.getSongCatalogueRepository();

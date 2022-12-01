@@ -1,6 +1,7 @@
 package com.example.myapp.fragments.music.musicList;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.app.Application;
 import android.content.Context;
 import android.content.pm.PackageManager;
@@ -96,6 +97,20 @@ public class MusicListViewModel extends AndroidViewModel {
         mediaMetadataRetriever.setDataSource(getApplication(), uri);
         String duration = mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
         return Integer.parseInt(duration) / 1000;
+    }
+
+    public AlertDialog deleteSong(Context context, Song song){
+        return new AlertDialog.Builder(context)
+                .setTitle("Delete Item")
+                .setMessage("Are you sure you want to delete this item?")
+                .setPositiveButton("Yes", (dialog, which) -> deleteFile(song))
+                .setNegativeButton("No", null)
+                .create();
+    }
+
+    public void sortSongList(List<Song> songList, String data, String order){
+        Comparator<Song> songComparator = getComparator(data, order);
+        songList.sort(songComparator);
     }
 
     public Comparator<Song> getComparator(String data, String order){
