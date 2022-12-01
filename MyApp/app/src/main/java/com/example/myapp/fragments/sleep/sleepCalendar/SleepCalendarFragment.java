@@ -15,7 +15,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.example.myapp.R;
 
 import java.time.LocalDate;
-import java.util.Calendar;
+import java.time.ZoneId;
 import java.util.TimeZone;
 
 public class SleepCalendarFragment extends Fragment {
@@ -23,6 +23,7 @@ public class SleepCalendarFragment extends Fragment {
     SleepCalendarViewModel sleepCalendarViewModel;
     Button addButton, infoButton;
     CalendarView calendarView;
+    int year, month, day;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -61,12 +62,18 @@ public class SleepCalendarFragment extends Fragment {
 
     public void initialiseAddButton(){
         addButton = requireView().findViewById(R.id.addButton);
-        addButton.setOnClickListener(view1 -> startActivity(sleepCalendarViewModel.sleepData(calendarView.getDate())));
+        addButton.setOnClickListener(view1 -> {
+            long date = LocalDate.of(year, month, day).atStartOfDay(TimeZone.getDefault().toZoneId()).toInstant().toEpochMilli();
+            startActivity(sleepCalendarViewModel.sleepData(date));
+        });
     }
 
     public void initialiseInfoButton(){
         infoButton = requireView().findViewById(R.id.infoButton);
-        infoButton.setOnClickListener(view1 -> startActivity(sleepCalendarViewModel.sleepData(calendarView.getDate())));
+        infoButton.setOnClickListener(view1 -> {
+            long date = LocalDate.of(year, month, day).atStartOfDay(TimeZone.getDefault().toZoneId()).toInstant().toEpochMilli();
+            startActivity(sleepCalendarViewModel.sleepData(date));
+        });
     }
 
     public void checkDateData(long date){
@@ -76,11 +83,18 @@ public class SleepCalendarFragment extends Fragment {
     }
 
     public long getCurrentDate(){
-        Calendar currentDate = Calendar.getInstance();
-        return currentDate.toInstant().toEpochMilli();
+        LocalDate localDate = LocalDate.now();
+        year = localDate.getYear();
+        month = localDate.getMonthValue();
+        day = localDate.getDayOfMonth();
+        return localDate.atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli();
     }
 
     CalendarView.OnDateChangeListener onDateChangeListener = (view, year, month, day) -> {
-        checkDateData(LocalDate.of(year, month, day).atStartOfDay(TimeZone.getDefault().toZoneId()).toInstant().toEpochMilli());
+        this.year = year;
+        this.month = month + 1;
+        this.day = day;
+        long date = LocalDate.of(year, month + 1, day).atStartOfDay(TimeZone.getDefault().toZoneId()).toInstant().toEpochMilli();
+        checkDateData(date);
     };
 }

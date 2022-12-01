@@ -170,7 +170,6 @@ public class SleepActivity extends AppCompatActivity {
         });
         musicPlayer.getSongProgress().observeForever(integer -> songProgress.setProgress(integer));
     }
-
     @Override
     protected void onResume() {
         super.onResume();

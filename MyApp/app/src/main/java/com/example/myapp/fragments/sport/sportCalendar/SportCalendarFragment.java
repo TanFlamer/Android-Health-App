@@ -1,6 +1,5 @@
 package com.example.myapp.fragments.sport.sportCalendar;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,10 +13,9 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.myapp.R;
-import com.example.myapp.subActivities.sport.SportDataActivity;
 
 import java.time.LocalDate;
-import java.util.Calendar;
+import java.time.ZoneId;
 import java.util.TimeZone;
 
 public class SportCalendarFragment extends Fragment {
@@ -25,13 +23,12 @@ public class SportCalendarFragment extends Fragment {
     SportCalendarViewModel sportCalendarViewModel;
     Button addButton, infoButton;
     CalendarView calendarView;
-    Intent intent;
+    int year, month, day;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         sportCalendarViewModel = new ViewModelProvider(this).get(SportCalendarViewModel.class);
-        intent = new Intent(getContext(), SportDataActivity.class);
     }
 
     @Override
@@ -65,12 +62,18 @@ public class SportCalendarFragment extends Fragment {
 
     public void initialiseAddButton(){
         addButton = requireView().findViewById(R.id.addButton);
-        addButton.setOnClickListener(view1 -> startActivity(sportCalendarViewModel.sportData(calendarView.getDate())));
+        addButton.setOnClickListener(view1 -> {
+            long date = LocalDate.of(year, month, day).atStartOfDay(TimeZone.getDefault().toZoneId()).toInstant().toEpochMilli();
+            startActivity(sportCalendarViewModel.sportData(date));
+        });
     }
 
     public void initialiseInfoButton(){
         infoButton = requireView().findViewById(R.id.infoButton);
-        infoButton.setOnClickListener(view1 -> startActivity(sportCalendarViewModel.sportData(calendarView.getDate())));
+        infoButton.setOnClickListener(view1 -> {
+            long date = LocalDate.of(year, month, day).atStartOfDay(TimeZone.getDefault().toZoneId()).toInstant().toEpochMilli();
+            startActivity(sportCalendarViewModel.sportData(date));
+        });
     }
 
     public void checkDateData(long date){
@@ -80,11 +83,18 @@ public class SportCalendarFragment extends Fragment {
     }
 
     public long getCurrentDate(){
-        Calendar currentDate = Calendar.getInstance();
-        return currentDate.toInstant().toEpochMilli();
+        LocalDate localDate = LocalDate.now();
+        year = localDate.getYear();
+        month = localDate.getMonthValue();
+        day = localDate.getDayOfMonth();
+        return localDate.atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli();
     }
 
     CalendarView.OnDateChangeListener onDateChangeListener = (view, year, month, day) -> {
-        checkDateData(LocalDate.of(year, month, day).atStartOfDay(TimeZone.getDefault().toZoneId()).toInstant().toEpochMilli());
+        this.year = year;
+        this.month = month + 1;
+        this.day = day;
+        long date = LocalDate.of(year, month + 1, day).atStartOfDay(TimeZone.getDefault().toZoneId()).toInstant().toEpochMilli();
+        checkDateData(date);
     };
 }

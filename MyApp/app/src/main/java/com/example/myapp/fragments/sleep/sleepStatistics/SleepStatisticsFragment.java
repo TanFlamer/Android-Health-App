@@ -1,5 +1,6 @@
 package com.example.myapp.fragments.sleep.sleepStatistics;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -58,15 +59,16 @@ public class SleepStatisticsFragment extends Fragment {
         sleepStatisticsViewModel.getSleepLiveData().observe(getViewLifecycleOwner(), this::updateResults);
     }
 
+    @SuppressLint("DefaultLocale")
     public void updateResults(double[] results){
         sleepTotal.setText(String.valueOf(results[0]));
         dayTotal.setText(String.valueOf(results[1]));
         sleepLongest.setText(String.valueOf(results[2]));
         sleepShortest.setText(String.valueOf(results[3]));
         sleepAverage.setText(String.valueOf(results[4]));
-        sleepEarliest.setText(String.valueOf(results[5]));
-        sleepLatest.setText(String.valueOf(results[6]));
-        wakeEarliest.setText(String.valueOf(results[7]));
-        wakeLatest.setText(String.valueOf(results[8]));
+        sleepEarliest.setText(String.format("%02d:%02d", (int) results[5] / 60, (int) results[5] % 60));
+        sleepLatest.setText(String.format("%02d:%02d", (int) results[6] / 60, (int) results[6] % 60));
+        wakeEarliest.setText(String.format("%02d:%02d", (int) results[7] / 60, (int) results[7] % 60));
+        wakeLatest.setText(String.format("%02d:%02d", (int) results[8] / 60, (int) results[8] % 60));
     }
 }

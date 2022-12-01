@@ -15,11 +15,11 @@ import java.util.TimerTask;
 
 public class MusicPlayer {
 
-    private MainApplication mainApplication;
-    private Context context;
+    private final MainApplication mainApplication;
+    private final Context context;
+    private final String filePath;
     private MediaPlayer mediaPlayer;
     private List<Song> playlist;
-    private String filePath;
 
     private MutableLiveData<Song> currentSong;
     private MutableLiveData<Integer> songProgress;
@@ -127,6 +127,10 @@ public class MusicPlayer {
                 if(initialised) songProgress.postValue(mediaPlayer.getCurrentPosition());
             }
         }, 0, 100);
+    }
+
+    public boolean isInitialised() {
+        return initialised;
     }
 
     public MutableLiveData<Song> getSong() {

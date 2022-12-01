@@ -2,7 +2,6 @@ package com.example.myapp.fragments.sleep.sleepList;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,17 +10,14 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.myapp.R;
 import com.example.myapp.databasefiles.sleep.Sleep;
-import com.example.myapp.subActivities.sleep.SleepDataActivity;
 
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
@@ -54,12 +50,19 @@ public class SleepListAdapter extends RecyclerView.Adapter<SleepListAdapter.Slee
     @Override
     public void onBindViewHolder(@NonNull SleepRecyclerItemViewHolder holder, int position) {
         Sleep sleep = sleepList.get(position);
+
+        LocalDate date = Instant.ofEpochMilli(sleep.getDate()).atZone(ZoneId.systemDefault()).toLocalDate();
+        holder.titleView.setText(date.toString());
+
+        int sleepTime = sleep.getSleepTime();
+        holder.sleepView.setText(String.format("%02d:%02d", sleepTime / 60, sleepTime % 60));
+
+        int wakeTime = sleep.getWakeTime();
+        holder.wakeView.setText(String.format("%02d:%02d", wakeTime / 60, wakeTime % 60));
+
         int duration = sleepListViewModel.getDuration(sleep);
-        holder.titleView.setText(String.valueOf(sleep.getDate()));
-        holder.dateView.setText(String.valueOf(sleep.getDate()));
-        holder.sleepView.setText(String.valueOf(sleep.getSleepTime()));
-        holder.wakeView.setText(String.valueOf(sleep.getWakeTime()));
         holder.durationView.setText(String.format("%02d:%02d", duration / 60, duration % 60));
+
         holder.layoutHidden.setVisibility(Boolean.TRUE.equals(visibilityMap.get(sleep)) ? View.VISIBLE : View.GONE);
         holder.buttonHidden.setVisibility(Boolean.TRUE.equals(buttonMap.get(sleep)) ? View.VISIBLE : View.GONE);
     }
@@ -85,7 +88,7 @@ public class SleepListAdapter extends RecyclerView.Adapter<SleepListAdapter.Slee
 
     public class SleepRecyclerItemViewHolder extends RecyclerView.ViewHolder {
 
-        TextView titleView, dateView, sleepView, wakeView, durationView;
+        TextView titleView, sleepView, wakeView, durationView;
         LinearLayout layoutVisible, layoutHidden, buttonHidden;
         ImageView clickEdit, clickDelete;
 
@@ -110,7 +113,6 @@ public class SleepListAdapter extends RecyclerView.Adapter<SleepListAdapter.Slee
 
         private void initialiseTextViews(){
             titleView = itemView.findViewById(R.id.sleepTitle);
-            dateView = itemView.findViewById(R.id.sleepDate);
             sleepView = itemView.findViewById(R.id.sleepTime);
             wakeView = itemView.findViewById(R.id.wakeTime);
             durationView = itemView.findViewById(R.id.sleepDuration);

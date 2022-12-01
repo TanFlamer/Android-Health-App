@@ -15,6 +15,9 @@ import com.example.myapp.R;
 import com.example.myapp.databasefiles.sport.Sport;
 import com.example.myapp.databasefiles.type.Type;
 
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -94,7 +97,8 @@ public class SportListAdapter extends BaseExpandableListAdapter {
 
     public void initialiseGroupDate(View view, Sport sport){
         TextView dateView = view.findViewById(R.id.sportDate);
-        dateView.setText(String.valueOf(sport.getDate()));
+        LocalDate date = Instant.ofEpochMilli(sport.getDate()).atZone(ZoneId.systemDefault()).toLocalDate();
+        dateView.setText(date.toString());
     }
 
     public void onLongClick(int position){

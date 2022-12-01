@@ -75,6 +75,7 @@ public class MusicListViewModel extends AndroidViewModel {
     }
 
     public void deleteFile(Song song){
+        musicPlayer.resetMediaPlayer();
         songRepository.delete(song);
         File musicFile = new File(filePath, song.getSongName());
         boolean fileDeletion = musicFile.delete();

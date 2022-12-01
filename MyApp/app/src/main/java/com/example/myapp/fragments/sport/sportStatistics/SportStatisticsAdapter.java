@@ -48,7 +48,6 @@ public class SportStatisticsAdapter extends RecyclerView.Adapter<SportStatistics
         Type type = typeList.get(position);
         double[] results = sportResults.get(type);
         holder.titleView.setText(type.getTypeName());
-        holder.nameView.setText(type.getTypeName());
         holder.totalTimeView.setText(String.valueOf(results[0]));
         holder.totalCalorieView.setText(String.valueOf(results[1]));
         holder.totalDaysView.setText(String.valueOf(results[2]));
@@ -85,7 +84,7 @@ public class SportStatisticsAdapter extends RecyclerView.Adapter<SportStatistics
 
     public class SportRecyclerItemViewHolder extends RecyclerView.ViewHolder{
 
-        TextView titleView, nameView, totalTimeView, totalCalorieView, averageTimeView, totalDaysView, averageCalorieView, longestTimeView, shortestTimeView, mostCalorieView, leastCalorieView;
+        TextView titleView, totalTimeView, totalCalorieView, averageTimeView, totalDaysView, averageCalorieView, longestTimeView, shortestTimeView, mostCalorieView, leastCalorieView;
         LinearLayout layoutVisible, layoutHidden;
 
         public SportRecyclerItemViewHolder(@NonNull View itemView) {
@@ -105,7 +104,6 @@ public class SportStatisticsAdapter extends RecyclerView.Adapter<SportStatistics
 
         public void initialiseTextViews(){
             titleView = itemView.findViewById(R.id.sportTitle);
-            nameView = itemView.findViewById(R.id.sportName);
             totalTimeView = itemView.findViewById(R.id.sportTotalTime);
             totalCalorieView = itemView.findViewById(R.id.sportTotalCalorie);
             totalDaysView = itemView.findViewById(R.id.sportTotalDays);

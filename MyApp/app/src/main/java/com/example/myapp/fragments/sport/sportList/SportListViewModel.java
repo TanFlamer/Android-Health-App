@@ -18,7 +18,6 @@ import com.example.myapp.databasefiles.sportschedule.SportSchedule;
 import com.example.myapp.databasefiles.sportschedule.SportScheduleRepository;
 import com.example.myapp.databasefiles.type.Type;
 import com.example.myapp.databasefiles.type.TypeRepository;
-import com.example.myapp.subActivities.sleep.SleepDataActivity;
 import com.example.myapp.subActivities.sport.SportDataActivity;
 
 import java.time.LocalDate;

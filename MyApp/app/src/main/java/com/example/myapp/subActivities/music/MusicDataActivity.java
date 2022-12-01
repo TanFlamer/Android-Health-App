@@ -213,11 +213,18 @@ public class MusicDataActivity extends AppCompatActivity {
         return validPlaylistName;
     }
 
+    public boolean differentPlaylistName(EditText editText){
+        String playlistText = editText.getText().toString();
+        boolean emptyPlaylistName = playlistText.isEmpty();
+        return !emptyPlaylistName && !playlistText.equals(namePlaylist);
+    }
+
     public void checkButton(){
+        boolean differentPlaylistName = differentPlaylistName(playlistName);
         boolean validPlaylistName = validatePlaylistName(playlistNameInput, playlistName);
         boolean emptyPlaylist = selectedSongList.isEmpty();
         boolean noChanges = changeLogs.isEmpty();
-        saveButton.setEnabled(!emptyPlaylist && !noChanges && validPlaylistName);
+        saveButton.setEnabled(!emptyPlaylist && (differentPlaylistName || (!noChanges && validPlaylistName)));
     }
 
     private final TextWatcher playlistNameTextWatcher = new TextWatcher() {

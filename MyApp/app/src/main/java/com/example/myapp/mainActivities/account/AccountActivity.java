@@ -373,4 +373,10 @@ public class AccountActivity extends AppCompatActivity {
 
         }
     };
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        accountViewModel.resetMusicPlayer();
+    }
 }

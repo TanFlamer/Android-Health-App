@@ -1,22 +1,26 @@
 package com.example.myapp.mainActivities.login;
 
+import android.annotation.SuppressLint;
+import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.Application;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Pair;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 
 import com.example.myapp.MainApplication;
+import com.example.myapp.Notification;
 import com.example.myapp.databasefiles.user.User;
 import com.example.myapp.databasefiles.user.UserRepository;
 import com.example.myapp.mainActivities.account.AccountActivity;
 
-import java.time.LocalDateTime;
-import java.time.LocalTime;
+import java.util.Calendar;
 
 public class LoginViewModel extends AndroidViewModel {
 
@@ -26,6 +30,7 @@ public class LoginViewModel extends AndroidViewModel {
         super(application);
         MainApplication mainApplication = (MainApplication) getApplication();
         userRepository = mainApplication.getUserRepository();
+        createNotification();
     }
 
     public Intent validateUser(String username, String password){
@@ -47,10 +52,8 @@ public class LoginViewModel extends AndroidViewModel {
     public AlertDialog guestDialog(Context context){
         return new AlertDialog.Builder(context)
                 .setTitle("Guest Login")
-                .setMessage("Are you sure you want to login as guest? Any changes made will not be saved.")
-                .setPositiveButton("Yes", (dialogInterface, i) -> {
-                    context.startActivity(loginGuest());
-                })
+                .setMessage("Are you sure you want to login as guest? A shared account is used.")
+                .setPositiveButton("Yes", (dialogInterface, i) -> context.startActivity(loginGuest()))
                 .setNegativeButton("No", null)
                 .create();
     }
@@ -65,5 +68,26 @@ public class LoginViewModel extends AndroidViewModel {
         Intent intent = new Intent(getApplication(), AccountActivity.class);
         intent.putExtra("userID", user.getUserID());
         return intent;
+    }
+
+    @SuppressLint("UnspecifiedImmutableFlag")
+    public void createNotification(){
+        createNotificationChannel();
+        Intent intent = new Intent(getApplication(), Notification.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplication(), 0, intent, 0);
+        AlarmManager alarmManager = (AlarmManager) getApplication().getSystemService(Context.ALARM_SERVICE);
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.HOUR_OF_DAY, 22);
+        alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+    }
+
+    private void createNotificationChannel(){
+        String name = "Sleep Reminder Channel";
+        String description = "Channel for Sleep Reminder";
+        int importance = NotificationManager.IMPORTANCE_DEFAULT;
+        NotificationChannel channel = new NotificationChannel("sleepReminder", name, importance);
+        channel.setDescription(description);
+        NotificationManager notificationManager = getApplication().getSystemService(NotificationManager.class);
+        notificationManager.createNotificationChannel(channel);
     }
 }

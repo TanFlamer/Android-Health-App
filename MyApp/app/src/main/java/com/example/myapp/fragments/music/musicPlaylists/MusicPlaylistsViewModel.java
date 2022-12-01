@@ -23,8 +23,10 @@ import com.example.myapp.subActivities.music.MusicDataActivity;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 public class MusicPlaylistsViewModel extends AndroidViewModel {
 
@@ -71,17 +73,22 @@ public class MusicPlaylistsViewModel extends AndroidViewModel {
 
         HashMap<Integer, Playlist> playlistHashMap = new HashMap<>();
         for(Playlist playlist : playlists) playlistHashMap.put(playlist.getPlaylistID(), playlist);
+        Set<Integer> playlistSet = new HashSet<>(playlistHashMap.keySet());
 
         HashMap<Integer, Song> songHashMap = new HashMap<>();
         for(Song song : songs) songHashMap.put(song.getSongID(), song);
 
         HashMap<Playlist, List<Song>> songCatalogueHashMap = new HashMap<>();
+        Set<Integer> catalogueSet = new HashSet<>();
         for(SongCatalogue songCatalogue : songCatalogues){
             Playlist playlist = playlistHashMap.get(songCatalogue.getPlaylistID());
             Song song = songHashMap.get(songCatalogue.getSongID());
             songCatalogueHashMap.putIfAbsent(playlist, new ArrayList<>());
             Objects.requireNonNull(songCatalogueHashMap.get(playlist)).add(song);
+            catalogueSet.add(songCatalogue.getPlaylistID());
         }
+        playlistSet.removeAll(catalogueSet);
+        for(Integer playlistID : playlistSet) playlistRepository.delete(playlistHashMap.get(playlistID));
         return songCatalogueHashMap;
     }
 

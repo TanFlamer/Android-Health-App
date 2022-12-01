@@ -169,9 +169,17 @@ public class MusicActivity extends AppCompatActivity {
         musicPlayer.getSongProgress().observeForever(integer -> songProgress.setProgress(integer));
     }
 
+    @SuppressLint("SetTextI18n")
+    public void resetMusic(){
+        songName.setText("No Song Loaded");
+        songProgress.setProgress(0);
+    }
+
+
     @Override
     protected void onResume() {
         super.onResume();
         bottomNavigation.setSelectedItemId(R.id.music);
+        if(!musicPlayer.isInitialised()) resetMusic();
     }
 }

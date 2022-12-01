@@ -21,15 +21,15 @@ import java.util.Set;
 
 public class MusicDataViewModel extends AndroidViewModel {
 
-    private PlaylistRepository playlistRepository;
-    private SongCatalogueRepository songCatalogueRepository;
+    private final PlaylistRepository playlistRepository;
+    private final SongCatalogueRepository songCatalogueRepository;
 
-    private HashMap<Integer, Song> songMap;
-    private List<Song> songList;
-    private List<SongCatalogue> songCatalogueList;
+    private final HashMap<Integer, Song> songMap;
+    private final List<Song> songList;
+    private final List<SongCatalogue> songCatalogueList;
 
     private Playlist playlist;
-    private int userID;
+    private final int userID;
 
     public MusicDataViewModel(@NonNull Application application) {
         super(application);
@@ -62,11 +62,6 @@ public class MusicDataViewModel extends AndroidViewModel {
     public void updatePlaylist(String newPlaylistName){
         playlist.setPlaylistName(newPlaylistName);
         playlistRepository.update(playlist);
-    }
-
-    public void deletePlaylist(){
-        playlistRepository.delete(playlist);
-        playlist = null;
     }
 
     public void insertSongPlaylist(int songID){

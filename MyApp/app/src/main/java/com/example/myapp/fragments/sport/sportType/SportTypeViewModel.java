@@ -15,13 +15,14 @@ import java.util.List;
 
 public class SportTypeViewModel extends AndroidViewModel {
 
+    private final MainApplication mainApplication;
     private final TypeRepository typeRepository;
     private final LiveData<List<Type>> typeList;
     private final int userID;
 
     public SportTypeViewModel(@NonNull Application application) {
         super(application);
-        MainApplication mainApplication = (MainApplication) getApplication();
+        mainApplication = (MainApplication) getApplication();
         typeRepository = mainApplication.getTypeRepository();
         userID = mainApplication.getUserID();
         typeList = typeRepository.getAllTypes(userID);

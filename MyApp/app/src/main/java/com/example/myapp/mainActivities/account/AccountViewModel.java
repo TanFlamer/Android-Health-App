@@ -118,4 +118,8 @@ public class AccountViewModel extends AndroidViewModel {
     public User getUser() {
         return user;
     }
+
+    public void resetMusicPlayer(){
+        mainApplication.getMusicPlayer().resetMediaPlayer();
+    }
 }

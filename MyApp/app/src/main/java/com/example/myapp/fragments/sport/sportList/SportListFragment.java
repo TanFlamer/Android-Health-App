@@ -1,6 +1,5 @@
 package com.example.myapp.fragments.sport.sportList;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,7 +15,6 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.myapp.R;
-import com.example.myapp.subActivities.sport.SportDataActivity;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.HashMap;
@@ -65,7 +63,7 @@ public class SportListFragment extends Fragment {
     }
 
     public void initialiseSpinners(){
-        String[] data = new String[] {"Date Added", "Sport Date", "Name", "Length", "Duration"};
+        String[] data = new String[] {"Date Added", "Sport Date", "Name", "Calories", "Duration"};
         String[] order = new String[] {"Ascending", "Descending"};
 
         dataSpinner = requireView().findViewById(R.id.dataSpinner);
