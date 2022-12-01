@@ -10,6 +10,7 @@ import com.example.myapp.MainApplication;
 import com.example.myapp.databasefiles.type.Type;
 import com.example.myapp.databasefiles.type.TypeRepository;
 
+import java.util.Comparator;
 import java.util.List;
 
 public class SportTypeViewModel extends AndroidViewModel {
@@ -44,5 +45,26 @@ public class SportTypeViewModel extends AndroidViewModel {
 
     public int getUserID() {
         return userID;
+    }
+
+    public void sortTypeList(List<Type> typeList, String data, String order){
+        Comparator<Type> typeComparator = getComparator(data, order);
+        typeList.sort(typeComparator);
+    }
+
+    public Comparator<Type> getComparator(String data, String order){
+        Comparator<Type> typeComparator = Comparator.comparingInt(Type::getTypeID);
+        switch (data) {
+            case "Date Added":
+                typeComparator = Comparator.comparingInt(Type::getTypeID);
+                break;
+            case "Name":
+                typeComparator = Comparator.comparing(Type::getTypeName);
+                break;
+            case "Calorie":
+                typeComparator = Comparator.comparingDouble(Type::getCaloriePerMinute);
+                break;
+        }
+        return order.equals("Ascending") ? typeComparator : typeComparator.reversed();
     }
 }

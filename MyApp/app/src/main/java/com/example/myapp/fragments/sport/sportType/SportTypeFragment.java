@@ -9,7 +9,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Spinner;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -17,7 +16,6 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.myapp.R;
-import com.example.myapp.databasefiles.type.Type;
 import com.example.myapp.subActivities.type.TypeDataActivity;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -86,7 +84,7 @@ public class SportTypeFragment extends Fragment {
     public AdapterView.OnItemLongClickListener onItemLongClickListener = new AdapterView.OnItemLongClickListener() {
         @Override
         public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-
+            sportTypeAdapter.onLongClick(position);
             return true;
         }
     };

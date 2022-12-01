@@ -13,7 +13,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
@@ -98,17 +97,22 @@ public class MusicDataActivity extends AppCompatActivity {
     }
 
     public void initialiseListViews(){
+        initialiseSongUnselectedView();
+        initialiseSongSelectedView();
+    }
+
+    public void initialiseSongUnselectedView(){
         songUnselected = findViewById(R.id.songUnselected);
         songUnselected.setChoiceMode(AbsListView.CHOICE_MODE_MULTIPLE);
         songUnselected.setOnItemClickListener(onItemClickListener);
+        songUnselectedAdapter = new MusicDataListAdapter(this, R.layout.data_music_list_item, unselectedSongList);
+        songUnselected.setAdapter(songUnselectedAdapter);
+    }
 
+    public void initialiseSongSelectedView(){
         songSelected = findViewById(R.id.songSelected);
         songSelected.setChoiceMode(AbsListView.CHOICE_MODE_MULTIPLE);
         songSelected.setOnItemClickListener(onItemClickListener);
-
-        songUnselectedAdapter = new MusicDataListAdapter(this, R.layout.data_music_list_item, unselectedSongList);
-        songUnselected.setAdapter(songUnselectedAdapter);
-
         songSelectedAdapter = new MusicDataListAdapter(this, R.layout.data_music_list_item, selectedSongList);
         songSelected.setAdapter(songSelectedAdapter);
     }
@@ -130,21 +134,27 @@ public class MusicDataActivity extends AppCompatActivity {
     }
 
     public void initialiseImageView(){
+        initialiseAddImageView();
+        initialiseRemoveImageView();
+        resetLists();
+    }
+
+    public void initialiseAddImageView(){
         addImageView = findViewById(R.id.addImageView);
         addImageView.setOnClickListener(v -> {
             moveSongs(unselectedSongList, selectedSongList, ADD_TO_PLAYLIST);
             resetLists();
             checkButton();
         });
+    }
 
+    public void initialiseRemoveImageView(){
         removeImageView = findViewById(R.id.removeImageView);
         removeImageView.setOnClickListener(v -> {
             moveSongs(selectedSongList, unselectedSongList, REMOVE_FROM_PLAYLIST);
             resetLists();
             checkButton();
         });
-
-        resetLists();
     }
 
     public boolean updateImageView(List<Pair<Song, Boolean>> songList, int position, ImageView imageView){
@@ -230,8 +240,6 @@ public class MusicDataActivity extends AppCompatActivity {
     public AdapterView.OnItemClickListener onItemClickListener = (parent, view, position, id) -> {
         boolean selected = parent.equals(songUnselected) ? updateImageView(unselectedSongList, position, addImageView) : updateImageView(selectedSongList, position, removeImageView);
         view.setBackgroundColor(selected ? Color.BLUE : Color.WHITE);
-        Pair<Song, Boolean> songBooleanPair = (Pair<Song, Boolean>) parent.getItemAtPosition(position);
-        Toast.makeText(getApplicationContext(), songBooleanPair.first.getSongName() + " clicked", Toast.LENGTH_SHORT).show();
     };
 
     @Override

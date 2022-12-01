@@ -9,7 +9,6 @@ import android.util.Pair;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -24,9 +23,10 @@ import com.example.myapp.R;
 import com.example.myapp.databasefiles.type.Type;
 import com.example.myapp.subActivities.type.TypeDataAdapter;
 
+import java.time.Instant;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
@@ -55,38 +55,16 @@ public class SportDataActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.data_sport);
         sportDataViewModel = new ViewModelProvider(this).get(SportDataViewModel.class);
-        changeLogs = new HashMap<>();
-        sportDataList = new ArrayList<>();
-        typeList = new ArrayList<>();
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         initialiseAll();
     }
 
-    public void initialiseDate(){
-        Bundle extra = getIntent().getExtras();
-        if(extra == null){
-            Calendar currentDate = Calendar.getInstance();
-            year = currentDate.get(Calendar.YEAR);
-            month = currentDate.get(Calendar.MONTH);
-            day = currentDate.get(Calendar.DAY_OF_MONTH);
-        }
-        else{
-            year = extra.getInt("year");
-            month = extra.getInt("month");
-            day = extra.getInt("day");
-        }
-        populateLists(LocalDate.of(year, month, day).atStartOfDay(TimeZone.getDefault().toZoneId()).toInstant().toEpochMilli());
-    }
-
-    public void populateLists(long date){
-        Pair<List<Pair<Type, Integer>>, List<Type>> listPair = sportDataViewModel.populateList(date);
-
-        sportDataList.clear();
-        typeList.clear();
-
-        for(Pair<Type, Integer> typeDurationPair : listPair.first) sportDataList.add(new Pair<>(typeDurationPair, false));
-        typeList.addAll(listPair.second);
-        resetList();
+    public void initialiseAll(){
+        findAllViewByID();
+        initialiseLists();
+        initialiseListView();
+        initialiseSpinners();
+        initialiseButtons();
     }
 
     public void findAllViewByID(){
@@ -101,17 +79,14 @@ public class SportDataActivity extends AppCompatActivity {
         buttonReturn = findViewById(R.id.buttonReturn);
     }
 
-    public void initialiseAll(){
-        findAllViewByID();
-        initialiseListView();
-        initialiseSpinners();
-        initialiseButtons();
+    public void initialiseLists(){
+        changeLogs = new HashMap<>();
+        sportDataList = new ArrayList<>();
+        typeList = new ArrayList<>();
     }
 
     public void initialiseListView(){
-        dataSportList.setChoiceMode(AbsListView.CHOICE_MODE_MULTIPLE);
         dataSportList.setOnItemClickListener(onItemClickListener);
-
         sportDataListAdapter = new SportDataListAdapter(this, sportDataList);
         dataSportList.setAdapter(sportDataListAdapter);
     }
@@ -137,45 +112,24 @@ public class SportDataActivity extends AppCompatActivity {
         });
     }
 
-    public void checkAddButton(){
-        boolean emptySpinner = typeList.isEmpty();
-        boolean validDuration = minute > 0 || hour > 0;
-        buttonAdd.setEnabled(!emptySpinner && validDuration);
-    }
-
-    @SuppressLint("SetTextI18n")
-    public void addSport(){
-        Type type = (Type) typeSpinner.getSelectedItem();
-        int duration = hour * 60 + minute;
-
-        sportDataList.add(new Pair<>(new Pair<>(type, duration), false));
-        typeList.remove(type);
-
-        buttonDuration.setText("Select Duration");
-        hour = minute = 0;
-
-        Pair<Integer, Integer> integerDurationPair = new Pair<>(type.getTypeID(), duration);
-        changeLogs.put(integerDurationPair, Objects.requireNonNull(changeLogs.getOrDefault(integerDurationPair, 0)) + 1);
-    }
-
-    public void deleteSports(){
-        for(int i = sportDataList.size() - 1; i >= 0; i--){
-            Pair<Pair<Type, Integer>, Boolean> pairBooleanPair = sportDataList.get(i);
-            if(pairBooleanPair.second){
-                Pair<Type, Integer> typeDurationPair = pairBooleanPair.first;
-                sportDataList.remove(i);
-                typeList.add(typeDurationPair.first);
-                Pair<Integer, Integer> integerDurationPair = new Pair<>(typeDurationPair.first.getTypeID(), typeDurationPair.second);
-                changeLogs.put(integerDurationPair, Objects.requireNonNull(changeLogs.getOrDefault(integerDurationPair, 0)) - 1);
-            }
-        }
-    }
-
     public void initialiseDeleteButton(){
         buttonDelete.setOnClickListener(v -> {
             deleteSports();
             resetList();
         });
+    }
+
+    @SuppressLint("DefaultLocale")
+    public void initialiseDateButton(){
+        initialiseDate();
+        buttonDate.setText(String.format("%02d/%02d/%04d", day, month, year));
+        buttonDate.setOnClickListener(view -> new DatePickerDialog(this, (datePicker, i, i1, i2) -> {
+            year = i;
+            month = i1 + 1;
+            day = i2;
+            populateLists(LocalDate.of(year, month, day).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli());
+            buttonDate.setText(String.format("%02d/%02d/%04d", day, month, year));
+        }, year, month - 1, day).show());
     }
 
     @SuppressLint("DefaultLocale")
@@ -215,18 +169,58 @@ public class SportDataActivity extends AppCompatActivity {
         buttonReturn.setOnClickListener(v -> finish());
     }
 
-    @SuppressLint("DefaultLocale")
-    public void initialiseDateButton(){
-        initialiseDate();
-        buttonDate.setText(String.format("%02d/%02d/%04d", day, month + 1, year));
+    public void initialiseDate(){
+        long dateMillis = getIntent().getExtras().getLong("date");
+        LocalDate date = Instant.ofEpochMilli(dateMillis).atZone(ZoneId.systemDefault()).toLocalDate();
+        year = date.getYear();
+        month = date.getMonthValue();
+        day = date.getDayOfMonth();
+        populateLists(dateMillis);
+    }
 
-        buttonDate.setOnClickListener(view -> new DatePickerDialog(this, (datePicker, i, i1, i2) -> {
-            year = i;
-            month = i1;
-            day = i2;
-            populateLists(LocalDate.of(year, month, day).atStartOfDay(TimeZone.getDefault().toZoneId()).toInstant().toEpochMilli());
-            buttonDate.setText(String.format("%02d/%02d/%04d", day, month + 1, year));
-        }, year, month, day).show());
+    public void populateLists(long date){
+        Pair<List<Pair<Type, Integer>>, List<Type>> listPair = sportDataViewModel.populateList(date);
+
+        sportDataList.clear();
+        typeList.clear();
+
+        for(Pair<Type, Integer> typeDurationPair : listPair.first) sportDataList.add(new Pair<>(typeDurationPair, false));
+        typeList.addAll(listPair.second);
+        resetList();
+    }
+
+    public void checkAddButton(){
+        boolean emptySpinner = typeList.isEmpty();
+        boolean validDuration = minute > 0 || hour > 0;
+        buttonAdd.setEnabled(!emptySpinner && validDuration);
+    }
+
+    @SuppressLint("SetTextI18n")
+    public void addSport(){
+        Type type = (Type) typeSpinner.getSelectedItem();
+        int duration = hour * 60 + minute;
+
+        sportDataList.add(new Pair<>(new Pair<>(type, duration), false));
+        typeList.remove(type);
+
+        buttonDuration.setText("Select Duration");
+        hour = minute = 0;
+
+        Pair<Integer, Integer> integerDurationPair = new Pair<>(type.getTypeID(), duration);
+        changeLogs.put(integerDurationPair, Objects.requireNonNull(changeLogs.getOrDefault(integerDurationPair, 0)) + 1);
+    }
+
+    public void deleteSports(){
+        for(int i = sportDataList.size() - 1; i >= 0; i--){
+            Pair<Pair<Type, Integer>, Boolean> pairBooleanPair = sportDataList.get(i);
+            if(pairBooleanPair.second){
+                Pair<Type, Integer> typeDurationPair = pairBooleanPair.first;
+                sportDataList.remove(i);
+                typeList.add(typeDurationPair.first);
+                Pair<Integer, Integer> integerDurationPair = new Pair<>(typeDurationPair.first.getTypeID(), typeDurationPair.second);
+                changeLogs.put(integerDurationPair, Objects.requireNonNull(changeLogs.getOrDefault(integerDurationPair, 0)) - 1);
+            }
+        }
     }
 
     public void resetList(){
@@ -257,8 +251,6 @@ public class SportDataActivity extends AppCompatActivity {
         view.setBackgroundColor(pairBooleanPair.second ? Color.WHITE : Color.BLUE);
         sportDataList.set(position, new Pair<>(pairBooleanPair.first, !pairBooleanPair.second));
         buttonDelete.setEnabled(selected());
-        Pair<Pair<Type, Integer>, Boolean> typeDurationPair = (Pair<Pair<Type, Integer>, Boolean>) parent.getItemAtPosition(position);
-        Toast.makeText(getApplicationContext(), typeDurationPair.first.first.getTypeName() + " clicked", Toast.LENGTH_SHORT).show();
     };
 
     AdapterView.OnItemSelectedListener onItemSelectedListener = new AdapterView.OnItemSelectedListener() {

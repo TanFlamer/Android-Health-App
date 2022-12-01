@@ -31,15 +31,23 @@ public class MusicDataListAdapter extends ArrayAdapter<Pair<Song, Boolean>> {
         if(currentItemView == null)
             currentItemView = LayoutInflater.from(getContext()).inflate(R.layout.data_music_list_item, parent, false);
 
-        Pair<Song, Boolean> songBooleanPair = getItem(position);
-        Song song = songBooleanPair.first;
-        TextView nameView = currentItemView.findViewById(R.id.musicName);
-        nameView.setText(song.getSongName());
-
-        Boolean selected = songBooleanPair.second;
-        currentItemView.setBackgroundColor(selected ? Color.BLUE : Color.WHITE);
-
+        initialiseAll(currentItemView, position);
         return currentItemView;
+    }
+
+    public void initialiseAll(View view, int position){
+        Pair<Song, Boolean> pair = getItem(position);
+        initialiseTextView(view, pair.first);
+        initialiseSelected(view, pair.second);
+    }
+
+    public void initialiseTextView(View view, Song song){
+        TextView nameView = view.findViewById(R.id.musicName);
+        nameView.setText(song.getSongName());
+    }
+
+    public void initialiseSelected(View view, boolean selected){
+        view.setBackgroundColor(selected ? Color.BLUE : Color.WHITE);
     }
 
 }

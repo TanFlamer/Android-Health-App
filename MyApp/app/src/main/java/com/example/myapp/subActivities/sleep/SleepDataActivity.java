@@ -18,9 +18,7 @@ import com.example.myapp.databasefiles.sleep.Sleep;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.util.Calendar;
 import java.util.Objects;
-import java.util.TimeZone;
 
 public class SleepDataActivity extends AppCompatActivity{
 
@@ -46,25 +44,6 @@ public class SleepDataActivity extends AppCompatActivity{
         initialiseAll();
     }
 
-    @SuppressLint({"SetTextI18n", "DefaultLocale"})
-    public void fillDateData(long date){
-        this.date = date;
-        initialiseTime(sleepDataViewModel.loadSleepData(date));
-        sleepTime.setText(String.format("%02d:%02d", sleepHour, sleepMinute));
-        wakeTime.setText(String.format("%02d:%02d", wakeHour, wakeMinute));
-        calculateSleepDuration();
-        buttonSave.setEnabled(false);
-    }
-
-    public void initialiseTime(Sleep sleep){
-        int sleepTime = sleep == null ? 0 : sleep.getSleepTime();
-        sleepHour = sleepTime / 60;
-        sleepMinute = sleepTime % 60;
-        int wakeTime = sleep == null ? 0 : sleep.getWakeTime();
-        wakeHour = wakeTime / 60;
-        wakeMinute = wakeTime % 60;
-    }
-
     public void initialiseAll(){
         findAllViewByID();
         initialiseButtons();
@@ -86,17 +65,26 @@ public class SleepDataActivity extends AppCompatActivity{
         initialiseBottomButtons();
     }
 
+    public void initialiseDate(){
+        long dateMillis = getIntent().getExtras().getLong("date");
+        LocalDate date = Instant.ofEpochMilli(dateMillis).atZone(ZoneId.systemDefault()).toLocalDate();
+        year = date.getYear();
+        month = date.getMonthValue();
+        day = date.getDayOfMonth();
+        fillDateData(dateMillis);
+    }
+
     @SuppressLint("DefaultLocale")
     public void initialiseDateButton(){
         initialiseDate();
-        buttonDate.setText(String.format("%02d/%02d/%04d", day, month + 1, year));
+        buttonDate.setText(String.format("%02d/%02d/%04d", day, month, year));
         buttonDate.setOnClickListener(view -> new DatePickerDialog(this, (datePicker, i, i1, i2) -> {
             year = i;
-            month = i1;
+            month = i1 + 1;
             day = i2;
-            fillDateData(LocalDate.of(year, month, day).atStartOfDay(TimeZone.getDefault().toZoneId()).toInstant().toEpochMilli());
-            buttonDate.setText(String.format("%02d/%02d/%04d", day, month + 1, year));
-        }, year, month, day).show());
+            fillDateData(LocalDate.of(year, month, day).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli());
+            buttonDate.setText(String.format("%02d/%02d/%04d", day, month, year));
+        }, year, month - 1, day).show());
     }
 
     @SuppressLint("DefaultLocale")
@@ -119,16 +107,6 @@ public class SleepDataActivity extends AppCompatActivity{
         }, wakeHour, wakeMinute, false).show());
     }
 
-    @SuppressLint("DefaultLocale")
-    public boolean calculateSleepDuration(){
-        int duration = (wakeHour - sleepHour - 1) * 60 + (60 - sleepMinute + wakeMinute);
-        duration += (duration >= 0) ? 0 : 1440;
-        durationView.setText(duration > 0 ? String.format("%02d:%02d", duration / 60, duration % 60) : "-");
-        timeSleep = sleepHour * 60 + sleepMinute;
-        timeWake = wakeHour * 60 + wakeMinute;
-        return duration > 0;
-    }
-
     public void initialiseBottomButtons(){
         buttonSave.setOnClickListener(v -> {
             if(sleepDataViewModel.getSleep() == null)
@@ -140,23 +118,33 @@ public class SleepDataActivity extends AppCompatActivity{
         buttonReturn.setOnClickListener(v -> finish());
     }
 
-    public void initialiseDate(){
-        Bundle extra = getIntent().getExtras();
-        if(extra == null){
-            Calendar currentDate = Calendar.getInstance();
-            year = currentDate.get(Calendar.YEAR);
-            month = currentDate.get(Calendar.MONTH);
-            day = currentDate.get(Calendar.DAY_OF_MONTH);
-            fillDateData(currentDate.toInstant().toEpochMilli());
-        }
-        else{
-            long dateMillis = getIntent().getExtras().getLong("date");
-            LocalDate date = Instant.ofEpochMilli(dateMillis).atZone(ZoneId.systemDefault()).toLocalDate();
-            year = date.getYear();
-            month = date.getMonthValue() - 1;
-            day = date.getDayOfMonth();
-            fillDateData(dateMillis);
-        }
+    @SuppressLint({"SetTextI18n", "DefaultLocale"})
+    public void fillDateData(long date){
+        this.date = date;
+        initialiseTime(sleepDataViewModel.loadSleepData(date));
+        sleepTime.setText(String.format("%02d:%02d", sleepHour, sleepMinute));
+        wakeTime.setText(String.format("%02d:%02d", wakeHour, wakeMinute));
+        calculateSleepDuration();
+        buttonSave.setEnabled(false);
+    }
+
+    public void initialiseTime(Sleep sleep){
+        int sleepTime = sleep == null ? 0 : sleep.getSleepTime();
+        sleepHour = sleepTime / 60;
+        sleepMinute = sleepTime % 60;
+        int wakeTime = sleep == null ? 0 : sleep.getWakeTime();
+        wakeHour = wakeTime / 60;
+        wakeMinute = wakeTime % 60;
+    }
+
+    @SuppressLint("DefaultLocale")
+    public boolean calculateSleepDuration(){
+        int duration = (wakeHour - sleepHour - 1) * 60 + (60 - sleepMinute + wakeMinute);
+        duration += (duration >= 0) ? 0 : 1440;
+        durationView.setText(duration > 0 ? String.format("%02d:%02d", duration / 60, duration % 60) : "-");
+        timeSleep = sleepHour * 60 + sleepMinute;
+        timeWake = wakeHour * 60 + wakeMinute;
+        return duration > 0;
     }
 
     @Override

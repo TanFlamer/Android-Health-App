@@ -83,7 +83,6 @@ public class MusicPlaylistsFragment extends Fragment {
         floatingActionButton.setOnClickListener(view1 -> startActivity(new Intent(getContext(), MusicDataActivity.class)));
     }
 
-
     AdapterView.OnItemLongClickListener onItemLongClickListener = new AdapterView.OnItemLongClickListener() {
         @Override
         public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {

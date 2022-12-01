@@ -45,7 +45,6 @@ public class MainApplication extends Application {
     private TypeRepository typeRepository;
     private SportScheduleRepository sportScheduleRepository;
 
-    private List<Sleep> sleepList;
     private List<Song> songList;
     private List<Playlist> playlistList;
     private List<SongCatalogue> songCatalogueList;
@@ -77,7 +76,7 @@ public class MainApplication extends Application {
     public void createFolder(Context context, String folderName){
         File newFolder = new File(context.getFilesDir(), folderName);
         boolean folderCreation = newFolder.mkdirs();
-        Toast.makeText(context, "Folder creation " + (folderCreation ? "successful" : "failed"), Toast.LENGTH_SHORT).show();
+        Toast.makeText(context, "App setup " + (folderCreation ? "successful" : "failed"), Toast.LENGTH_SHORT).show();
     }
 
     public void updateSaveLogs(Pair<String, LocalDateTime> newSaveLog){
@@ -91,11 +90,8 @@ public class MainApplication extends Application {
     }
 
     public SleepRepository getSleepRepository(){
-        if(sleepRepository == null) {
-            sleepList = new ArrayList<>();
+        if(sleepRepository == null)
             sleepRepository = new SleepRepository(this);
-            sleepRepository.getAllSleep(userID).observeForever(newSleepList -> sleepList = newSleepList);
-        }
         return sleepRepository;
     }
 

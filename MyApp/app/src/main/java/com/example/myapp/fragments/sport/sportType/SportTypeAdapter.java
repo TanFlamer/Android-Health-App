@@ -18,7 +18,6 @@ import com.example.myapp.R;
 import com.example.myapp.databasefiles.type.Type;
 import com.example.myapp.subActivities.type.TypeDataActivity;
 
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
@@ -46,77 +45,58 @@ public class SportTypeAdapter extends ArrayAdapter<Type> {
         if(currentItemView == null)
             currentItemView = LayoutInflater.from(getContext()).inflate(R.layout.sport_list_item, parent, false);
 
-        Type type = typeList.get(position);
-        initialiseLayouts(currentItemView, position);
-        initialiseData(currentItemView, type);
-        initialiseEditButton(currentItemView, type);
-        initialiseDeleteButton(currentItemView, type);
+        initialiseAll(currentItemView, position);
         return currentItemView;
     }
 
-    public void initialiseAll(){
-
-    }
-
-    public void initialiseLayouts(){
-
-    }
-
-    public void initialiseNameView(){
-
-    }
-
-    public void initialiseCalorieView(){
-
-    }
-
-    public void initialiseEditButton(){
-
-    }
-
-    public void initialiseDeleteButton(){
-        
-    }
-
-    public void initialiseLayouts(View currentItemView, int position){
+    public void initialiseAll(View view, int position){
         Type type = typeList.get(position);
-        LinearLayout layoutVisible = currentItemView.findViewById(R.id.layoutVisible);
-        LinearLayout layoutHidden = currentItemView.findViewById(R.id.layoutHidden);
-        layoutVisible.setOnLongClickListener(v -> {
-            buttonMap.put(type, Boolean.FALSE.equals(buttonMap.get(type)));
-            notifyDataSetChanged();
-            return true;
-        });
+        initialiseHiddenLayout(view, type);
+        initialiseNameView(view, type);
+        initialiseCalorieView(view, type);
+        initialiseEditButton(view, type);
+        initialiseDeleteButton(view, type);
+    }
+
+    public void initialiseHiddenLayout(View view, Type type){
+        LinearLayout layoutHidden = view.findViewById(R.id.layoutHidden);
         layoutHidden.setVisibility(Boolean.TRUE.equals(buttonMap.get(type)) ? View.VISIBLE : View.GONE);
     }
 
-    public void initialiseData(View currentItemView, Type type){
-        TextView typeView = currentItemView.findViewById(R.id.sportType);
-        TextView energyView = currentItemView.findViewById(R.id.sportEnergy);
-
+    public void initialiseNameView(View view, Type type){
+        TextView typeView = view.findViewById(R.id.sportType);
         typeView.setText(type.getTypeName());
+    }
+
+    public void initialiseCalorieView(View view, Type type){
+        TextView energyView = view.findViewById(R.id.sportEnergy);
         energyView.setText(String.valueOf(type.getCaloriePerMinute()));
     }
 
-    public void initialiseEditButton(View currentItemView, Type type){
-        ImageView clickEdit = currentItemView.findViewById(R.id.clickEdit);
+    public void initialiseEditButton(View view, Type type){
+        ImageView clickEdit = view.findViewById(R.id.clickEdit);
         clickEdit.setOnClickListener(v -> {
             Intent intent = new Intent(context, TypeDataActivity.class);
             intent.putExtra("typeName", type.getTypeName());
             context.startActivity(intent);
         });
-        ImageView clickDelete = currentItemView.findViewById(R.id.clickDelete);
     }
 
-    public void initialiseDeleteButton(View currentItemView, Type type){
-        ImageView clickDelete = currentItemView.findViewById(R.id.clickDelete);
-        clickDelete.setOnClickListener(view -> new AlertDialog.Builder(getContext())
+    public void initialiseDeleteButton(View view, Type type){
+        ImageView clickDelete = view.findViewById(R.id.clickDelete);
+        clickDelete.setOnClickListener(view1 -> new AlertDialog.Builder(getContext())
                 .setTitle("Delete Item")
                 .setMessage("Are you sure you want to delete this item?")
                 .setPositiveButton("Yes", (dialog, which) -> sportTypeViewModel.delete(type))
                 .setNegativeButton("No", null)
                 .create()
                 .show());
+    }
+
+    public void onLongClick(int position){
+        Type type = typeList.get(position);
+        buttonMap.put(type, Boolean.FALSE.equals(buttonMap.get(type)));
+        notifyDataSetChanged();
     }
 
     public void updateTypeList(List<Type> newTypeList, String data, String order){
@@ -126,24 +106,8 @@ public class SportTypeAdapter extends ArrayAdapter<Type> {
     }
 
     public void sortTypeList(String data, String order){
-        typeList.sort(getComparator(data, order));
+        sportTypeViewModel.sortTypeList(typeList, data, order);
         for(Type type : typeList) buttonMap.put(type, false);
         notifyDataSetChanged();
-    }
-
-    public Comparator<Type> getComparator(String data, String order){
-        Comparator<Type> typeComparator = Comparator.comparingInt(Type::getTypeID);
-        switch (data) {
-            case "Date Added":
-                typeComparator = Comparator.comparingInt(Type::getTypeID);
-                break;
-            case "Name":
-                typeComparator = Comparator.comparing(Type::getTypeName);
-                break;
-            case "Calorie":
-                typeComparator = Comparator.comparingDouble(Type::getCaloriePerMinute);
-                break;
-        }
-        return order.equals("Ascending") ? typeComparator : typeComparator.reversed();
     }
 }

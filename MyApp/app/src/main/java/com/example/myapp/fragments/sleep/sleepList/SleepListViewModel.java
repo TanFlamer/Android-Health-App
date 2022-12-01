@@ -14,6 +14,8 @@ import com.example.myapp.databasefiles.sleep.Sleep;
 import com.example.myapp.databasefiles.sleep.SleepRepository;
 import com.example.myapp.subActivities.sleep.SleepDataActivity;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Calendar;
 import java.util.Comparator;
 import java.util.List;
@@ -32,8 +34,7 @@ public class SleepListViewModel extends AndroidViewModel {
 
     public Intent sleepAdd(){
         Intent intent = new Intent(getApplication(), SleepDataActivity.class);
-        Calendar calendar = Calendar.getInstance();
-        long date = calendar.toInstant().toEpochMilli();
+        long date = LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli();
         intent.putExtra("date", date);
         return intent;
     }

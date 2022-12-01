@@ -44,12 +44,12 @@ public class MusicStatisticsFragment extends Fragment {
     }
 
     public void initialiseAll(){
-        initialiseSongs();
-        initialisePlaylists();
+        initialiseSongViews();
+        initialisePlaylistViews();
         initialiseLiveData();
     }
 
-    public void initialiseSongs(){
+    public void initialiseSongViews(){
         songTotal = requireView().findViewById(R.id.songTotal);
         songNumber = requireView().findViewById(R.id.songNumber);
         songAverage = requireView().findViewById(R.id.songAverage);
@@ -57,7 +57,7 @@ public class MusicStatisticsFragment extends Fragment {
         songShortest = requireView().findViewById(R.id.songShortest);
     }
 
-    public void initialisePlaylists(){
+    public void initialisePlaylistViews(){
         playlistNumber = requireView().findViewById(R.id.playlistNumber);
         playlistLength = requireView().findViewById(R.id.playlistLength);
         playlistCount = requireView().findViewById(R.id.playlistCount);

@@ -2,7 +2,6 @@ package com.example.myapp.fragments.sport.sportList;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.Intent;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,38 +11,28 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import androidx.appcompat.app.AlertDialog;
-
 import com.example.myapp.R;
 import com.example.myapp.databasefiles.sport.Sport;
 import com.example.myapp.databasefiles.type.Type;
-import com.example.myapp.subActivities.sport.SportDataActivity;
 
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
 public class SportListAdapter extends BaseExpandableListAdapter {
 
-    private Context context;
-    private List<Sport> sportList;
-    private HashMap<Sport, List<Pair<Type, Integer>>> typeSports;
-    private HashMap<Sport, Boolean> buttonMap;
-    private SportListFragment sportListsFragment;
+    private final Context context;
+    private final List<Sport> sportList;
+    private final HashMap<Sport, List<Pair<Type, Integer>>> typeSports;
+    private final HashMap<Sport, Boolean> buttonMap;
+    private final SportListViewModel sportListViewModel;
 
-    private LinearLayout layoutVisible, layoutHidden;
-    private ImageView clickEdit, clickDelete;
-
-    public SportListAdapter(Context context, HashMap<Sport, List<Pair<Type, Integer>>> typeSports, SportListFragment sportListsFragment){
+    public SportListAdapter(Context context, HashMap<Sport, List<Pair<Type, Integer>>> typeSports, SportListViewModel sportListViewModel){
         this.context = context;
         this.sportList = new ArrayList<>(typeSports.keySet());
         this.typeSports = typeSports;
-        this.sportListsFragment = sportListsFragment;
+        this.sportListViewModel = sportListViewModel;
         buttonMap = new HashMap<>();
         for(Sport sport : sportList) buttonMap.put(sport, false);
     }
@@ -86,75 +75,83 @@ public class SportListAdapter extends BaseExpandableListAdapter {
     @SuppressLint("InflateParams")
     @Override
     public View getGroupView(int i, boolean b, View view, ViewGroup viewGroup) {
-        Sport sport = sportList.get(i);
+        View currentItemView = view;
 
-        if(view == null)
-            view = LayoutInflater.from(context).inflate(R.layout.sport_expandable_list_item, null);
+        if(currentItemView == null)
+            currentItemView = LayoutInflater.from(context).inflate(R.layout.sport_expandable_list_item, null);
 
-        TextView dateView = view.findViewById(R.id.sportDate);
-        dateView.setText(String.valueOf(sport.getDate()));
-        initialiseLayouts(view, sport, i);
-        initialiseButtons(view, sport);
-
-        return view;
+        initialiseGroupView(currentItemView, i);
+        return currentItemView;
     }
 
-    public void initialiseLayouts(View view, Sport sport, int position){
-        layoutVisible = view.findViewById(R.id.layoutVisible);
-        layoutHidden = view.findViewById(R.id.layoutHidden);
-        layoutVisible.setOnLongClickListener(v -> {
-            buttonMap.put(sport, Boolean.FALSE.equals(buttonMap.get(sport)));
-            notifyDataSetChanged();
-            return true;
-        });
-        layoutVisible.setOnClickListener(v -> {
-            if(sportListsFragment.getExpandableListView().isGroupExpanded(position))
-                sportListsFragment.getExpandableListView().collapseGroup(position);
-            else
-                sportListsFragment.getExpandableListView().expandGroup(position);
-        });
+    public void initialiseGroupView(View view, int position){
+        Sport sport = sportList.get(position);
+        initialiseGroupDate(view, sport);
+        initialiseHiddenLayout(view, sport);
+        initialiseEditButton(view, sport);
+        initialiseDeleteButton(view, sport);
+    }
+
+    public void initialiseGroupDate(View view, Sport sport){
+        TextView dateView = view.findViewById(R.id.sportDate);
+        dateView.setText(String.valueOf(sport.getDate()));
+    }
+
+    public void onLongClick(int position){
+        Sport sport = sportList.get(position);
+        buttonMap.put(sport, Boolean.FALSE.equals(buttonMap.get(sport)));
+        notifyDataSetChanged();
+    }
+
+    public void initialiseHiddenLayout(View view, Sport sport){
+        LinearLayout layoutHidden = view.findViewById(R.id.layoutHidden);
         layoutHidden.setVisibility(Boolean.TRUE.equals(buttonMap.get(sport)) ? View.VISIBLE : View.GONE);
     }
 
-    public void initialiseButtons(View view, Sport sport){
-        LocalDate date = Instant.ofEpochMilli(sport.getDate()).atZone(ZoneId.systemDefault()).toLocalDate();
-        clickEdit = view.findViewById(R.id.clickEdit);
-        clickDelete = view.findViewById(R.id.clickDelete);
-        clickEdit.setOnClickListener(v -> {
-            Intent intent = new Intent(context, SportDataActivity.class);
-            intent.putExtra("year", date.getYear());
-            intent.putExtra("month", date.getMonthValue());
-            intent.putExtra("day", date.getDayOfMonth());
-            context.startActivity(intent);
-        });
-        clickDelete.setOnClickListener(view1 -> new AlertDialog.Builder(context)
-                .setTitle("Delete Item")
-                .setMessage("Are you sure you want to delete this item?")
-                .setPositiveButton("Yes", (dialog, which) -> sportListsFragment.getSportListViewModel().deleteSport(sport))
-                .setNegativeButton("No", null)
-                .create()
-                .show());
+    public void initialiseEditButton(View view, Sport sport){
+        ImageView clickEdit = view.findViewById(R.id.clickEdit);
+        clickEdit.setOnClickListener(v -> context.startActivity(sportListViewModel.sportEdit(sport.getDate())));
+    }
+
+    public void initialiseDeleteButton(View view, Sport sport){
+        ImageView clickDelete = view.findViewById(R.id.clickDelete);
+        clickDelete.setOnClickListener(view1 -> sportListViewModel.deleteSportList(context, sport).show());
     }
 
     @SuppressLint("InflateParams")
     @Override
     public View getChildView(int i, int i1, boolean b, View view, ViewGroup viewGroup) {
-        Pair<Type, Integer> typeDurationPair = Objects.requireNonNull(typeSports.get(sportList.get(i))).get(i1);
-        Type type = typeDurationPair.first;
-        int duration = typeDurationPair.second;
+        View currentItemView = view;
 
-        if(view == null)
-            view = LayoutInflater.from(context).inflate(R.layout.sport_expandable_list_item_data, null);
+        if(currentItemView == null)
+            currentItemView = LayoutInflater.from(context).inflate(R.layout.sport_expandable_list_item_data, null);
 
+        initialiseChildView(currentItemView, i, i1);
+        return currentItemView;
+    }
+
+    public void initialiseChildView(View view, int parent, int child){
+        Pair<Type, Integer> pair = Objects.requireNonNull(typeSports.get(sportList.get(parent))).get(child);
+        Type type = pair.first;
+        int duration = pair.second;
+        initialiseChildName(view, type);
+        initialiseChildDuration(view, duration);
+        initialiseCalorieView(view, type, duration);
+    }
+
+    public void initialiseChildName(View view, Type type){
         TextView nameView = view.findViewById(R.id.sportName);
-        TextView durationView = view.findViewById(R.id.sportDuration);
-        TextView calorieView = view.findViewById(R.id.sportCalorie);
-
         nameView.setText(type.getTypeName());
-        durationView.setText(String.valueOf(duration));
-        calorieView.setText(String.valueOf(type.getCaloriePerMinute() * duration));
+    }
 
-        return view;
+    public void initialiseChildDuration(View view, int duration){
+        TextView durationView = view.findViewById(R.id.sportDuration);
+        durationView.setText(String.valueOf(duration));
+    }
+
+    public void initialiseCalorieView(View view, Type type, int duration){
+        TextView calorieView = view.findViewById(R.id.sportCalorie);
+        calorieView.setText(String.valueOf(type.getCaloriePerMinute() * duration));
     }
 
     @Override
@@ -171,48 +168,8 @@ public class SportListAdapter extends BaseExpandableListAdapter {
     }
 
     public void sortSportList(String data, String order){
-        sportList.sort(getSportComparator(data, order));
-        for(List<Pair<Type, Integer>> pairList : typeSports.values()) pairList.sort(getTypeComparator(data, order));
+        sportListViewModel.sortSportLists(sportList, typeSports, data, order);
         for(Sport sport : sportList) buttonMap.put(sport, false);
         notifyDataSetChanged();
-    }
-
-    public Comparator<Sport> getSportComparator(String data, String order){
-        Comparator<Sport> sportComparator = Comparator.comparingLong(Sport::getDate);
-        switch (data) {
-            case "Date Added":
-                sportComparator = Comparator.comparingInt(Sport::getSportID);
-                break;
-            case "Sport Date":
-                sportComparator = Comparator.comparingLong(Sport::getDate);
-                break;
-            case "Calories":
-                sportComparator = Comparator.comparingDouble(this::getCalories);
-                break;
-        }
-        return order.equals("Ascending") ? sportComparator : sportComparator.reversed();
-    }
-
-    public Comparator<Pair<Type, Integer>> getTypeComparator(String data, String order){
-        Comparator<Pair<Type, Integer>> typeComparator = Comparator.comparing(a -> a.first.getTypeName());
-        switch (data) {
-            case "Date Added":
-                typeComparator = Comparator.comparingInt(a -> a.first.getTypeID());
-                break;
-            case "Name":
-                typeComparator = Comparator.comparing(a -> a.first.getTypeName());
-                break;
-            case "Calories":
-                typeComparator = Comparator.comparingDouble(a -> a.first.getCaloriePerMinute() * a.second);
-                break;
-        }
-        return order.equals("Ascending") ? typeComparator : typeComparator.reversed();
-    }
-
-    public double getCalories(Sport sport){
-        double calories = 0;
-        for(Pair<Type, Integer> pair : Objects.requireNonNull(typeSports.get(sport)))
-            calories += pair.first.getCaloriePerMinute() * pair.second;
-        return calories;
     }
 }
