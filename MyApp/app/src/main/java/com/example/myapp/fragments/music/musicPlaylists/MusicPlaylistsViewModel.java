@@ -100,6 +100,10 @@ public class MusicPlaylistsViewModel extends AndroidViewModel {
         return musicDateMerger;
     }
 
+    public void updateSaveLogs(String saveLogs){
+        mainApplication.updateSaveLogs(saveLogs);
+    }
+
     public Intent editPlaylist(String playlistName){
         Intent intent = new Intent(getApplication(), MusicDataActivity.class);
         intent.putExtra("playlistName", playlistName);
@@ -110,7 +114,10 @@ public class MusicPlaylistsViewModel extends AndroidViewModel {
         return new AlertDialog.Builder(context)
                 .setTitle("Delete Item")
                 .setMessage("Are you sure you want to delete this item?")
-                .setPositiveButton("Yes", (dialog, which) -> playlistRepository.delete(playlist))
+                .setPositiveButton("Yes", (dialog, which) -> {
+                    playlistRepository.delete(playlist);
+                    updateSaveLogs("Playlist " + playlist.getPlaylistName() + " deleted");
+                })
                 .setNegativeButton("No", null)
                 .create();
     }

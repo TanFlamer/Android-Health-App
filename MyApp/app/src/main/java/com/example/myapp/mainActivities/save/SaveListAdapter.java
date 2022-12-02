@@ -14,7 +14,6 @@ import androidx.annotation.Nullable;
 import com.example.myapp.R;
 
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
@@ -32,8 +31,9 @@ public class SaveListAdapter extends ArrayAdapter<Pair<String, LocalDateTime>> {
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         View currentItemView = convertView;
 
-        if(currentItemView == null)
+        if(currentItemView == null) {
             currentItemView = LayoutInflater.from(getContext()).inflate(R.layout.save_list_item, parent, false);
+        }
 
         initialiseAll(currentItemView, getItem(position));
         return currentItemView;
@@ -55,8 +55,9 @@ public class SaveListAdapter extends ArrayAdapter<Pair<String, LocalDateTime>> {
         timeView.setText(time);
     }
 
-    public void updateSaveLogs(Pair<String, LocalDateTime> newSaveLogs){
-        saveLogs.add(newSaveLogs);
+    public void updateSaveLogs(List<Pair<String, LocalDateTime>> newSaveLogs){
+        saveLogs.clear();
+        saveLogs.addAll(newSaveLogs);
         notifyDataSetChanged();
     }
 }

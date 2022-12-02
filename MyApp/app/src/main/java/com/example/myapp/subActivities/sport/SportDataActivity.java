@@ -257,7 +257,6 @@ public class SportDataActivity extends AppCompatActivity {
         @Override
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
             checkAddButton();
-            Toast.makeText(getApplicationContext(), ((Type)parent.getItemAtPosition(position)).getTypeName() + " clicked", Toast.LENGTH_SHORT).show();
         }
 
         @Override

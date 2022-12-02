@@ -79,6 +79,7 @@
         android:id="@+id/layoutSleep"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:tabMode="scrollable"
         android:layout_below="@id/mp3Player">
 
         <com.google.android.material.tabs.TabItem

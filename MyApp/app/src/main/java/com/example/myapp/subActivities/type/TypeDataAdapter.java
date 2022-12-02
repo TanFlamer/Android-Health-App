@@ -15,7 +15,7 @@ import java.util.List;
 
 public class TypeDataAdapter extends ArrayAdapter<Type> {
 
-    private List<Type> typeList;
+    private final List<Type> typeList;
 
     public TypeDataAdapter(@NonNull Context context, int resource, List<Type> typeList) {
         super(context, resource, typeList);

@@ -14,20 +14,21 @@ import com.example.myapp.databasefiles.sleep.Sleep;
 import com.example.myapp.databasefiles.sleep.SleepRepository;
 import com.example.myapp.subActivities.sleep.SleepDataActivity;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.util.Calendar;
 import java.util.Comparator;
 import java.util.List;
 
 public class SleepListViewModel extends AndroidViewModel {
 
+    private final MainApplication mainApplication;
     private final SleepRepository sleepRepository;
     private final LiveData<List<Sleep>> sleepList;
 
     public SleepListViewModel(@NonNull Application application) {
         super(application);
-        MainApplication mainApplication = (MainApplication) getApplication();
+        mainApplication = (MainApplication) getApplication();
         sleepRepository = mainApplication.getSleepRepository();
         sleepList = sleepRepository.getAllSleep(mainApplication.getUserID());
     }
@@ -53,7 +54,11 @@ public class SleepListViewModel extends AndroidViewModel {
         return new AlertDialog.Builder(context)
                 .setTitle("Delete Item")
                 .setMessage("Are you sure you want to delete this item?")
-                .setPositiveButton("Yes", (dialog, which) -> sleepRepository.delete(sleep))
+                .setPositiveButton("Yes", (dialog, which) -> {
+                    sleepRepository.delete(sleep);
+                    LocalDate date = Instant.ofEpochMilli(sleep.getDate()).atZone(ZoneId.systemDefault()).toLocalDate();
+                    updateSaveLogs("Sleep data for " + date + " deleted");
+                })
                 .setNegativeButton("No", null)
                 .create();
     }
@@ -64,11 +69,8 @@ public class SleepListViewModel extends AndroidViewModel {
     }
 
     public Comparator<Sleep> getComparator(String data, String order){
-        Comparator<Sleep> sleepComparator = Comparator.comparingInt(Sleep::getSleepID);
+        Comparator<Sleep> sleepComparator = Comparator.comparingLong(Sleep::getDate);
         switch (data) {
-            case "Date Added":
-                sleepComparator = Comparator.comparingInt(Sleep::getSleepID);
-                break;
             case "Sleep Date":
                 sleepComparator = Comparator.comparingLong(Sleep::getDate);
                 break;
@@ -94,6 +96,10 @@ public class SleepListViewModel extends AndroidViewModel {
     public int getDuration(Sleep sleep){
         int duration = sleep.getWakeTime() - sleep.getSleepTime();
         return (duration >= 0) ? duration : duration + 1440;
+    }
+
+    public void updateSaveLogs(String saveLogs){
+        mainApplication.updateSaveLogs(saveLogs);
     }
 
     public LiveData<List<Sleep>> getSleepList(){

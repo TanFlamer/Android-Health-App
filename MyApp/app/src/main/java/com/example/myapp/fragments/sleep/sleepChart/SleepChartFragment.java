@@ -140,6 +140,7 @@ public class SleepChartFragment extends Fragment {
         @Override
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
             String data = dataSpinner.getSelectedItem().toString();
+            sleepChartViewModel.updateSaveLogs("Displaying Sleep Chart by " + data);
             refreshBarChart(sleepChartViewModel.changeData(data));
         }
 

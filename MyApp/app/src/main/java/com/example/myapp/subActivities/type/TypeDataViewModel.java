@@ -11,15 +11,17 @@ import com.example.myapp.databasefiles.type.TypeRepository;
 
 public class TypeDataViewModel extends AndroidViewModel {
 
-    private TypeRepository typeRepository;
+    private final MainApplication mainApplication;
+    private final TypeRepository typeRepository;
+    private final int userID;
     private Type type;
-    private int userID;
 
 
     public TypeDataViewModel(@NonNull Application application) {
         super(application);
-        typeRepository = new TypeRepository(application);
-        userID = ((MainApplication) getApplication()).getUserID();
+        mainApplication = getApplication();
+        typeRepository = mainApplication.getTypeRepository();
+        userID = mainApplication.getUserID();
     }
 
     public void loadType(String typeName){
@@ -31,18 +33,20 @@ public class TypeDataViewModel extends AndroidViewModel {
     }
 
     public void insert(String typeName, double calorie){
+        updateSaveLogs("Sport Type " + typeName + " added");
         typeRepository.insert(new Type(typeName, calorie, userID));
     }
 
     public void update(String typeName, double calorie){
+        updateSaveLogs("Sport Type " + typeName + " updated");
         typeRepository.update(new Type(type.getTypeID(), typeName, calorie, userID));
-    }
-
-    public void delete(){
-        typeRepository.delete(type);
     }
 
     public Type getType() {
         return type;
+    }
+
+    public void updateSaveLogs(String saveLogs){
+        mainApplication.updateSaveLogs(saveLogs);
     }
 }

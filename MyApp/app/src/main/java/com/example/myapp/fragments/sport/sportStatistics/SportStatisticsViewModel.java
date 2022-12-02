@@ -147,4 +147,8 @@ public class SportStatisticsViewModel extends AndroidViewModel {
     public int getUserID() {
         return userID;
     }
+
+    public void updateSaveLogs(String saveLogs){
+        mainApplication.updateSaveLogs(saveLogs);
+    }
 }

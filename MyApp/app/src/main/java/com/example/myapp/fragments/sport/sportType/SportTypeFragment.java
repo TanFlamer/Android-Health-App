@@ -59,7 +59,11 @@ public class SportTypeFragment extends Fragment {
         sportTypeAdapter = new SportTypeAdapter(requireContext(), 0, new ArrayList<>(), sportTypeViewModel);
         listView.setAdapter(sportTypeAdapter);
         listView.setOnItemLongClickListener(onItemLongClickListener);
-        sportTypeViewModel.getTypeList().observe(getViewLifecycleOwner(), typeList -> sportTypeAdapter.updateTypeList(typeList, dataSpinner.getSelectedItem().toString(), orderSpinner.getSelectedItem().toString()));
+        sportTypeViewModel.getTypeList().observe(getViewLifecycleOwner(), typeList -> {
+            String data = dataSpinner.getSelectedItem().toString();
+            String order = orderSpinner.getSelectedItem().toString();
+            sportTypeAdapter.updateTypeList(typeList, data, order);
+        });
     }
 
     public void initialiseSpinners(){
@@ -92,7 +96,10 @@ public class SportTypeFragment extends Fragment {
     public AdapterView.OnItemSelectedListener onItemSelectedListener = new AdapterView.OnItemSelectedListener() {
         @Override
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-            sportTypeAdapter.sortTypeList(dataSpinner.getSelectedItem().toString(), orderSpinner.getSelectedItem().toString());
+            String data = dataSpinner.getSelectedItem().toString();
+            String order = orderSpinner.getSelectedItem().toString();
+            sportTypeViewModel.updateSaveLogs("Sport Type sorted by " + data + " in " + order + " order");
+            sportTypeAdapter.sortTypeList(data, order);
         }
 
         @Override

@@ -67,7 +67,7 @@ public class SleepListFragment extends Fragment {
     }
 
     public void initialiseSpinners(){
-        String[] data = new String[] {"Date Added", "Sleep Date", "Sleep Time", "Wake Time", "Sleep Duration"};
+        String[] data = new String[] {"Sleep Date", "Sleep Time", "Wake Time", "Sleep Duration"};
         String[] order = new String[] {"Ascending", "Descending"};
 
         dataSpinner = requireView().findViewById(R.id.dataSpinner);
@@ -85,6 +85,7 @@ public class SleepListFragment extends Fragment {
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
             String data = dataSpinner.getSelectedItem().toString();
             String order = orderSpinner.getSelectedItem().toString();
+            sleepListViewModel.updateSaveLogs("Sleep sorted by " + data + " in " + order + " order");
             sleepListAdapter.sortSleepList(data, order);
         }
 

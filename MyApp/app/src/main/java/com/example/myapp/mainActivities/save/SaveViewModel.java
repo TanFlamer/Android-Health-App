@@ -15,14 +15,13 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.example.myapp.MainApplication;
 
-import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 public class SaveViewModel extends AndroidViewModel {
 
@@ -35,30 +34,6 @@ public class SaveViewModel extends AndroidViewModel {
         mainApplication = (MainApplication) getApplication();
         userID = mainApplication.getUserID();
         filePath = getApplication().getFilesDir().toString() + "/logs/" + userID + ".txt";
-    }
-
-    public void separateLogFile(){
-        try {
-            FileWriter fw = new FileWriter(filePath, true);
-            fw.write("\n");
-            fw.close();
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void appendLogFile(Pair<String, LocalDateTime> stringLocalDateTimePair) {
-        try {
-            FileWriter fw = new FileWriter(filePath, true);
-            DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-            String formattedDateTime = stringLocalDateTimePair.second.format(dateTimeFormatter);
-            fw.write(formattedDateTime + " " + stringLocalDateTimePair.first + "\n");
-            fw.close();
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     public void copyLogFile(){
@@ -81,7 +56,7 @@ public class SaveViewModel extends AndroidViewModel {
             requestPermissionLauncher.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE);
     }
 
-    public MutableLiveData<Pair<String, LocalDateTime>> getSaveLog() {
+    public MutableLiveData<List<Pair<String, LocalDateTime>>> getSaveLog() {
         return mainApplication.getSaveLog();
     }
 }

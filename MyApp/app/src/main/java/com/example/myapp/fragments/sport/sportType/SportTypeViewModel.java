@@ -28,16 +28,9 @@ public class SportTypeViewModel extends AndroidViewModel {
         typeList = typeRepository.getAllTypes(userID);
     }
 
-    public void insert(Type type){
-        typeRepository.insert(type);
-    }
-
-    public void update(Type type){
-        typeRepository.update(type);
-    }
-
     public void delete(Type type){
         typeRepository.delete(type);
+        updateSaveLogs("Sport type " + type.getTypeName() + " deleted");
     }
 
     public LiveData<List<Type>> getTypeList(){
@@ -67,5 +60,9 @@ public class SportTypeViewModel extends AndroidViewModel {
                 break;
         }
         return order.equals("Ascending") ? typeComparator : typeComparator.reversed();
+    }
+
+    public void updateSaveLogs(String saveLogs){
+        mainApplication.updateSaveLogs(saveLogs);
     }
 }

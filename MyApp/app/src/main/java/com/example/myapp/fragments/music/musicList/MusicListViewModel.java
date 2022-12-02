@@ -32,6 +32,7 @@ import java.util.List;
 
 public class MusicListViewModel extends AndroidViewModel {
 
+    private final MainApplication mainApplication;
     private final MediaMetadataRetriever mediaMetadataRetriever;
     private final SongRepository songRepository;
     private final LiveData<List<Song>> songList;
@@ -41,7 +42,7 @@ public class MusicListViewModel extends AndroidViewModel {
 
     public MusicListViewModel(@NonNull Application application) {
         super(application);
-        MainApplication mainApplication = (MainApplication) getApplication();
+        mainApplication = (MainApplication) getApplication();
         songRepository = mainApplication.getSongRepository();
         userID = mainApplication.getUserID();
         musicPlayer = mainApplication.getMusicPlayer();
@@ -56,6 +57,10 @@ public class MusicListViewModel extends AndroidViewModel {
 
     public MusicPlayer getMusicPlayer() {
         return musicPlayer;
+    }
+
+    public void updateSaveLogs(String saveLogs){
+        mainApplication.updateSaveLogs(saveLogs);
     }
 
     public void getMusicFile(ActivityResultLauncher<String> mGetContent, ActivityResultLauncher<String> requestPermissionLauncher){
@@ -77,6 +82,7 @@ public class MusicListViewModel extends AndroidViewModel {
     public void deleteFile(Song song){
         musicPlayer.resetMediaPlayer();
         songRepository.delete(song);
+        updateSaveLogs("Song " + song.getSongName() + " deleted");
         File musicFile = new File(filePath, song.getSongName());
         boolean fileDeletion = musicFile.delete();
         Toast.makeText(getApplication(), "File deletion " + (fileDeletion ? "successful" : "failed"), Toast.LENGTH_SHORT).show();
@@ -84,10 +90,14 @@ public class MusicListViewModel extends AndroidViewModel {
 
     public void checkFile(String fileName, Uri uri){
         Song song = findSong(userID, fileName);
-        if(song == null)
+        if(song == null) {
             songRepository.insert(new Song(fileName, getSongDuration(uri), userID));
-        else
+            updateSaveLogs("Song " + fileName + " added");
+        }
+        else {
             songRepository.update(song);
+            updateSaveLogs("Song " + fileName + " updated");
+        }
     }
 
     public Song findSong(int userID, String songName){

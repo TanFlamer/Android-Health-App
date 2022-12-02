@@ -137,12 +137,8 @@ public class SaveActivity extends AppCompatActivity {
     public void initialiseSaveLogs(){
         saveListAdapter = new SaveListAdapter(this, R.layout.save_list_item, new ArrayList<>());
         listView.setAdapter(saveListAdapter);
-        saveViewModel.getSaveLog().observeForever(stringLocalDateTimePair -> {
-            saveListAdapter.updateSaveLogs(stringLocalDateTimePair);
-            saveViewModel.appendLogFile(stringLocalDateTimePair);
-        });
+        saveViewModel.getSaveLog().observeForever(saveLogs -> saveListAdapter.updateSaveLogs(saveLogs));
         printButton.setOnClickListener(v -> saveViewModel.downloadLogFile(requestPermissionLauncher));
-        saveViewModel.separateLogFile();
     }
 
     private final ActivityResultLauncher<String> requestPermissionLauncher =

@@ -63,7 +63,7 @@ public class SportListFragment extends Fragment {
     }
 
     public void initialiseSpinners(){
-        String[] data = new String[] {"Date Added", "Sport Date", "Name", "Calories", "Duration"};
+        String[] data = new String[] {"Sport Date", "Name", "Calories", "Duration"};
         String[] order = new String[] {"Ascending", "Descending"};
 
         dataSpinner = requireView().findViewById(R.id.dataSpinner);
@@ -100,6 +100,7 @@ public class SportListFragment extends Fragment {
             collapseAllGroups();
             String data = dataSpinner.getSelectedItem().toString();
             String order = orderSpinner.getSelectedItem().toString();
+            sportListViewModel.updateSaveLogs("Sport sorted by " + data + " in " + order + " order");
             sportListAdapter.sortSportList(data, order);
         }
 

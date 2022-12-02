@@ -17,10 +17,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 public class MusicDataViewModel extends AndroidViewModel {
 
+    private final MainApplication mainApplication;
     private final PlaylistRepository playlistRepository;
     private final SongCatalogueRepository songCatalogueRepository;
 
@@ -33,16 +35,17 @@ public class MusicDataViewModel extends AndroidViewModel {
 
     public MusicDataViewModel(@NonNull Application application) {
         super(application);
-        playlistRepository = ((MainApplication) getApplication()).getPlaylistRepository();
-        songCatalogueRepository = ((MainApplication) getApplication()).getSongCatalogueRepository();
+        mainApplication = getApplication();
+        playlistRepository = mainApplication.getPlaylistRepository();
+        songCatalogueRepository = mainApplication.getSongCatalogueRepository();
 
-        songCatalogueList = ((MainApplication) getApplication()).getSongCatalogueList();
-        songList = ((MainApplication) getApplication()).getSongList();
+        songCatalogueList = mainApplication.getSongCatalogueList();
+        songList = mainApplication.getSongList();
 
         songMap = new HashMap<>();
         for(Song song : songList) songMap.put(song.getSongID(), song);
 
-        userID = ((MainApplication) getApplication()).getUserID();
+        userID = mainApplication.getUserID();
     }
 
     public String loadPlaylist(String playlistName){
@@ -55,20 +58,26 @@ public class MusicDataViewModel extends AndroidViewModel {
     }
 
     public void insertPlaylist(String newPlaylistName){
+        updateSaveLogs("Playlist " + newPlaylistName + " added");
         int playListID = (int) playlistRepository.insert(new Playlist(newPlaylistName, userID));
         playlist = new Playlist(playListID, newPlaylistName, userID);
     }
 
     public void updatePlaylist(String newPlaylistName){
+        updateSaveLogs("Playlist " + playlist.getPlaylistName() + " changed to " + newPlaylistName);
         playlist.setPlaylistName(newPlaylistName);
         playlistRepository.update(playlist);
     }
 
     public void insertSongPlaylist(int songID){
+        String songName = Objects.requireNonNull(songMap.get(songID)).getSongName();
+        updateSaveLogs("Song " + songName + " added to " + playlist.getPlaylistName());
         songCatalogueRepository.insert(new SongCatalogue(playlist.getPlaylistID(), songID, userID));
     }
 
     public void deleteSongPlaylist(int songID){
+        String songName = Objects.requireNonNull(songMap.get(songID)).getSongName();
+        updateSaveLogs("Song " + songName + " removed from " + playlist.getPlaylistName());
         songCatalogueRepository.delete(new SongCatalogue(playlist.getPlaylistID(), songID, userID));
     }
 
@@ -93,5 +102,9 @@ public class MusicDataViewModel extends AndroidViewModel {
 
     public Playlist getPlaylist() {
         return playlist;
+    }
+
+    public void updateSaveLogs(String saveLogs){
+        mainApplication.updateSaveLogs(saveLogs);
     }
 }

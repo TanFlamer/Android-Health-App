@@ -11,29 +11,31 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.example.myapp.databasefiles.playlist.Playlist;
 import com.example.myapp.databasefiles.playlist.PlaylistRepository;
-import com.example.myapp.databasefiles.sleep.Sleep;
 import com.example.myapp.databasefiles.sleep.SleepRepository;
 import com.example.myapp.databasefiles.song.Song;
+import com.example.myapp.databasefiles.song.SongRepository;
 import com.example.myapp.databasefiles.songcatalogue.SongCatalogue;
 import com.example.myapp.databasefiles.songcatalogue.SongCatalogueRepository;
 import com.example.myapp.databasefiles.sport.Sport;
-import com.example.myapp.databasefiles.type.Type;
-import com.example.myapp.databasefiles.sportschedule.SportSchedule;
-import com.example.myapp.databasefiles.song.SongRepository;
 import com.example.myapp.databasefiles.sport.SportRepository;
-import com.example.myapp.databasefiles.type.TypeRepository;
+import com.example.myapp.databasefiles.sportschedule.SportSchedule;
 import com.example.myapp.databasefiles.sportschedule.SportScheduleRepository;
+import com.example.myapp.databasefiles.type.Type;
+import com.example.myapp.databasefiles.type.TypeRepository;
 import com.example.myapp.databasefiles.user.UserRepository;
 
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class MainApplication extends Application {
 
-    private MutableLiveData<Pair<String, LocalDateTime>> saveLog;
+    private MutableLiveData<List<Pair<String, LocalDateTime>>> saveLog;
     private int userID;
 
     private UserRepository userRepository;
@@ -53,13 +55,22 @@ public class MainApplication extends Application {
     private List<SportSchedule> sportScheduleList;
 
     private MusicPlayer musicPlayer;
+    private String filePath;
 
     @Override
     public void onCreate() {
         super.onCreate();
         initialSetup();
+        setupSaveLogs();
+        filePath = getFilesDir().toString();
+        musicPlayer = new MusicPlayer(this, filePath);
+        separateLogFile();
+    }
+
+    public void setupSaveLogs(){
+        List<Pair<String, LocalDateTime>> initialList = Collections.singletonList(new Pair<>("Logs file initialised", LocalDateTime.now()));
         saveLog = new MutableLiveData<>();
-        musicPlayer = new MusicPlayer(this, this.getFilesDir().toString());
+        saveLog.setValue(new ArrayList<>(initialList));
     }
 
     public void initialSetup(){
@@ -73,14 +84,44 @@ public class MainApplication extends Application {
         }
     }
 
+    public void separateLogFile(){
+        try {
+            String logFile = filePath + "/logs/" + userID + ".txt";
+            FileWriter fw = new FileWriter(logFile, true);
+            fw.write("\n");
+            fw.close();
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void appendLogFile(Pair<String, LocalDateTime> stringLocalDateTimePair) {
+        try {
+            String logFile = filePath + "/logs/" + userID + ".txt";
+            FileWriter fw = new FileWriter(logFile, true);
+            DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            String formattedDateTime = stringLocalDateTimePair.second.format(dateTimeFormatter);
+            fw.write(formattedDateTime + " " + stringLocalDateTimePair.first + "\n");
+            fw.close();
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void createFolder(Context context, String folderName){
         File newFolder = new File(context.getFilesDir(), folderName);
         boolean folderCreation = newFolder.mkdirs();
         Toast.makeText(context, "App setup " + (folderCreation ? "successful" : "failed"), Toast.LENGTH_SHORT).show();
     }
 
-    public void updateSaveLogs(Pair<String, LocalDateTime> newSaveLog){
-        saveLog.setValue(newSaveLog);
+    public void updateSaveLogs(String newSaveLog){
+        Pair<String, LocalDateTime> newLog = new Pair<>(newSaveLog, LocalDateTime.now());
+        List<Pair<String, LocalDateTime>> oldLogs = saveLog.getValue();
+        oldLogs.add(newLog);
+        saveLog.setValue(oldLogs);
+        appendLogFile(newLog);
     }
 
     public UserRepository getUserRepository() {
@@ -149,7 +190,7 @@ public class MainApplication extends Application {
         return sportScheduleRepository;
     }
 
-    public MutableLiveData<Pair<String, LocalDateTime>> getSaveLog() {
+    public MutableLiveData<List<Pair<String, LocalDateTime>>> getSaveLog() {
         return saveLog;
     }
 

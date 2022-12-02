@@ -23,15 +23,15 @@ import java.util.List;
 
 public class SleepChartViewModel extends AndroidViewModel {
 
+    private final MainApplication mainApplication;
     private final LiveData<List<Sleep>> sleepList;
-
     private final List<Sleep> currentSleepList;
     private final List<String> xAxisLabels;
     private final List<BarEntry> barEntryList;
 
     public SleepChartViewModel(@NonNull Application application) {
         super(application);
-        MainApplication mainApplication = (MainApplication) getApplication();
+        mainApplication = (MainApplication) getApplication();
         SleepRepository sleepRepository = mainApplication.getSleepRepository();
         sleepList = sleepRepository.getAllSleep(mainApplication.getUserID());
 
@@ -90,6 +90,10 @@ public class SleepChartViewModel extends AndroidViewModel {
     public int getDuration(Sleep sleep){
         int duration = sleep.getWakeTime() - sleep.getSleepTime();
         return (duration >= 0) ? duration : duration + 1440;
+    }
+
+    public void updateSaveLogs(String saveLogs){
+        mainApplication.updateSaveLogs(saveLogs);
     }
 
     public ValueFormatter getValueFormatter(String data){

@@ -20,6 +20,7 @@ import com.example.myapp.databasefiles.type.Type;
 import com.example.myapp.databasefiles.type.TypeRepository;
 import com.example.myapp.subActivities.sport.SportDataActivity;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -101,7 +102,11 @@ public class SportListViewModel extends AndroidViewModel {
         return new AlertDialog.Builder(context)
                 .setTitle("Delete Item")
                 .setMessage("Are you sure you want to delete this item?")
-                .setPositiveButton("Yes", (dialog, which) -> sportRepository.delete(sport))
+                .setPositiveButton("Yes", (dialog, which) -> {
+                    sportRepository.delete(sport);
+                    LocalDate date = Instant.ofEpochMilli(sport.getDate()).atZone(ZoneId.systemDefault()).toLocalDate();
+                    updateSaveLogs("Sport data for " + date + " deleted");
+                })
                 .setNegativeButton("No", null)
                 .create();
     }
@@ -116,9 +121,6 @@ public class SportListViewModel extends AndroidViewModel {
     public Comparator<Sport> getSportComparator(String data, String order, HashMap<Sport, List<Pair<Type, Integer>>> typeSports){
         Comparator<Sport> sportComparator = Comparator.comparingLong(Sport::getDate);
         switch (data) {
-            case "Date Added":
-                sportComparator = Comparator.comparingInt(Sport::getSportID);
-                break;
             case "Sport Date":
                 sportComparator = Comparator.comparingLong(Sport::getDate);
                 break;
@@ -135,9 +137,6 @@ public class SportListViewModel extends AndroidViewModel {
     public Comparator<Pair<Type, Integer>> getTypeComparator(String data, String order){
         Comparator<Pair<Type, Integer>> typeComparator = Comparator.comparing(a -> a.first.getTypeName());
         switch (data) {
-            case "Date Added":
-                typeComparator = Comparator.comparingInt(a -> a.first.getTypeID());
-                break;
             case "Name":
                 typeComparator = Comparator.comparing(a -> a.first.getTypeName());
                 break;
@@ -169,15 +168,7 @@ public class SportListViewModel extends AndroidViewModel {
         return sportDataMerger;
     }
 
-    public void insert(SportSchedule sportSchedule){
-        sportScheduleRepository.insert(sportSchedule);
-    }
-
-    public void update(SportSchedule sportSchedule){
-        sportScheduleRepository.update(sportSchedule);
-    }
-
-    public void delete(SportSchedule sportSchedule){
-        sportScheduleRepository.delete(sportSchedule);
+    public void updateSaveLogs(String saveLogs){
+        mainApplication.updateSaveLogs(saveLogs);
     }
 }

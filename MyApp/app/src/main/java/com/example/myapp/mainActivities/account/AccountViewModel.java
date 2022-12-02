@@ -1,9 +1,7 @@
 package com.example.myapp.mainActivities.account;
 
 import android.app.Application;
-import android.content.Context;
 import android.content.Intent;
-import android.util.Pair;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -15,8 +13,6 @@ import com.example.myapp.databasefiles.user.UserRepository;
 import com.example.myapp.mainActivities.MusicActivity;
 
 import java.io.File;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 
 public class AccountViewModel extends AndroidViewModel {
 
@@ -46,20 +42,19 @@ public class AccountViewModel extends AndroidViewModel {
         long userID = userRepository.insert(new User(username, password));
         user = new User((int) userID, username, password);
         createMusicFolder();
-        createLogsFile();
-        mainApplication.updateSaveLogs(new Pair<>(username + " account created", LocalDateTime.now()));
+        mainApplication.updateSaveLogs(username + " account created");
     }
 
     public void changeUsername(String newUsername){
         user.setUsername(newUsername);
         userRepository.update(user);
-        mainApplication.updateSaveLogs(new Pair<>("Username changed to " + newUsername, LocalDateTime.now()));
+        mainApplication.updateSaveLogs("Username changed to " + newUsername);
     }
 
     public void changePassword(String newPassword){
         user.setPassword(newPassword);
         userRepository.update(user);
-        mainApplication.updateSaveLogs(new Pair<>("Password changed", LocalDateTime.now()));
+        mainApplication.updateSaveLogs("Password changed");
     }
 
     public void deleteUser(){
@@ -78,16 +73,6 @@ public class AccountViewModel extends AndroidViewModel {
     public void createMusicFolder(){
         File musicFolder = new File(getMusicPath());
         musicFolder.mkdirs();
-    }
-
-    public void createLogsFile(){
-        try{
-            File logFile = new File(getLogsPath());
-            logFile.createNewFile();
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     public void deleteMusicFolder(){

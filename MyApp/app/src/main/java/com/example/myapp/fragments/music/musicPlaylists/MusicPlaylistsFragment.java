@@ -97,6 +97,7 @@ public class MusicPlaylistsFragment extends Fragment {
             collapseAllGroups();
             String data = dataSpinner.getSelectedItem().toString();
             String order = orderSpinner.getSelectedItem().toString();
+            musicPlaylistsViewModel.updateSaveLogs("Playlist sorted by " + data + " in " + order + " order");
             musicPlaylistsAdapter.sortMusicPlaylists(data, order);
         }
 
