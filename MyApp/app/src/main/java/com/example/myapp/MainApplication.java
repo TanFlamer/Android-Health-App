@@ -30,7 +30,6 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class MainApplication extends Application {
@@ -60,17 +59,10 @@ public class MainApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        initialSetup();
-        setupSaveLogs();
         filePath = getFilesDir().toString();
-        musicPlayer = new MusicPlayer(this, filePath);
-        separateLogFile();
-    }
-
-    public void setupSaveLogs(){
-        List<Pair<String, LocalDateTime>> initialList = Collections.singletonList(new Pair<>("Logs file initialised", LocalDateTime.now()));
+        initialSetup();
         saveLog = new MutableLiveData<>();
-        saveLog.setValue(new ArrayList<>(initialList));
+        musicPlayer = new MusicPlayer(this, filePath);
     }
 
     public void initialSetup(){
@@ -78,10 +70,20 @@ public class MainApplication extends Application {
         if(!prefs.getBoolean("setup", false)) {
             createFolder(getApplicationContext(), "logs");
             createFolder(getApplicationContext(), "music/0");
+            appendLogFile(new Pair<>("GUEST account created", LocalDateTime.now()));
             SharedPreferences.Editor editor = prefs.edit();
             editor.putBoolean("setup", true);
             editor.apply();
         }
+    }
+
+    public void resetLogs(){
+        saveLog.setValue(new ArrayList<>());
+    }
+
+    public void addLogs(String newLog){
+        separateLogFile();
+        updateSaveLogs(newLog);
     }
 
     public void separateLogFile(){

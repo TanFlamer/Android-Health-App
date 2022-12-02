@@ -32,6 +32,7 @@ public class AccountViewModel extends AndroidViewModel {
 
     public void loadUser(Integer userID){
         user = userRepository.getUser(userID);
+        mainApplication.setUserID(user.getUserID());
     }
 
     public boolean validateUsername(String username){
@@ -42,19 +43,20 @@ public class AccountViewModel extends AndroidViewModel {
         long userID = userRepository.insert(new User(username, password));
         user = new User((int) userID, username, password);
         createMusicFolder();
+        mainApplication.setUserID(user.getUserID());
         mainApplication.updateSaveLogs(username + " account created");
     }
 
     public void changeUsername(String newUsername){
         user.setUsername(newUsername);
         userRepository.update(user);
-        mainApplication.updateSaveLogs("Username changed to " + newUsername);
+        mainApplication.addLogs("Username changed to " + newUsername);
     }
 
     public void changePassword(String newPassword){
         user.setPassword(newPassword);
         userRepository.update(user);
-        mainApplication.updateSaveLogs("Password changed");
+        mainApplication.addLogs("Password changed");
     }
 
     public void deleteUser(){
@@ -62,10 +64,13 @@ public class AccountViewModel extends AndroidViewModel {
         deleteLogFiles();
         userRepository.delete(user);
         user = newUser;
+        mainApplication.setUserID(user.getUserID());
+        mainApplication.resetLogs();
     }
 
     public Intent loginUser(){
         mainApplication.setUserID(user.getUserID());
+        mainApplication.addLogs("Login into app");
         Toast.makeText(getApplication(), "Welcome " + user.getUsername(), Toast.LENGTH_SHORT).show();
         return new Intent(getApplication(), MusicActivity.class);
     }
@@ -104,7 +109,12 @@ public class AccountViewModel extends AndroidViewModel {
         return user;
     }
 
-    public void resetMusicPlayer(){
+    public void updateSaveLogs(String saveLogs){
+        mainApplication.updateSaveLogs(saveLogs);
+    }
+
+    public void resetApp(){
         mainApplication.getMusicPlayer().resetMediaPlayer();
+        mainApplication.resetLogs();
     }
 }
