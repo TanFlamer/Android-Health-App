@@ -142,10 +142,11 @@ public class MusicPlaylistsAdapter extends BaseExpandableListAdapter {
         nameView.setText(song.getSongName());
     }
 
-    @SuppressLint("SetTextI18n")
+    @SuppressLint("DefaultLocale")
     public void initialiseChildLength(View view, Song song){
         TextView lengthView = view.findViewById(R.id.musicSongLength);
-        lengthView.setText(song.getSongDuration().toString());
+        int length = song.getSongDuration();
+        lengthView.setText(String.format("%d:%02d", length/60, length%60));
     }
 
     public void initialiseOnClickView(View view, int parent, int child){

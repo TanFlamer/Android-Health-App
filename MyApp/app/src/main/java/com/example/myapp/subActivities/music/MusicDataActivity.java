@@ -246,7 +246,7 @@ public class MusicDataActivity extends AppCompatActivity {
 
     public AdapterView.OnItemClickListener onItemClickListener = (parent, view, position, id) -> {
         boolean selected = parent.equals(songUnselected) ? updateImageView(unselectedSongList, position, addImageView) : updateImageView(selectedSongList, position, removeImageView);
-        view.setBackgroundColor(selected ? Color.BLUE : Color.WHITE);
+        view.setBackgroundColor(selected ? Color.LTGRAY : Color.WHITE);
     };
 
     @Override

@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.media.MediaMetadataRetriever;
 import android.net.Uri;
+import android.os.Build;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -63,13 +64,6 @@ public class MusicListViewModel extends AndroidViewModel {
         mainApplication.updateSaveLogs(saveLogs);
     }
 
-    public void getMusicFile(ActivityResultLauncher<String> mGetContent, ActivityResultLauncher<String> requestPermissionLauncher){
-        if (ContextCompat.checkSelfPermission(getApplication(), Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED)
-            mGetContent.launch("audio/*");
-        else
-            requestPermissionLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE);
-    }
-
     public void copyFile(Uri uri, Context context) throws IOException {
         InputStream source = context.getContentResolver().openInputStream(uri);
         String fileName = new File(uri.getPath()).getName();
@@ -117,6 +111,14 @@ public class MusicListViewModel extends AndroidViewModel {
                 .setPositiveButton("Yes", (dialog, which) -> deleteFile(song))
                 .setNegativeButton("No", null)
                 .create();
+    }
+
+    public void getMusicFile(ActivityResultLauncher<String> mGetContent, ActivityResultLauncher<String> requestPermissionLauncher){
+        String permission = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU ? Manifest.permission.READ_MEDIA_AUDIO : Manifest.permission.READ_EXTERNAL_STORAGE;
+        if (ContextCompat.checkSelfPermission(getApplication(), permission) == PackageManager.PERMISSION_GRANTED)
+            mGetContent.launch("audio/*");
+        else
+            requestPermissionLauncher.launch(permission);
     }
 
     public void sortSongList(List<Song> songList, String data, String order){

@@ -14,7 +14,6 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Spinner;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
@@ -248,7 +247,7 @@ public class SportDataActivity extends AppCompatActivity {
 
     AdapterView.OnItemClickListener onItemClickListener = (parent, view, position, id) -> {
         Pair<Pair<Type, Integer>, Boolean> pairBooleanPair = sportDataList.get(position);
-        view.setBackgroundColor(pairBooleanPair.second ? Color.WHITE : Color.BLUE);
+        view.setBackgroundColor(pairBooleanPair.second ? Color.WHITE : Color.LTGRAY);
         sportDataList.set(position, new Pair<>(pairBooleanPair.first, !pairBooleanPair.second));
         buttonDelete.setEnabled(selected());
     };

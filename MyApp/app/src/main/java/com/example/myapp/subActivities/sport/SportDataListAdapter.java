@@ -78,6 +78,6 @@ public class SportDataListAdapter extends BaseAdapter {
     }
 
     public void initialiseSelectedView(View view, boolean selected){
-        view.setBackgroundColor(selected ? Color.BLUE : Color.WHITE);
+        view.setBackgroundColor(selected ? Color.LTGRAY : Color.WHITE);
     }
 }

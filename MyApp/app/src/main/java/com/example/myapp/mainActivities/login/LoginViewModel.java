@@ -74,7 +74,7 @@ public class LoginViewModel extends AndroidViewModel {
     public void createNotification(){
         createNotificationChannel();
         Intent intent = new Intent(getApplication(), Notification.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplication(), 0, intent, 0);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplication(), 0, intent, PendingIntent.FLAG_IMMUTABLE);
         AlarmManager alarmManager = (AlarmManager) getApplication().getSystemService(Context.ALARM_SERVICE);
         Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.HOUR_OF_DAY, 22);

@@ -47,7 +47,7 @@ public class MusicDataListAdapter extends ArrayAdapter<Pair<Song, Boolean>> {
     }
 
     public void initialiseSelected(View view, boolean selected){
-        view.setBackgroundColor(selected ? Color.BLUE : Color.WHITE);
+        view.setBackgroundColor(selected ? Color.LTGRAY : Color.WHITE);
     }
 
 }

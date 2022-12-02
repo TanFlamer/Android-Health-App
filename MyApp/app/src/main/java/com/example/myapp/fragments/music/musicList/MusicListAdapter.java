@@ -78,9 +78,11 @@ public class MusicListAdapter extends ArrayAdapter<Song> {
         nameView.setText(song.getSongName());
     }
 
+    @SuppressLint("DefaultLocale")
     public void initialiseLengthView(View view, Song song){
         TextView lengthView = view.findViewById(R.id.musicLength);
-        lengthView.setText(String.valueOf(song.getSongDuration()));
+        int length = song.getSongDuration();
+        lengthView.setText(String.format("%d:%02d", length/60, length%60));
     }
 
     public void initialiseDeleteButton(View currentItemView, Song song){
