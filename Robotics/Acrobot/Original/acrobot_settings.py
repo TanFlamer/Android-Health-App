@@ -1,4 +1,4 @@
-import cartpole_template as cartpole
+import acrobot_template as acrobot
 
 
 def reward_function(env_information):
@@ -11,7 +11,8 @@ def reward_function(env_information):
 if __name__ == "__main__":
     # Variables
     num_tables = 1
-    num_buckets = (1, 1, 6, 3)  # (1, 1, 6, 3)
+    num_buckets = (1, 1, 1, 1, 10, 10)
+    num_actions = 3
     initial_q_table = 0
     opposite_q_learning = False
 
@@ -21,9 +22,9 @@ if __name__ == "__main__":
     discount_steps = 50
 
     # Run settings
-    variables = (num_tables, num_buckets, initial_q_table, opposite_q_learning)
+    variables = (num_tables, num_buckets, num_actions, initial_q_table, opposite_q_learning)
     discount_settings = (fixed_discount_factor, min_discount_factor, discount_steps)
     run_settings = (variables, discount_settings)
 
-    # Run cartpole
-    cartpole.run_simulation(run_settings, reward_function)
+    # Run acrobot
+    acrobot.run_simulation(run_settings, reward_function)
