@@ -1,6 +1,4 @@
 # Adapted from: https://medium.com/@tuzzer/cart-pole-balancing-with-q-learning-b54c6068d947
-from gym.envs.classic_control.acrobot import wrap, bound, rk4
-from numpy import cos, pi, sin
 
 import results_processing
 import math
@@ -8,18 +6,23 @@ import random
 import gym
 import numpy as np
 
-# Initialize the "Acrobot" environment
-env = gym.make('Acrobot-v1')
+# Initialize the "Cart-Pole" environment
+env = gym.make('CartPole-v0')
 
 # Random seed
 RANDOM_SEED = 20313854
 
+# Number of discrete actions
+NUM_ACTIONS = env.action_space.n  # (left, right)
+
 # Bounds for each discrete state
-STATE_BOUNDS = list(zip([-pi, -pi, -4 * pi, -9 * pi], [pi, pi, 4 * pi, 9 * pi]))
+STATE_BOUNDS = list(zip(env.observation_space.low, env.observation_space.high))
+STATE_BOUNDS[1] = (-0.5, 0.5)
+STATE_BOUNDS[3] = (-math.radians(50), math.radians(50))
 
 # Defining the simulation related constants
-NUM_TRAIN_EPISODES = 1000
-MAX_TRAIN_T = 500
+NUM_TRAIN_EPISODES = 500
+MAX_TRAIN_T = 200
 
 # Run settings
 MIN_RUNS = 30
@@ -43,7 +46,7 @@ def loop(run_settings, reward_function):
         else:
             failed_runs.append(run_number)
             print("Run %2d failed in %d episodes - *" % (run_number, NUM_TRAIN_EPISODES))
-    return results_processing.get_results(episodes), failed_runs
+    return results_processing.get_results(episodes, True), failed_runs
 
 
 def train(run, run_settings, reward_function):
@@ -51,7 +54,7 @@ def train(run, run_settings, reward_function):
     variables, discount_settings = run_settings
 
     # Unpacking variables
-    num_tables, num_buckets, num_actions, initial_q_table, opposite_q_learning = variables
+    num_tables, num_buckets, initial_q_table, opposite_q_learning = variables
 
     # Unpacking discount settings
     fixed_discount_factor, min_discount_factor, discount_steps = discount_settings
@@ -68,7 +71,7 @@ def train(run, run_settings, reward_function):
 
     for x in range(num_tables):
         q_tables.append(np.zeros(num_buckets + (
-            num_actions,)) if initial_q_table == 0 else np.random.randn(*num_buckets, num_actions) * initial_q_table)
+            NUM_ACTIONS,)) if initial_q_table == 0 else np.random.randn(*num_buckets, NUM_ACTIONS) * initial_q_table)
 
     time_steps = [0]
     episodes_to_solve = 0
@@ -77,10 +80,10 @@ def train(run, run_settings, reward_function):
     for episode in range(1, NUM_TRAIN_EPISODES + 1):
 
         # Reset the environment
-        env.reset()
+        obv, _ = env.reset()
 
         # the initial state
-        state_0 = state_to_bucket(env.state, num_buckets)
+        state_0 = state_to_bucket(obv, num_buckets)
 
         # Get discount factor
         discount_factor = MAX_DISCOUNT_FACTOR if fixed_discount_factor else min(
@@ -90,12 +93,11 @@ def train(run, run_settings, reward_function):
             env.render()
 
             # Old observation for opposite action
-            old_obv = env.state
+            old_obv = obv
 
             # Select an action
-            action = select_action(state_0, explore_rate, q_tables, num_actions)
-            opposite_action = num_actions - action - 1
-            opposite_q_learning_pass = opposite_q_learning and action != opposite_action
+            action = select_action(state_0, explore_rate, q_tables)
+            opposite_action = 1 - action
 
             # Get Q table indexes
             index_main = 0
@@ -111,26 +113,26 @@ def train(run, run_settings, reward_function):
             q_table_secondary = q_tables[index_secondary]
 
             # Execute the action
-            _, reward, terminated, _, _ = env.step(action if num_actions == 3 else action * 2)
+            obv, reward, terminated, _, _ = env.step(action)
 
             # Observe the result
-            state = state_to_bucket(env.state, num_buckets)
+            state = state_to_bucket(obv, num_buckets)
 
             # Get reward function
-            reward = reward_function((env.state, reward, terminated))
+            reward = reward_function((obv, reward, terminated, t))
 
             # Get best Q value
             best_q = q_table_secondary[state + (np.argmax(q_table_main[state]),)]
 
-            if opposite_q_learning_pass:
+            if opposite_q_learning:
                 # Execute opposite action
-                opposite_obv, opposite_reward, opposite_terminated, _, _ = step(old_obv, opposite_action if num_actions == 3 else opposite_action * 2)
+                opposite_obv, opposite_reward, opposite_terminated, _, _ = step(old_obv, opposite_action)
 
                 # Observe the result
                 opposite_state = state_to_bucket(opposite_obv, num_buckets)
 
                 # Get reward function
-                opposite_reward = reward_function((opposite_obv, opposite_reward, opposite_terminated))
+                opposite_reward = reward_function((opposite_obv, opposite_reward, opposite_terminated, t))
 
                 # Get best Q value
                 opposite_best_q = q_table_secondary[opposite_state + (np.argmax(q_table_main[opposite_state]),)]
@@ -154,16 +156,11 @@ def train(run, run_settings, reward_function):
         else:
             time_steps.append(MAX_TRAIN_T + time_steps[-1])
 
-        # It's considered done when average for last 100 time steps is <= 195.0
-        average = results_processing.get_average(time_steps)
-
-        if episode % 50 == 0:
-            print("%d %f" % (episode, average))
-
-        if average <= 195.0:
+        # It's considered done when average for last 100 time steps is >= 195.0
+        if results_processing.get_average(time_steps) >= 195.0:
+            print("Run %2d solved in %d episodes" % (run, episode))
             episodes_to_solve = episode
             solved = True
-            print("Run %2d solved in %d episodes" % (run, episode))
             break
 
         # Update parameters
@@ -174,10 +171,10 @@ def train(run, run_settings, reward_function):
     return episodes_to_solve, solved
 
 
-def select_action(state, explore_rate, q_tables, num_actions):
+def select_action(state, explore_rate, q_tables):
     # Select a random action
     if random.random() < explore_rate:
-        action = env.action_space.sample() if num_actions == 3 else random.randint(0, 1)
+        action = env.action_space.sample()
     # Select the action with the highest q
     else:
         action = np.argmax(sum(q_tables)[state])
@@ -216,66 +213,55 @@ def state_to_bucket(state, num_buckets):
 
 
 def step(state, action):
-    dt = 0.2
+    gravity = 9.8
+    masscart = 1.0
+    masspole = 0.1
+    total_mass = masspole + masscart
+    length = 0.5  # actually half the pole's length
+    polemass_length = masspole * length
+    force_mag = 10.0
+    tau = 0.02  # seconds between state updates
+    kinematics_integrator = "euler"
 
-    MAX_VEL_1 = 4 * pi
-    MAX_VEL_2 = 9 * pi
+    # Angle at which to fail the episode
+    theta_threshold_radians = 12 * 2 * math.pi / 360
+    x_threshold = 2.4
 
-    AVAIL_TORQUE = [-1.0, 0.0, +1]
-    torque = AVAIL_TORQUE[action]
+    x, x_dot, theta, theta_dot = state
+    force = force_mag if action == 1 else -force_mag
+    costheta = math.cos(theta)
+    sintheta = math.sin(theta)
 
-    # Now, augment the state with our force action, so it can be passed to _dsdt
-    s_augmented = np.append(state, torque)
-    ns = rk4(_dsdt, s_augmented, [0, dt])
+    temp = (force + polemass_length * theta_dot ** 2 * sintheta) / total_mass
+    thetaacc = (gravity * sintheta - costheta * temp) / (length * (4.0 / 3.0 - masspole * costheta ** 2 / total_mass))
+    xacc = temp - polemass_length * thetaacc * costheta / total_mass
 
-    ns[0] = wrap(ns[0], -pi, pi)
-    ns[1] = wrap(ns[1], -pi, pi)
-    ns[2] = bound(ns[2], -MAX_VEL_1, MAX_VEL_1)
-    ns[3] = bound(ns[3], -MAX_VEL_2, MAX_VEL_2)
+    if kinematics_integrator == "euler":
+        x = x + tau * x_dot
+        x_dot = x_dot + tau * xacc
+        theta = theta + tau * theta_dot
+        theta_dot = theta_dot + tau * thetaacc
+    else:  # semi-implicit euler
+        x_dot = x_dot + tau * xacc
+        x = x + tau * x_dot
+        theta_dot = theta_dot + tau * thetaacc
+        theta = theta + tau * theta_dot
 
-    state = ns
-    terminated = bool(-cos(state[0]) - cos(state[1] + state[0]) > 1.0)
-    reward = -1.0 if not terminated else 0.0
+    # New state
+    state = (x, x_dot, theta, theta_dot)
 
-    return np.array([state[0], state[1], state[2], state[3]], dtype=np.float32), reward, terminated, False, {}
+    # Reward
+    reward = 1.0
 
+    # Terminated
+    terminated = bool(
+        x < -x_threshold
+        or x > x_threshold
+        or theta < -theta_threshold_radians
+        or theta > theta_threshold_radians
+    )
 
-def _dsdt(s_augmented):
-    book_or_nips = "book"
-    m1 = 1.0  #: [kg] mass of link 1
-    m2 = 1.0  #: [kg] mass of link 2
-    l1 = 1.0  # [m]
-    lc1 = 0.5  #: [m] position of the center of mass of link 1
-    lc2 = 0.5  #: [m] position of the center of mass of link 2
-    I1 = 1.0  #: moments of inertia for both links
-    I2 = 1.0  #: moments of inertia for both links
-    g = 9.8
-
-    a = s_augmented[-1]
-    s = s_augmented[:-1]
-
-    theta1 = s[0]
-    theta2 = s[1]
-    dtheta1 = s[2]
-    dtheta2 = s[3]
-
-    d1 = (m1 * lc1 ** 2 + m2 * (l1 ** 2 + lc2 ** 2 + 2 * l1 * lc2 * cos(theta2)) + I1 + I2)
-    d2 = m2 * (lc2 ** 2 + l1 * lc2 * cos(theta2)) + I2
-    phi2 = m2 * lc2 * g * cos(theta1 + theta2 - pi / 2.0)
-    phi1 = (-m2 * l1 * lc2 * dtheta2 ** 2 * sin(theta2) - 2 * m2 * l1 * lc2 * dtheta2 * dtheta1 * sin(theta2)
-            + (m1 * lc1 + m2 * l1) * g * cos(theta1 - pi / 2) + phi2)
-
-    if book_or_nips == "nips":
-        # the following line is consistent with the description in the paper
-        ddtheta2 = (a + d2 / d1 * phi1 - phi2) / (m2 * lc2 ** 2 + I2 - d2 ** 2 / d1)
-    else:
-        # the following line is consistent with the java implementation and the book
-        ddtheta2 = (a + d2 / d1 * phi1 - m2 * l1 * lc2 * dtheta1 ** 2 * sin(theta2) - phi2) / (
-                m2 * lc2 ** 2 + I2 - d2 ** 2 / d1)
-
-    ddtheta1 = -(d2 * ddtheta2 + phi1) / d1
-
-    return dtheta1, dtheta2, ddtheta1, ddtheta2, 0.0
+    return np.array(state, dtype=np.float32), reward, terminated, False, {}
 
 
 def random_seed(seed):

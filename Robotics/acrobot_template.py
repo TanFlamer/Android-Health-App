@@ -18,7 +18,7 @@ RANDOM_SEED = 20313854
 STATE_BOUNDS = list(zip(env.observation_space.low, env.observation_space.high))
 
 # Defining the simulation related constants
-NUM_TRAIN_EPISODES = 1000
+NUM_TRAIN_EPISODES = 500
 MAX_TRAIN_T = 500
 
 # Run settings
@@ -43,7 +43,7 @@ def loop(run_settings, reward_function):
         else:
             failed_runs.append(run_number)
             print("Run %2d failed in %d episodes - *" % (run_number, NUM_TRAIN_EPISODES))
-    return results_processing.get_results(episodes), failed_runs
+    return results_processing.get_results(episodes, False), failed_runs
 
 
 def train(run, run_settings, reward_function):
@@ -117,7 +117,7 @@ def train(run, run_settings, reward_function):
             state = state_to_bucket(obv, num_buckets)
 
             # Get reward function
-            reward = reward_function((obv, reward, terminated))
+            reward = reward_function((obv, reward, terminated, t))
 
             # Get best Q value
             best_q = q_table_secondary[state + (np.argmax(q_table_main[state]),)]
@@ -131,7 +131,7 @@ def train(run, run_settings, reward_function):
                 opposite_state = state_to_bucket(opposite_obv, num_buckets)
 
                 # Get reward function
-                opposite_reward = reward_function((opposite_obv, opposite_reward, opposite_terminated))
+                opposite_reward = reward_function((opposite_obv, opposite_reward, opposite_terminated, t))
 
                 # Get best Q value
                 opposite_best_q = q_table_secondary[opposite_state + (np.argmax(q_table_main[opposite_state]),)]

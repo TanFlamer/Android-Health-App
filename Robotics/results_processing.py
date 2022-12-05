@@ -1,6 +1,13 @@
 import math
 import numpy as np
 
+ACROBOT_SAMPLE_MEAN = 293.87
+ACROBOT_SAMPLE_STD = 36.64
+
+CARTPOLE_SAMPLE_MEAN = 257.27
+CARTPOLE_SAMPLE_STD = 14.94
+
+T_VALUE = 2.3924 # 99% confidence level for 58 degrees of freedom
 
 def get_average(time_steps):
     num_elements = len(time_steps) - 1
@@ -36,8 +43,25 @@ def get_quartiles(runs, episodes):
 
     return median, third_quartile - first_quartile
 
+def calculate_t_value(mean, std, size, cartpole):
 
-def get_results(episodes):
+    if cartpole:
+        sample_mean = CARTPOLE_SAMPLE_MEAN
+        sample_std = CARTPOLE_SAMPLE_STD
+    else:
+        sample_mean = ACROBOT_SAMPLE_MEAN
+        sample_std = ACROBOT_SAMPLE_STD
+
+    mean_difference = sample_mean - mean
+    sample_variance = sample_std * sample_std
+    variance = std * std
+    pooled_variance = ((sample_variance + variance) * (size - 1)) / (2 * size - 2)
+    pooled_std = math.sqrt(pooled_variance)
+    limit = mean_difference - T_VALUE * (pooled_std * math.sqrt(2 / size))
+    return max(limit, 0)
+
+
+def get_results(episodes, cartpole):
     runs = len(episodes)
     if runs == 0:
         return 0, 0, 0, 0, 0, 0
@@ -49,8 +73,9 @@ def get_results(episodes):
         mean = sample_sum / runs
         standard_deviation = math.sqrt(sample_variance)
 
+    t_value = calculate_t_value(mean, standard_deviation, runs, cartpole)
     median, inter_quartile_range = get_quartiles(runs, episodes)
-    return mean, standard_deviation, median, inter_quartile_range, max(episodes), min(episodes)
+    return mean, standard_deviation, median, inter_quartile_range, max(episodes), min(episodes), t_value
 
 
 def print_results(result, failed_runs):
@@ -63,3 +88,4 @@ def print_results(result, failed_runs):
     print("Min = %d" % result[5])
     print("Runs failed: %d" % len(failed_runs))
     print("Failed runs:", failed_runs)
+    print("Limit = %.2f" % result[6])
