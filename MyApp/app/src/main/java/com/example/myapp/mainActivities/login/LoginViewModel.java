@@ -28,7 +28,7 @@ public class LoginViewModel extends AndroidViewModel {
 
     public LoginViewModel(@NonNull Application application) {
         super(application);
-        MainApplication mainApplication = (MainApplication) getApplication();
+        MainApplication mainApplication = getApplication();
         userRepository = mainApplication.getUserRepository();
         createNotification();
     }

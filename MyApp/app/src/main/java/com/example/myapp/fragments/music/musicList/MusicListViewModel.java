@@ -89,6 +89,7 @@ public class MusicListViewModel extends AndroidViewModel {
             updateSaveLogs("Song " + fileName + " added");
         }
         else {
+            song.setSongDuration(getSongDuration(uri));
             songRepository.update(song);
             updateSaveLogs("Song " + fileName + " updated");
         }

@@ -15,20 +15,22 @@ import com.example.myapp.databasefiles.user.User;
 public class Song {
 
     @PrimaryKey(autoGenerate = true)
-    private Integer songID;
+    private Integer songID; //unique ID for each song regardless of user
 
-    private String songName;
+    private String songName; //unique name for each song (same name allowed for different user)
 
-    private Integer songDuration;
+    private Integer songDuration; //duration for each song
 
-    private Integer userID;
+    private Integer userID; //user ID of the user who the song belongs to
 
+    //constructor for new song
     public Song(String songName, Integer songDuration, Integer userID) {
         this.songName = songName;
         this.songDuration = songDuration;
         this.userID = userID;
     }
 
+    //getter for song ID
     public Integer getSongID() {
         return songID;
     }
@@ -37,6 +39,7 @@ public class Song {
         this.songID = songID;
     }
 
+    //getter for song name
     public String getSongName() {
         return songName;
     }
@@ -45,6 +48,7 @@ public class Song {
         this.songName = songName;
     }
 
+    //getter for song duration
     public Integer getSongDuration() {
         return songDuration;
     }

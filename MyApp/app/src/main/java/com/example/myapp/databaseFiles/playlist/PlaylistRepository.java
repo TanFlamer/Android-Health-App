@@ -14,37 +14,41 @@ import java.util.concurrent.Executors;
 
 public class PlaylistRepository {
 
+    //playlist data access object
     private final PlaylistDao playlistDao;
 
+    //constructor for playlist repository
     public PlaylistRepository(Application application) {
         Database database = Database.getInstance(application);
         playlistDao = database.getPlaylistDao();
     }
 
+    //insert operation for playlist repository
     public long insert(Playlist playlist) {
         return new InsertPlaylistExecutorTask(playlistDao).execute(playlist);
     }
 
+    //update operation for playlist repository
     public void update(Playlist playlist) {
         new UpdatePlaylistExecutorTask(playlistDao).execute(playlist);
     }
 
+    //delete operation for playlist repository
     public void delete(Playlist playlist) {
         new DeletePlaylistExecutorTask(playlistDao).execute(playlist);
     }
 
-    public Playlist getPlaylist(int playlistID) {
-        return new FindPlaylistExecutorTask(playlistDao).get(playlistID);
-    }
-
+    //check if playlist with specific name exists
     public Playlist findPlaylist(int userID, String playlistName) {
         return new FindPlaylistExecutorTask(playlistDao).find(userID, playlistName);
     }
 
+    //returns live data of all playlist belonging to a user
     public LiveData<List<Playlist>> getAllPlaylists(int userID) {
         return playlistDao.getAllPlaylists(userID);
     }
 
+    //insert playlist executor task
     private static class InsertPlaylistExecutorTask {
         private final ExecutorService service = Executors.newSingleThreadExecutor();
         private final PlaylistDao playlistDao;
@@ -61,6 +65,7 @@ public class PlaylistRepository {
         }
     }
 
+    //update playlist executor task
     private static class UpdatePlaylistExecutorTask {
         private final ExecutorService service = Executors.newSingleThreadExecutor();
         private final PlaylistDao playlistDao;
@@ -72,6 +77,7 @@ public class PlaylistRepository {
         }
     }
 
+    //delete playlist executor task
     private static class DeletePlaylistExecutorTask {
         private final ExecutorService service = Executors.newSingleThreadExecutor();
         private final PlaylistDao playlistDao;
@@ -83,19 +89,12 @@ public class PlaylistRepository {
         }
     }
 
+    //find playlist executor task
     private static class FindPlaylistExecutorTask {
         private final ExecutorService service = Executors.newSingleThreadExecutor();
         private final PlaylistDao playlistDao;
         private FindPlaylistExecutorTask(PlaylistDao playlistDao) {
             this.playlistDao = playlistDao;
-        }
-        protected Playlist get(int playlistID) {
-            try {
-                return service.submit(() -> playlistDao.getPlaylist(playlistID)).get();
-            } catch (ExecutionException | InterruptedException e) {
-                e.printStackTrace();
-            }
-            return null;
         }
         protected Playlist find(int userID, String playlistName) {
             try {

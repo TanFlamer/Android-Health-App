@@ -40,7 +40,9 @@ public class SleepDataViewModel extends AndroidViewModel {
 
     public void update(int sleepTime, int wakeTime){
         updateSaveLogs("Sleep data for " + getDate() + " updated");
-        sleepRepository.update(new Sleep(sleep.getSleepID(), sleep.getDate(), sleepTime, wakeTime, userID));
+        sleep.setSleepTime(sleepTime);
+        sleep.setWakeTime(wakeTime);
+        sleepRepository.update(sleep);
     }
 
     public void delete(){
