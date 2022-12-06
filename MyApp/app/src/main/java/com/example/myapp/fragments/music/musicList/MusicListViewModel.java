@@ -13,6 +13,7 @@ import android.widget.Toast;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
+import androidx.documentfile.provider.DocumentFile;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
@@ -30,6 +31,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 
 public class MusicListViewModel extends AndroidViewModel {
 
@@ -43,7 +45,7 @@ public class MusicListViewModel extends AndroidViewModel {
 
     public MusicListViewModel(@NonNull Application application) {
         super(application);
-        mainApplication = (MainApplication) getApplication();
+        mainApplication = getApplication();
         songRepository = mainApplication.getSongRepository();
         userID = mainApplication.getUserID();
         musicPlayer = mainApplication.getMusicPlayer();
@@ -66,7 +68,7 @@ public class MusicListViewModel extends AndroidViewModel {
 
     public void copyFile(Uri uri, Context context) throws IOException {
         InputStream source = context.getContentResolver().openInputStream(uri);
-        String fileName = new File(uri.getPath()).getName();
+        String fileName = Objects.requireNonNull(DocumentFile.fromSingleUri(getApplication(), uri)).getName();
         Path dest = Paths.get(filePath, fileName);
         Files.copy(source, dest, StandardCopyOption.REPLACE_EXISTING);
         checkFile(fileName, uri);
