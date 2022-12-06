@@ -41,18 +41,24 @@ def future_position(obv):
 def reward_function(env_information):
     # Reward function
     obv, reward, terminated, time = env_information
-    return base_reward(reward)
+    return logarithmic_reward(obv)
 
 
 if __name__ == "__main__":
+    # T-test
+    confidence_level = 0.99
+    sample_mean = 257.27
+    sample_std = 14.94
+    sample_size = 30
+
     # Variables
-    num_tables = 1
-    num_buckets = (1, 1, 6, 3)
-    initial_q_table = 0
-    opposite_q_learning = False
+    num_tables = 4
+    num_buckets = (1, 1, 6, 7)
+    initial_q_table = 1
+    opposite_q_learning = True
 
     # Discount settings
-    fixed_discount_factor = True
+    fixed_discount_factor = False
     min_discount_factor = 0.99
     discount_steps = 100
 
@@ -60,6 +66,7 @@ if __name__ == "__main__":
     variables = (num_tables, num_buckets, initial_q_table, opposite_q_learning)
     discount_settings = (fixed_discount_factor, min_discount_factor, discount_steps)
     run_settings = (variables, discount_settings)
+    t_test_values = (confidence_level, sample_mean, sample_std, sample_size)
 
     # Run cartpole
-    cartpole.run_simulation(run_settings, reward_function)
+    cartpole.run_simulation(run_settings, reward_function, t_test_values)

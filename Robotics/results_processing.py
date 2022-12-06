@@ -1,13 +1,7 @@
 import math
 import numpy as np
+import scipy
 
-ACROBOT_SAMPLE_MEAN = 293.87
-ACROBOT_SAMPLE_STD = 36.64
-
-CARTPOLE_SAMPLE_MEAN = 257.27
-CARTPOLE_SAMPLE_STD = 14.94
-
-T_VALUE = 2.3924 # 99% confidence level for 58 degrees of freedom
 
 def get_average(time_steps):
     num_elements = len(time_steps) - 1
@@ -43,49 +37,57 @@ def get_quartiles(runs, episodes):
 
     return median, third_quartile - first_quartile
 
-def calculate_t_value(mean, std, size, cartpole):
+def calculate_t_value(t_test_values, second_sample_results):
+    confidence_level, first_sample_mean, first_sample_std, first_sample_size = t_test_values
+    second_sample_mean, second_sample_std, second_sample_size = second_sample_results
 
-    if cartpole:
-        sample_mean = CARTPOLE_SAMPLE_MEAN
-        sample_std = CARTPOLE_SAMPLE_STD
-    else:
-        sample_mean = ACROBOT_SAMPLE_MEAN
-        sample_std = ACROBOT_SAMPLE_STD
+    mean_difference = first_sample_mean - second_sample_mean
+    first_sample_variance = first_sample_std * first_sample_std
+    second_sample_variance = second_sample_std * second_sample_std
 
-    mean_difference = sample_mean - mean
-    sample_variance = sample_std * sample_std
-    variance = std * std
-    pooled_variance = ((sample_variance + variance) * (size - 1)) / (2 * size - 2)
+    first_sample_data = first_sample_variance * (first_sample_size - 1)
+    second_sample_data = second_sample_variance * (second_sample_size - 1)
+    degrees_of_freedom = first_sample_size + second_sample_size - 2
+
+    pooled_variance = (first_sample_data + second_sample_data) / degrees_of_freedom
     pooled_std = math.sqrt(pooled_variance)
-    limit = mean_difference - T_VALUE * (pooled_std * math.sqrt(2 / size))
-    return max(limit, 0)
+    critical_value = scipy.stats.t.ppf(confidence_level, degrees_of_freedom)
+
+    t_test_bottom = pooled_std * math.sqrt(1 / first_sample_size + 1 / second_sample_size)
+    difference = mean_difference - critical_value * t_test_bottom
+    return max(difference, 0)
 
 
-def get_results(episodes, cartpole):
+def get_results(episodes, t_test_values):
     runs = len(episodes)
     if runs == 0:
-        return 0, 0, 0, 0, 0, 0
+        return (0, 0, 0), (0, 0, 0, 0), 0
     elif runs == 1:
-        return episodes[0], 0, episodes[0], 0, episodes[0], episodes[0]
+        return (episodes[0], 0, 1), (episodes[0], 0, episodes[0], episodes[0]), 0
     else:
         sample_sum = sum(episodes)
         sample_variance = (sum(np.square(episodes)) - (sample_sum * sample_sum) / runs) / (runs - 1)
+
         mean = sample_sum / runs
         standard_deviation = math.sqrt(sample_variance)
+        median, inter_quartile_range = get_quartiles(runs, episodes)
 
-    t_value = calculate_t_value(mean, standard_deviation, runs, cartpole)
-    median, inter_quartile_range = get_quartiles(runs, episodes)
-    return mean, standard_deviation, median, inter_quartile_range, max(episodes), min(episodes), t_value
+        main_results = (mean, standard_deviation, runs)
+        supporting_results = (median, inter_quartile_range, max(episodes), min(episodes))
+
+        t_value = calculate_t_value(t_test_values, main_results)
+        return main_results, supporting_results, t_value
 
 
-def print_results(result, failed_runs):
+def print_results(results, failed):
+    main_results, supporting_results, t_value = results
     print("")
-    print("Mean = %.2f" % result[0])
-    print("Standard Deviation = %.2f" % result[1])
-    print("Median = %.1f" % result[2])
-    print("Inter-Quartile Range = %.1f" % result[3])
-    print("Max = %d" % result[4])
-    print("Min = %d" % result[5])
-    print("Runs failed: %d" % len(failed_runs))
-    print("Failed runs:", failed_runs)
-    print("Limit = %.2f" % result[6])
+    print("Mean = %.2f" % main_results[0])
+    print("Standard Deviation = %.2f" % main_results[1])
+    print("Median = %.1f" % supporting_results[0])
+    print("Inter-Quartile Range = %.1f" % supporting_results[1])
+    print("Max = %d" % supporting_results[2])
+    print("Min = %d" % supporting_results[3])
+    print("Runs failed: %d" % len(failed))
+    print("Failed runs:", failed)
+    print("Difference = %.2f" % t_value)

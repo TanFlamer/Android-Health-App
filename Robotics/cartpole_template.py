@@ -34,7 +34,7 @@ MIN_LEARNING_RATE = 0.1
 MIN_EXPLORE_RATE = 0.01
 
 
-def loop(run_settings, reward_function):
+def loop(run_settings, reward_function, t_test_values):
     episodes = []
     failed_runs = []
     run_number = 0
@@ -46,7 +46,7 @@ def loop(run_settings, reward_function):
         else:
             failed_runs.append(run_number)
             print("Run %2d failed in %d episodes - *" % (run_number, NUM_TRAIN_EPISODES))
-    return results_processing.get_results(episodes, True), failed_runs
+    return results_processing.get_results(episodes, t_test_values), failed_runs
 
 
 def train(run, run_settings, reward_function):
@@ -271,7 +271,7 @@ def random_seed(seed):
     env.reset(seed=seed)
 
 
-def run_simulation(run_settings, reward_function):
+def run_simulation(run_settings, reward_function, t_test_values):
     random_seed(RANDOM_SEED)
-    results, failed = loop(run_settings, reward_function)
+    results, failed = loop(run_settings, reward_function, t_test_values)
     results_processing.print_results(results, failed)
