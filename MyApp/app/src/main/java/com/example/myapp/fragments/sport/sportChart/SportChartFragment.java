@@ -128,7 +128,6 @@ public class SportChartFragment extends Fragment {
         @Override
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
             String data = dataSpinner.getSelectedItem().toString();
-            sportChartViewModel.updateSaveLogs("Displaying Sport Chart by " + data);
             refreshBarChart(sportChartViewModel.changeData(data));
         }
 

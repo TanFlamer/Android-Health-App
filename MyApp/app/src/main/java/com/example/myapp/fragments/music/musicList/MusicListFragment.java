@@ -111,7 +111,6 @@ public class MusicListFragment extends Fragment {
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
             String data = dataSpinner.getSelectedItem().toString();
             String order = orderSpinner.getSelectedItem().toString();
-            musicListViewModel.updateSaveLogs("Song sorted by " + data + " in " + order + " order");
             musicListAdapter.sortSongList(data, order);
         }
 

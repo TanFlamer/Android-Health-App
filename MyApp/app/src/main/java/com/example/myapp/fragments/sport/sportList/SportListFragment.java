@@ -100,7 +100,6 @@ public class SportListFragment extends Fragment {
             collapseAllGroups();
             String data = dataSpinner.getSelectedItem().toString();
             String order = orderSpinner.getSelectedItem().toString();
-            sportListViewModel.updateSaveLogs("Sport sorted by " + data + " in " + order + " order");
             sportListAdapter.sortSportList(data, order);
         }
 

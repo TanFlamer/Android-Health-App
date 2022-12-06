@@ -98,7 +98,6 @@ public class SportTypeFragment extends Fragment {
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
             String data = dataSpinner.getSelectedItem().toString();
             String order = orderSpinner.getSelectedItem().toString();
-            sportTypeViewModel.updateSaveLogs("Sport Type sorted by " + data + " in " + order + " order");
             sportTypeAdapter.sortTypeList(data, order);
         }
 

@@ -85,7 +85,6 @@ public class SleepListFragment extends Fragment {
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
             String data = dataSpinner.getSelectedItem().toString();
             String order = orderSpinner.getSelectedItem().toString();
-            sleepListViewModel.updateSaveLogs("Sleep sorted by " + data + " in " + order + " order");
             sleepListAdapter.sortSleepList(data, order);
         }
 

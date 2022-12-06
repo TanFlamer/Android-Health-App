@@ -74,6 +74,7 @@ public class MainApplication extends Application {
             SharedPreferences.Editor editor = prefs.edit();
             editor.putBoolean("setup", true);
             editor.apply();
+            Toast.makeText(getApplicationContext(), "App setup successful", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -114,8 +115,7 @@ public class MainApplication extends Application {
 
     public void createFolder(Context context, String folderName){
         File newFolder = new File(context.getFilesDir(), folderName);
-        boolean folderCreation = newFolder.mkdirs();
-        Toast.makeText(context, "App setup " + (folderCreation ? "successful" : "failed"), Toast.LENGTH_SHORT).show();
+        newFolder.mkdirs();
     }
 
     public void updateSaveLogs(String newSaveLog){

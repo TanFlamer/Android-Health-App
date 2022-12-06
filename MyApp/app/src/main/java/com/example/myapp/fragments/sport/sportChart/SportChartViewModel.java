@@ -27,7 +27,6 @@ import java.util.Objects;
 
 public class SportChartViewModel extends AndroidViewModel {
 
-    private final MainApplication mainApplication;
     private final SportRepository sportRepository;
     private final TypeRepository typeRepository;
     private final SportScheduleRepository sportScheduleRepository;
@@ -46,7 +45,7 @@ public class SportChartViewModel extends AndroidViewModel {
 
     public SportChartViewModel(@NonNull Application application) {
         super(application);
-        mainApplication = getApplication();
+        MainApplication mainApplication = getApplication();
         sportRepository = mainApplication.getSportRepository();
         typeRepository = mainApplication.getTypeRepository();
         sportScheduleRepository = mainApplication.getSportScheduleRepository();
@@ -147,9 +146,5 @@ public class SportChartViewModel extends AndroidViewModel {
             }
             barEntryList.add(new BarEntry((float) i, totalCalorie));
         }
-    }
-
-    public void updateSaveLogs(String saveLogs){
-        mainApplication.updateSaveLogs(saveLogs);
     }
 }
