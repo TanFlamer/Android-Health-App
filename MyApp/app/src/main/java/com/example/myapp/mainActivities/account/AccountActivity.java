@@ -50,7 +50,7 @@ public class AccountActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_account);
         accountViewModel = new ViewModelProvider(this).get(AccountViewModel.class);
-        accountViewModel.loadUser(getIntent().getExtras().getInt("userID"));
+        accountViewModel.loadUser(getIntent().getExtras().getString("username"));
         initialiseAll();
     }
 

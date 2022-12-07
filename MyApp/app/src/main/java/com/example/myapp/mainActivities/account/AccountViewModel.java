@@ -19,7 +19,6 @@ public class AccountViewModel extends AndroidViewModel {
     private final MainApplication mainApplication;
     private final UserRepository userRepository;
     private final String filePath;
-    private final User newUser;
     private User user;
 
     public AccountViewModel(@NonNull Application application) {
@@ -27,11 +26,10 @@ public class AccountViewModel extends AndroidViewModel {
         mainApplication = getApplication();
         userRepository = mainApplication.getUserRepository();
         filePath = getApplication().getFilesDir().toString();
-        newUser = userRepository.getUser(-1);
     }
 
-    public void loadUser(Integer userID){
-        user = userRepository.getUser(userID);
+    public void loadUser(String username){
+        user = userRepository.findUser(username);
         mainApplication.setUserID(user.getUserID());
     }
 
@@ -63,8 +61,8 @@ public class AccountViewModel extends AndroidViewModel {
         deleteMusicFolder();
         deleteLogFiles();
         userRepository.delete(user);
-        user = newUser;
-        mainApplication.setUserID(user.getUserID());
+        user = userRepository.findUser("NEW USER");
+        mainApplication.setUserID(0);
         mainApplication.resetLogs();
     }
 

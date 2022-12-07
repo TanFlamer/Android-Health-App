@@ -27,16 +27,34 @@ import com.example.myapp.databasefiles.user.UserDao;
                         exportSchema = false)
 public abstract class Database extends RoomDatabase {
 
+    //get database
     private static Database instance;
+
+    //get user data access object
     public abstract UserDao getUserDao();
+
+    //get playlist data access object
     public abstract PlaylistDao getPlaylistDao();
+
+    //get song data access object
     public abstract SongDao getSongDao();
+
+    //get sleep data data access object
     public abstract SleepDao getSleepDao();
+
+    //get sport data data access object
     public abstract SportDao getSportDao();
+
+    //get sport type data access object
     public abstract TypeDao getTypeDao();
+
+    //get song catalogue data access object
     public abstract SongCatalogueDao getSongPlaylistDao();
+
+    //get sport schedule data access object
     public abstract SportScheduleDao getTypeSportDao();
 
+    //create and return single instance of database
     public static synchronized Database getInstance(Context context) {
         if (instance == null) {
             instance = Room.databaseBuilder(context.getApplicationContext(),

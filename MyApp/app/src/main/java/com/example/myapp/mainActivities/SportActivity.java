@@ -13,19 +13,18 @@ import androidx.viewpager2.widget.ViewPager2;
 import com.example.myapp.MainApplication;
 import com.example.myapp.MusicPlayer;
 import com.example.myapp.R;
-import com.example.myapp.fragments.sport.SportFragmentAdapter;
 import com.example.myapp.fragments.sport.sportCalendar.SportCalendarFragment;
 import com.example.myapp.fragments.sport.sportChart.SportChartFragment;
 import com.example.myapp.fragments.sport.sportList.SportListFragment;
 import com.example.myapp.fragments.sport.sportStatistics.SportStatisticsFragment;
 import com.example.myapp.fragments.sport.sportType.SportTypeFragment;
-import com.example.myapp.mainActivities.save.SaveActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.tabs.TabLayout;
 
 public class SportActivity extends AppCompatActivity {
 
-    SportFragmentAdapter sportFragmentAdapter;
+    MainApplication mainApplication;
+    FragmentAdapter sportFragmentAdapter;
     BottomNavigationView bottomNavigation;
     ViewPager2 viewPager2;
     TabLayout tabLayout;
@@ -39,18 +38,26 @@ public class SportActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sport);
+        mainApplication = (MainApplication) getApplication();
+        //initialise all components
         initialiseAll();
     }
 
+    //initialise all components
     public void initialiseAll(){
+        //link all components with ID
         initialiseViewByID();
+        //initialise bottom navigator
         initialiseBottomNavigator();
+        //initialise tab layout and fragments
         initialiseLayout();
+        //initialise music player
         initialiseMusicPlayer();
     }
 
+    //link all components with ID
     public void initialiseViewByID(){
-        musicPlayer = ((MainApplication) getApplication()).getMusicPlayer();
+        musicPlayer = mainApplication.getMusicPlayer();
         bottomNavigation = findViewById(R.id.bottom_navigator);
         tabLayout = findViewById(R.id.layoutSport);
         viewPager2 = findViewById(R.id.viewpagerSport);
@@ -61,44 +68,36 @@ public class SportActivity extends AppCompatActivity {
         songNext = findViewById(R.id.songNext);
     }
 
+    //initialise bottom navigator
     @SuppressLint("NonConstantResourceId")
     public void initialiseBottomNavigator(){
+        //set current item to sport icon
         bottomNavigation.setSelectedItemId(R.id.sport);
+        //set bottom navigator listener
         bottomNavigation.setOnItemSelectedListener(item -> {
-            switch (item.getItemId()){
-                case R.id.save:
-                    startActivity(new Intent(getApplicationContext(), SaveActivity.class));
-                    return true;
-
-                case R.id.sleep:
-                    startActivity(new Intent(getApplicationContext(), SleepActivity.class));
-                    return true;
-
-                case R.id.music:
-                    startActivity(new Intent(getApplicationContext(), MusicActivity.class));
-                    return true;
-
-                case R.id.sport:
-                    return true;
-
-                case R.id.info:
-                    startActivity(new Intent(getApplicationContext(), InfoActivity.class));
-                    return true;
-            }
-            return false;
+            Intent intent = mainApplication.getIntent(item.getItemId(), R.id.sport);
+            if(intent != null) startActivity(intent);
+            return true;
         });
     }
 
+    //initialise tab layout and fragments
     public void initialiseLayout(){
+        //initialise tab layout
         initialiseTabLayout();
+        //initialise sport fragments
         initialiseFragmentAdapter();
+        //initialise view pager
         initialiseViewPager();
     }
 
+    //initialise tab layout
     public void initialiseTabLayout(){
+        //initialise tab layout listener
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
+                //set view pager to current tab when selected
                 viewPager2.setCurrentItem(tab.getPosition());
             }
 
@@ -114,17 +113,27 @@ public class SportActivity extends AppCompatActivity {
         });
     }
 
+    //initialise sport fragments
     public void initialiseFragmentAdapter(){
-        sportFragmentAdapter = new SportFragmentAdapter(getSupportFragmentManager(), getLifecycle());
+        //initialise sport fragment adapter
+        sportFragmentAdapter = new FragmentAdapter(getSupportFragmentManager(), getLifecycle());
+        //add sport list fragment
         sportFragmentAdapter.addFragment(new SportListFragment());
+        //add sport chart fragment
         sportFragmentAdapter.addFragment(new SportChartFragment());
+        //add sport calendar fragment
         sportFragmentAdapter.addFragment(new SportCalendarFragment());
+        //add sport type fragment
         sportFragmentAdapter.addFragment(new SportTypeFragment());
+        //add sport statistics fragment
         sportFragmentAdapter.addFragment(new SportStatisticsFragment());
     }
 
+    //initialise view pager
     public void initialiseViewPager(){
+        //set view pager with sport adapter
         viewPager2.setAdapter(sportFragmentAdapter);
+        //set view pager callback
         viewPager2.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
             public void onPageSelected(int position) {
@@ -133,49 +142,22 @@ public class SportActivity extends AppCompatActivity {
         });
     }
 
+    //initialise music player
     public void initialiseMusicPlayer(){
-        initialiseSongController();
-        initialiseImageButtons();
-        initialiseLiveData();
-    }
-
-    public void initialiseSongController(){
-        songProgress.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                if(fromUser) musicPlayer.setSongProgress(progress);
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-                musicPlayer.pauseSong();
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-                musicPlayer.playSong();
-            }
-        });
-    }
-
-    public void initialiseImageButtons(){
-        songPrevious.setOnClickListener(v -> musicPlayer.previousButton());
-        songPause.setOnClickListener(v -> musicPlayer.playButton());
-        songNext.setOnClickListener(v -> musicPlayer.nextButton());
-    }
-
-    public void initialiseLiveData(){
-        musicPlayer.getSong().observeForever(song -> {
-            songName.setText(song.getSongName());
-            songProgress.setProgress(0);
-            songProgress.setMax(song.getSongDuration() * 1000);
-        });
-        musicPlayer.getSongProgress().observeForever(integer -> songProgress.setProgress(integer));
+        //initialise song seek bar
+        musicPlayer.initialiseSongController(songProgress);
+        //initialise song buttons
+        musicPlayer.initialiseImageButtons(songPrevious, songPause, songNext);
+        //initialise song name and progress live data
+        musicPlayer.initialiseSongProgress(songName, songProgress);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        //set bottom navigator to sport icon on resume
         bottomNavigation.setSelectedItemId(R.id.sport);
+        //reset song name and progress if music player uninitialised
+        musicPlayer.resetMusic(songName, songProgress);
     }
 }

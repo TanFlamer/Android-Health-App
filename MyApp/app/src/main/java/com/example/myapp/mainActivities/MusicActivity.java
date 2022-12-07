@@ -13,17 +13,16 @@ import androidx.viewpager2.widget.ViewPager2;
 import com.example.myapp.MainApplication;
 import com.example.myapp.MusicPlayer;
 import com.example.myapp.R;
-import com.example.myapp.fragments.music.musicPlaylists.MusicPlaylistsFragment;
-import com.example.myapp.mainActivities.save.SaveActivity;
-import com.example.myapp.fragments.music.MusicFragmentAdapter;
 import com.example.myapp.fragments.music.musicList.MusicListFragment;
+import com.example.myapp.fragments.music.musicPlaylists.MusicPlaylistsFragment;
 import com.example.myapp.fragments.music.musicStatistics.MusicStatisticsFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.tabs.TabLayout;
 
 public class MusicActivity extends AppCompatActivity {
 
-    MusicFragmentAdapter musicFragmentAdapter;
+    MainApplication mainApplication;
+    FragmentAdapter musicFragmentAdapter;
     BottomNavigationView bottomNavigation;
     ViewPager2 viewPager2;
     TabLayout tabLayout;
@@ -37,18 +36,26 @@ public class MusicActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_music);
+        mainApplication = (MainApplication) getApplication();
+        //initialise all components
         initialiseAll();
     }
 
+    //initialise all components
     public void initialiseAll(){
+        //link all components with ID
         initialiseViewByID();
+        //initialise bottom navigator
         initialiseBottomNavigator();
+        //initialise tab layout and fragments
         initialiseLayout();
+        //initialise music player
         initialiseMusicPlayer();
     }
 
+    //link all components with ID
     public void initialiseViewByID(){
-        musicPlayer = ((MainApplication) getApplication()).getMusicPlayer();
+        musicPlayer = mainApplication.getMusicPlayer();
         bottomNavigation = findViewById(R.id.bottom_navigator);
         tabLayout = findViewById(R.id.layoutMusic);
         viewPager2 = findViewById(R.id.viewpagerMusic);
@@ -59,44 +66,36 @@ public class MusicActivity extends AppCompatActivity {
         songNext = findViewById(R.id.songNext);
     }
 
+    //initialise bottom navigator
     @SuppressLint("NonConstantResourceId")
     public void initialiseBottomNavigator(){
+        //set current item to music icon
         bottomNavigation.setSelectedItemId(R.id.music);
+        //set bottom navigator listener
         bottomNavigation.setOnItemSelectedListener(item -> {
-            switch (item.getItemId()){
-                case R.id.save:
-                    startActivity(new Intent(getApplicationContext(), SaveActivity.class));
-                    return true;
-
-                case R.id.sleep:
-                    startActivity(new Intent(getApplicationContext(), SleepActivity.class));
-                    return true;
-
-                case R.id.music:
-                    return true;
-
-                case R.id.sport:
-                    startActivity(new Intent(getApplicationContext(), SportActivity.class));
-                    return true;
-
-                case R.id.info:
-                    startActivity(new Intent(getApplicationContext(), InfoActivity.class));
-                    return true;
-            }
-            return false;
+            Intent intent = mainApplication.getIntent(item.getItemId(), R.id.music);
+            if(intent != null) startActivity(intent);
+            return true;
         });
     }
 
+    //initialise tab layout and fragments
     public void initialiseLayout(){
+        //initialise tab layout
         initialiseTabLayout();
+        //initialise sport fragments
         initialiseFragmentAdapter();
+        //initialise view pager
         initialiseViewPager();
     }
 
+    //initialise tab layout
     public void initialiseTabLayout(){
+        //initialise tab layout listener
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
+                //set view pager to current tab when selected
                 viewPager2.setCurrentItem(tab.getPosition());
             }
 
@@ -112,15 +111,23 @@ public class MusicActivity extends AppCompatActivity {
         });
     }
 
+    //initialise music fragments
     public void initialiseFragmentAdapter(){
-        musicFragmentAdapter = new MusicFragmentAdapter(getSupportFragmentManager(), getLifecycle());
+        //initialise music fragment adapter
+        musicFragmentAdapter = new FragmentAdapter(getSupportFragmentManager(), getLifecycle());
+        //add music list fragment
         musicFragmentAdapter.addFragment(new MusicListFragment());
+        //add music playlists fragment
         musicFragmentAdapter.addFragment(new MusicPlaylistsFragment());
+        //add music statistics fragment
         musicFragmentAdapter.addFragment(new MusicStatisticsFragment());
     }
 
+    //initialise view pager
     public void initialiseViewPager(){
+        //set view pager with music adapter
         viewPager2.setAdapter(musicFragmentAdapter);
+        //set view pager callback
         viewPager2.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
             public void onPageSelected(int position) {
@@ -129,57 +136,22 @@ public class MusicActivity extends AppCompatActivity {
         });
     }
 
+    //initialise music player
     public void initialiseMusicPlayer(){
-        initialiseSongController();
-        initialiseImageButtons();
-        initialiseLiveData();
+        //initialise song seek bar
+        musicPlayer.initialiseSongController(songProgress);
+        //initialise song buttons
+        musicPlayer.initialiseImageButtons(songPrevious, songPause, songNext);
+        //initialise song name and progress live data
+        musicPlayer.initialiseSongProgress(songName, songProgress);
     }
-
-    public void initialiseSongController(){
-        songProgress.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                if(fromUser) musicPlayer.setSongProgress(progress);
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-                musicPlayer.pauseSong();
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-                musicPlayer.playSong();
-            }
-        });
-    }
-
-    public void initialiseImageButtons(){
-        songPrevious.setOnClickListener(v -> musicPlayer.previousButton());
-        songPause.setOnClickListener(v -> musicPlayer.playButton());
-        songNext.setOnClickListener(v -> musicPlayer.nextButton());
-    }
-
-    public void initialiseLiveData(){
-        musicPlayer.getSong().observeForever(song -> {
-            songName.setText(song.getSongName());
-            songProgress.setProgress(0);
-            songProgress.setMax(song.getSongDuration() * 1000);
-        });
-        musicPlayer.getSongProgress().observeForever(integer -> songProgress.setProgress(integer));
-    }
-
-    @SuppressLint("SetTextI18n")
-    public void resetMusic(){
-        songName.setText("No Song Loaded");
-        songProgress.setProgress(0);
-    }
-
 
     @Override
     protected void onResume() {
         super.onResume();
+        //set bottom navigator to music icon on resume
         bottomNavigation.setSelectedItemId(R.id.music);
-        if(!musicPlayer.isInitialised()) resetMusic();
+        //reset song name and progress if music player uninitialised
+        musicPlayer.resetMusic(songName, songProgress);
     }
 }

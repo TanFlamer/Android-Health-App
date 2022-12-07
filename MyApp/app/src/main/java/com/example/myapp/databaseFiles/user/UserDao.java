@@ -10,17 +10,14 @@ import androidx.room.Update;
 public interface UserDao {
 
     @Insert
-    long insert(User user);
+    long insert(User user); //insert operation for new user
 
     @Update
-    void update(User user);
+    void update(User user); //update operation for existing user
 
     @Delete
-    void delete(User user);
-
-    @Query("SELECT * FROM Users WHERE userID=:userID")
-    User getUser(int userID);
+    void delete(User user); //delete operation for existing user
 
     @Query("SELECT * FROM Users WHERE username=:username")
-    User findUser(String username);
+    User findUser(String username); //check if user with specific name exists
 }

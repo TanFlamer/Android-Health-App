@@ -13,18 +13,17 @@ import androidx.viewpager2.widget.ViewPager2;
 import com.example.myapp.MainApplication;
 import com.example.myapp.MusicPlayer;
 import com.example.myapp.R;
-import com.example.myapp.fragments.sleep.SleepFragmentAdapter;
 import com.example.myapp.fragments.sleep.sleepCalendar.SleepCalendarFragment;
 import com.example.myapp.fragments.sleep.sleepChart.SleepChartFragment;
 import com.example.myapp.fragments.sleep.sleepList.SleepListFragment;
 import com.example.myapp.fragments.sleep.sleepStatistics.SleepStatisticsFragment;
-import com.example.myapp.mainActivities.save.SaveActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.tabs.TabLayout;
 
 public class SleepActivity extends AppCompatActivity {
 
-    SleepFragmentAdapter sleepFragmentAdapter;
+    MainApplication mainApplication;
+    FragmentAdapter sleepFragmentAdapter;
     BottomNavigationView bottomNavigation;
     ViewPager2 viewPager2;
     TabLayout tabLayout;
@@ -38,18 +37,26 @@ public class SleepActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sleep);
+        mainApplication = (MainApplication) getApplication();
+        //initialise all components
         initialiseAll();
     }
 
+    //initialise all components
     public void initialiseAll(){
+        //link all components with ID
         initialiseViewByID();
+        //initialise bottom navigator
         initialiseBottomNavigator();
+        //initialise tab layout and fragments
         initialiseLayout();
+        //initialise music player
         initialiseMusicPlayer();
     }
 
+    //link all components with ID
     public void initialiseViewByID(){
-        musicPlayer = ((MainApplication) getApplication()).getMusicPlayer();
+        musicPlayer = mainApplication.getMusicPlayer();
         bottomNavigation = findViewById(R.id.bottom_navigator);
         tabLayout = findViewById(R.id.layoutSleep);
         viewPager2 = findViewById(R.id.viewpagerSleep);
@@ -60,44 +67,36 @@ public class SleepActivity extends AppCompatActivity {
         songNext = findViewById(R.id.songNext);
     }
 
+    //initialise bottom navigator
     @SuppressLint("NonConstantResourceId")
     public void initialiseBottomNavigator(){
+        //set current item to sleep icon
         bottomNavigation.setSelectedItemId(R.id.sleep);
+        //set bottom navigator listener
         bottomNavigation.setOnItemSelectedListener(item -> {
-            switch (item.getItemId()){
-                case R.id.save:
-                    startActivity(new Intent(getApplicationContext(), SaveActivity.class));
-                    return true;
-
-                case R.id.sleep:
-                    return true;
-
-                case R.id.music:
-                    startActivity(new Intent(getApplicationContext(), MusicActivity.class));
-                    return true;
-
-                case R.id.sport:
-                    startActivity(new Intent(getApplicationContext(), SportActivity.class));
-                    return true;
-
-                case R.id.info:
-                    startActivity(new Intent(getApplicationContext(), InfoActivity.class));
-                    return true;
-            }
-            return false;
+            Intent intent = mainApplication.getIntent(item.getItemId(), R.id.sleep);
+            if(intent != null) startActivity(intent);
+            return true;
         });
     }
 
+    //initialise tab layout and fragments
     public void initialiseLayout(){
+        //initialise tab layout
         initialiseTabLayout();
+        //initialise sleep fragments
         initialiseFragmentAdapter();
+        //initialise view pager
         initialiseViewPager();
     }
 
+    //initialise tab layout
     public void initialiseTabLayout(){
+        //initialise tab layout listener
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
+                //set view pager to current tab when selected
                 viewPager2.setCurrentItem(tab.getPosition());
             }
 
@@ -113,16 +112,25 @@ public class SleepActivity extends AppCompatActivity {
         });
     }
 
+    //initialise sleep fragments
     public void initialiseFragmentAdapter(){
-        sleepFragmentAdapter = new SleepFragmentAdapter(getSupportFragmentManager(), getLifecycle());
+        //initialise sleep fragment adapter
+        sleepFragmentAdapter = new FragmentAdapter(getSupportFragmentManager(), getLifecycle());
+        //add sleep list fragment
         sleepFragmentAdapter.addFragment(new SleepListFragment());
+        //add sleep chart fragment
         sleepFragmentAdapter.addFragment(new SleepChartFragment());
+        //add sleep calendar fragment
         sleepFragmentAdapter.addFragment(new SleepCalendarFragment());
+        //add sleep statistics fragment
         sleepFragmentAdapter.addFragment(new SleepStatisticsFragment());
     }
 
+    //initialise view pager
     public void initialiseViewPager(){
+        //set view pager with sleep adapter
         viewPager2.setAdapter(sleepFragmentAdapter);
+        //set view pager callback
         viewPager2.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
             public void onPageSelected(int position) {
@@ -131,48 +139,22 @@ public class SleepActivity extends AppCompatActivity {
         });
     }
 
+    //initialise music player
     public void initialiseMusicPlayer(){
-        initialiseSongController();
-        initialiseImageButtons();
-        initialiseLiveData();
+        //initialise song seek bar
+        musicPlayer.initialiseSongController(songProgress);
+        //initialise song buttons
+        musicPlayer.initialiseImageButtons(songPrevious, songPause, songNext);
+        //initialise song name and progress live data
+        musicPlayer.initialiseSongProgress(songName, songProgress);
     }
 
-    public void initialiseSongController(){
-        songProgress.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                if(fromUser) musicPlayer.setSongProgress(progress);
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-                musicPlayer.pauseSong();
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-                musicPlayer.playSong();
-            }
-        });
-    }
-
-    public void initialiseImageButtons(){
-        songPrevious.setOnClickListener(v -> musicPlayer.previousButton());
-        songPause.setOnClickListener(v -> musicPlayer.playButton());
-        songNext.setOnClickListener(v -> musicPlayer.nextButton());
-    }
-
-    public void initialiseLiveData(){
-        musicPlayer.getSong().observeForever(song -> {
-            songName.setText(song.getSongName());
-            songProgress.setProgress(0);
-            songProgress.setMax(song.getSongDuration() * 1000);
-        });
-        musicPlayer.getSongProgress().observeForever(integer -> songProgress.setProgress(integer));
-    }
     @Override
     protected void onResume() {
         super.onResume();
+        //set bottom navigator to sleep icon on resume
         bottomNavigation.setSelectedItemId(R.id.sleep);
+        //reset song name and progress if music player uninitialised
+        musicPlayer.resetMusic(songName, songProgress);
     }
 }

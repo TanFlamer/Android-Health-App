@@ -19,16 +19,13 @@ import androidx.lifecycle.ViewModelProvider;
 import com.example.myapp.MainApplication;
 import com.example.myapp.MusicPlayer;
 import com.example.myapp.R;
-import com.example.myapp.mainActivities.InfoActivity;
-import com.example.myapp.mainActivities.MusicActivity;
-import com.example.myapp.mainActivities.SleepActivity;
-import com.example.myapp.mainActivities.SportActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.ArrayList;
 
 public class SaveActivity extends AppCompatActivity {
 
+    MainApplication mainApplication;
     SaveViewModel saveViewModel;
     SaveListAdapter saveListAdapter;
     BottomNavigationView bottomNavigation;
@@ -44,19 +41,26 @@ public class SaveActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_save);
+        mainApplication = (MainApplication) getApplication();
         saveViewModel = new ViewModelProvider(this).get(SaveViewModel.class);
+        //initialise all components
         initialiseAll();
     }
 
+    //initialise all components
     public void initialiseAll(){
+        //link all components with ID
         initialiseViewByID();
+        //initialise bottom navigator
         initialiseBottomNavigator();
+        //initialise music player
         initialiseMusicPlayer();
         initialiseSaveLogs();
     }
 
+    //link all components with ID
     public void initialiseViewByID(){
-        musicPlayer = ((MainApplication) getApplication()).getMusicPlayer();
+        musicPlayer = mainApplication.getMusicPlayer();
         bottomNavigation = findViewById(R.id.bottom_navigator);
         listView = findViewById(R.id.saveListView);
         songName = findViewById(R.id.songName);
@@ -67,72 +71,27 @@ public class SaveActivity extends AppCompatActivity {
         printButton = findViewById(R.id.printButton);
     }
 
+    //initialise bottom navigator
     @SuppressLint("NonConstantResourceId")
     public void initialiseBottomNavigator(){
+        //set current item to save icon
         bottomNavigation.setSelectedItemId(R.id.save);
+        //set bottom navigator listener
         bottomNavigation.setOnItemSelectedListener(item -> {
-            switch (item.getItemId()){
-                case R.id.save:
-                    return true;
-
-                case R.id.sleep:
-                    startActivity(new Intent(getApplicationContext(), SleepActivity.class));
-                    return true;
-
-                case R.id.music:
-                    startActivity(new Intent(getApplicationContext(), MusicActivity.class));
-                    return true;
-
-                case R.id.sport:
-                    startActivity(new Intent(getApplicationContext(), SportActivity.class));
-                    return true;
-
-                case R.id.info:
-                    startActivity(new Intent(getApplicationContext(), InfoActivity.class));
-                    return true;
-            }
-            return false;
+            Intent intent = mainApplication.getIntent(item.getItemId(), R.id.save);
+            if(intent != null) startActivity(intent);
+            return true;
         });
     }
 
+    //initialise music player
     public void initialiseMusicPlayer(){
-        initialiseSongController();
-        initialiseImageButtons();
-        initialiseLiveData();
-    }
-
-    public void initialiseSongController(){
-        songProgress.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                if(fromUser) musicPlayer.setSongProgress(progress);
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-                musicPlayer.pauseSong();
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-                musicPlayer.playSong();
-            }
-        });
-    }
-
-    public void initialiseImageButtons(){
-        songPrevious.setOnClickListener(v -> musicPlayer.previousButton());
-        songPause.setOnClickListener(v -> musicPlayer.playButton());
-        songNext.setOnClickListener(v -> musicPlayer.nextButton());
-    }
-
-    public void initialiseLiveData(){
-        musicPlayer.getSong().observeForever(song -> {
-            songName.setText(song.getSongName());
-            songProgress.setProgress(0);
-            songProgress.setMax(song.getSongDuration() * 1000);
-        });
-        musicPlayer.getSongProgress().observeForever(integer -> songProgress.setProgress(integer));
+        //initialise song seek bar
+        musicPlayer.initialiseSongController(songProgress);
+        //initialise song buttons
+        musicPlayer.initialiseImageButtons(songPrevious, songPause, songNext);
+        //initialise song name and progress live data
+        musicPlayer.initialiseSongProgress(songName, songProgress);
     }
 
     public void initialiseSaveLogs(){
@@ -160,6 +119,9 @@ public class SaveActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        //set bottom navigator to save icon on resume
         bottomNavigation.setSelectedItemId(R.id.save);
+        //reset song name and progress if music player uninitialised
+        musicPlayer.resetMusic(songName, songProgress);
     }
 }

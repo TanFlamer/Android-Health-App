@@ -45,7 +45,7 @@ public class LoginViewModel extends AndroidViewModel {
 
     public Intent loginGuest(){
         Intent intent = new Intent(getApplication(), AccountActivity.class);
-        intent.putExtra("userID", 0);
+        intent.putExtra("username", "GUEST");
         return intent;
     }
 
@@ -60,13 +60,13 @@ public class LoginViewModel extends AndroidViewModel {
 
     public Intent loginNewUser(){
         Intent intent = new Intent(getApplication(), AccountActivity.class);
-        intent.putExtra("userID", -1);
+        intent.putExtra("username", "NEW USER");
         return intent;
     }
 
     public Intent loginUser(User user){
         Intent intent = new Intent(getApplication(), AccountActivity.class);
-        intent.putExtra("userID", user.getUserID());
+        intent.putExtra("username", user.getUsername());
         return intent;
     }
 

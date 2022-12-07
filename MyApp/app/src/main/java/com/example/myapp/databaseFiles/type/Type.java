@@ -44,6 +44,7 @@ public class Type {
         return typeID;
     }
 
+    //setter for sport type ID
     public void setTypeID(Integer typeID) {
         this.typeID = typeID;
     }
@@ -53,23 +54,27 @@ public class Type {
         return typeName;
     }
 
+    //setter for sport type name
     public void setTypeName(String typeName) {
         this.typeName = typeName;
     }
 
-    //getter for sport calorie per minute
+    //getter for sport type calorie per minute
     public Double getCaloriePerMinute() {
         return caloriePerMinute;
     }
 
+    //setter for sport type calorie per minute
     public void setCaloriePerMinute(Double caloriePerMinute) {
         this.caloriePerMinute = caloriePerMinute;
     }
 
+    //getter for user ID
     public Integer getUserID() {
         return userID;
     }
 
+    //setter for user ID
     public void setUserID(Integer userID) {
         this.userID = userID;
     }

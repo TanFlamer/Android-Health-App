@@ -11,33 +11,36 @@ import java.util.concurrent.Executors;
 
 public class UserRepository {
 
+    //user data access object
     private final UserDao userDao;
 
+    //constructor for user repository
     public UserRepository(Application application) {
         Database database = Database.getInstance(application);
         userDao = database.getUserDao();
     }
 
+    //insert operation for user repository
     public long insert(User user) {
         return new InsertUserExecutorTask(userDao).execute(user);
     }
 
+    //update operation for user repository
     public void update(User user) {
         new UpdateUserExecutorTask(userDao).execute(user);
     }
 
+    //delete operation for user repository
     public void delete(User user) {
         new DeleteUserExecutorTask(userDao).execute(user);
     }
 
+    //check if user with specific name exists
     public User findUser(String username) {
         return new FindUserExecutorTask(userDao).find(username);
     }
 
-    public User getUser(int userID) {
-        return new FindUserExecutorTask(userDao).get(userID);
-    }
-
+    //insert user executor task
     private static class InsertUserExecutorTask {
         private final ExecutorService service = Executors.newSingleThreadExecutor();
         private final UserDao userDao;
@@ -54,6 +57,7 @@ public class UserRepository {
         }
     }
 
+    //update user executor task
     private static class UpdateUserExecutorTask {
         private final ExecutorService service = Executors.newSingleThreadExecutor();
         private final UserDao userDao;
@@ -65,6 +69,7 @@ public class UserRepository {
         }
     }
 
+    //delete user executor task
     private static class DeleteUserExecutorTask {
         private final ExecutorService service = Executors.newSingleThreadExecutor();
         private final UserDao userDao;
@@ -76,6 +81,7 @@ public class UserRepository {
         }
     }
 
+    //find user executor task
     private static class FindUserExecutorTask {
         private final ExecutorService service = Executors.newSingleThreadExecutor();
         private final UserDao userDao;
@@ -85,14 +91,6 @@ public class UserRepository {
         protected User find(String username) {
             try {
                 return service.submit(() -> userDao.findUser(username)).get();
-            } catch (ExecutionException | InterruptedException e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
-        protected User get(int userID) {
-            try {
-                return service.submit(() -> userDao.getUser(userID)).get();
             } catch (ExecutionException | InterruptedException e) {
                 e.printStackTrace();
             }

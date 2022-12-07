@@ -31,7 +31,7 @@ public class SaveViewModel extends AndroidViewModel {
 
     public SaveViewModel(@NonNull Application application) {
         super(application);
-        mainApplication = (MainApplication) getApplication();
+        mainApplication = getApplication();
         userID = mainApplication.getUserID();
         filePath = getApplication().getFilesDir().toString() + "/logs/" + userID + ".txt";
     }
