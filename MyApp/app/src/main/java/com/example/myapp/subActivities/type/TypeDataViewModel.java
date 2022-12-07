@@ -39,7 +39,9 @@ public class TypeDataViewModel extends AndroidViewModel {
 
     public void update(String typeName, double calorie){
         updateSaveLogs("Sport Type " + typeName + " updated");
-        typeRepository.update(new Type(type.getTypeID(), typeName, calorie, userID));
+        type.setTypeName(typeName);
+        type.setCaloriePerMinute(calorie);
+        typeRepository.update(type);
     }
 
     public Type getType() {

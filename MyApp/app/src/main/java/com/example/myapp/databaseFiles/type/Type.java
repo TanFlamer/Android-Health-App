@@ -16,21 +16,22 @@ import com.example.myapp.databasefiles.user.User;
 public class Type {
 
     @PrimaryKey(autoGenerate = true)
-    private Integer typeID;
+    private Integer typeID; //unique ID for each sport type regardless of user
 
-    private String typeName;
+    private String typeName; //unique name for each sport type (same name allowed for different user)
 
-    private Double caloriePerMinute;
+    private Double caloriePerMinute; //calories burned per minute for each sport type
 
-    private Integer userID;
+    private Integer userID; //user ID of the user who the sport type belongs to
 
+    //constructor for new sport type
     public Type(String typeName, Double caloriePerMinute, Integer userID) {
         this.typeName = typeName;
         this.caloriePerMinute = caloriePerMinute;
         this.userID = userID;
     }
 
-    @Ignore
+    @Ignore //constructor to change sport type
     public Type(Integer typeID, String typeName, Double caloriePerMinute, Integer userID) {
         this.typeID = typeID;
         this.typeName = typeName;
@@ -38,6 +39,7 @@ public class Type {
         this.userID = userID;
     }
 
+    //getter for sport type ID
     public Integer getTypeID() {
         return typeID;
     }
@@ -46,6 +48,7 @@ public class Type {
         this.typeID = typeID;
     }
 
+    //getter for sport type name
     public String getTypeName() {
         return typeName;
     }
@@ -54,6 +57,7 @@ public class Type {
         this.typeName = typeName;
     }
 
+    //getter for sport calorie per minute
     public Double getCaloriePerMinute() {
         return caloriePerMinute;
     }

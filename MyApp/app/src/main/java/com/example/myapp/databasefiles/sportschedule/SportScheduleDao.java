@@ -13,14 +13,14 @@ import java.util.List;
 public interface SportScheduleDao {
 
     @Insert
-    void insert(SportSchedule sportSchedule);
+    void insert(SportSchedule sportSchedule); //insert operation for new sport schedule
 
     @Update
-    void update(SportSchedule sportSchedule);
+    void update(SportSchedule sportSchedule); //update operation for new sport schedule
 
     @Delete
-    void delete(SportSchedule sportSchedule);
+    void delete(SportSchedule sportSchedule); //delete operation for new sport schedule
 
     @Query("SELECT * FROM SportSchedule WHERE userID=:userID")
-    LiveData<List<SportSchedule>> getAllSportSchedule(int userID);
+    LiveData<List<SportSchedule>> getAllSportSchedule(int userID); //returns live data of all sport schedules belonging to a user
 }

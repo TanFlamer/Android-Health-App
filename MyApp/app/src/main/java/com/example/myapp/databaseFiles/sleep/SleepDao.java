@@ -13,7 +13,7 @@ import java.util.List;
 public interface SleepDao {
 
     @Insert
-    void insert(Sleep sleep); //insertion operation for new sleep data
+    void insert(Sleep sleep); //insert operation for new sleep data
 
     @Update
     void update(Sleep sleep); //update operation for existing sleep data
@@ -22,7 +22,7 @@ public interface SleepDao {
     void delete(Sleep sleep); //delete operation for existing sleep data
 
     @Query("SELECT * FROM Sleep WHERE userID=:userID AND date=:date")
-    Sleep findSleep(int userID, long date); //check if sleep data with specific date exists
+    Sleep findSleep(int userID, long date); //check if sleep data with specific date exists for a user
 
     @Query("SELECT * FROM Sleep WHERE userID=:userID")
     LiveData<List<Sleep>> getAllSleep(int userID); //returns live data of all sleep data belonging to a user

@@ -24,7 +24,7 @@ public class AccountViewModel extends AndroidViewModel {
 
     public AccountViewModel(@NonNull Application application) {
         super(application);
-        mainApplication = (MainApplication) getApplication();
+        mainApplication = getApplication();
         userRepository = mainApplication.getUserRepository();
         filePath = getApplication().getFilesDir().toString();
         newUser = userRepository.getUser(-1);

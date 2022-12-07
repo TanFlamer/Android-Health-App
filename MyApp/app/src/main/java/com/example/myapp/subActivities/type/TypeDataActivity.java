@@ -68,7 +68,7 @@ public class TypeDataActivity extends AppCompatActivity {
             double newTypeDouble = Double.parseDouble(calorie.getText().toString());
             if(type == null)
                 typeDataViewModel.insert(newTypeName, newTypeDouble);
-            else if(!type.getTypeName().equals(newTypeName) && !type.getCaloriePerMinute().equals(newTypeDouble))
+            else if(!type.getTypeName().equals(newTypeName) || !type.getCaloriePerMinute().equals(newTypeDouble))
                 typeDataViewModel.update(newTypeName, newTypeDouble);
             finish();
         });

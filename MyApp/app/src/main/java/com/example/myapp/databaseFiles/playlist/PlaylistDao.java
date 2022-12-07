@@ -13,7 +13,7 @@ import java.util.List;
 public interface PlaylistDao {
 
     @Insert
-    long insert(Playlist playlist); //insertion operation for new playlist
+    long insert(Playlist playlist); //insert operation for new playlist
 
     @Update
     void update(Playlist playlist); //update operation for existing playlist
@@ -22,7 +22,7 @@ public interface PlaylistDao {
     void delete(Playlist playlist); //delete operation for existing playlist
 
     @Query("SELECT * FROM Playlists WHERE userID=:userID AND playlistName=:playlistName")
-    Playlist findPlaylist(int userID, String playlistName); //check if playlist with specific name exists
+    Playlist findPlaylist(int userID, String playlistName); //check if playlist with specific name exists for a user
 
     @Query("SELECT * FROM Playlists WHERE userID=:userID")
     LiveData<List<Playlist>> getAllPlaylists(int userID); //returns live data of all playlist belonging to a user

@@ -20,16 +20,17 @@ import com.example.myapp.databasefiles.type.Type;
 public class SportSchedule {
 
     @NonNull
-    private Integer sportID;
+    private final Integer sportID; //sport ID of a specific sport data
 
     @NonNull
-    private Integer typeID;
+    private final Integer typeID; //type ID of a specific sport type
 
-    private Integer sportDuration;
+    private final Integer sportDuration; //duration of the sport type
 
     @NonNull
-    private Integer userID;
+    private final Integer userID; //user ID of the user who the sport schedule belongs to
 
+    //constructor for new sport schedule
     public SportSchedule(@NonNull Integer sportID, @NonNull Integer typeID, Integer sportDuration, @NonNull Integer userID){
         this.sportID = sportID;
         this.typeID = typeID;
@@ -37,38 +38,23 @@ public class SportSchedule {
         this.userID = userID;
     }
 
-    @NonNull
+    @NonNull //getter for sport data ID
     public Integer getSportID() {
         return sportID;
     }
 
-    public void setSportID(@NonNull Integer sportID) {
-        this.sportID = sportID;
-    }
-
-    @NonNull
+    @NonNull //getter for sport type ID
     public Integer getTypeID() {
         return typeID;
     }
 
-    public void setTypeID(@NonNull Integer typeID) {
-        this.typeID = typeID;
-    }
-
+    //getter for sport duration
     public Integer getSportDuration() {
         return sportDuration;
     }
 
-    public void setSportDuration(Integer sportDuration) {
-        this.sportDuration = sportDuration;
-    }
-
-    @NonNull
+    @NonNull //getter for user ID
     public Integer getUserID() {
         return userID;
-    }
-
-    public void setUserID(@NonNull Integer userID) {
-        this.userID = userID;
     }
 }

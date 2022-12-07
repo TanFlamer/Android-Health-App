@@ -14,37 +14,41 @@ import java.util.concurrent.Executors;
 
 public class SportRepository {
 
+    //sport data data access object
     private final SportDao sportDao;
 
+    //constructor for sport data repository
     public SportRepository(Application application) {
         Database database = Database.getInstance(application);
         sportDao = database.getSportDao();
     }
 
+    //insert operation for sport data repository
     public long insert(Sport sport) {
         return new InsertSportExecutorTask(sportDao).execute(sport);
     }
 
+    //update operation for sport data repository
     public void update(Sport sport) {
         new UpdateSportExecutorTask(sportDao).execute(sport);
     }
 
+    //delete operation for sport data repository
     public void delete(Sport sport) {
         new DeleteSportExecutorTask(sportDao).execute(sport);
     }
 
+    //check if sport data with specific date exists for a user
     public Sport findSport(int userID, long date) {
         return new FindSportExecutorTask(sportDao).find(userID, date);
     }
 
-    public Sport getSport(int sportID) {
-        return new FindSportExecutorTask(sportDao).get(sportID);
-    }
-
+    //returns live data of all sport data belonging to a user
     public LiveData<List<Sport>> getAllSport(int userID) {
         return sportDao.getAllSport(userID);
     }
 
+    //insert sport data executor task
     private static class InsertSportExecutorTask {
         private final ExecutorService service = Executors.newSingleThreadExecutor();
         private final SportDao sportDao;
@@ -61,6 +65,7 @@ public class SportRepository {
         }
     }
 
+    //update sport data executor task
     private static class UpdateSportExecutorTask {
         private final ExecutorService service = Executors.newSingleThreadExecutor();
         private final SportDao sportDao;
@@ -72,6 +77,7 @@ public class SportRepository {
         }
     }
 
+    //delete sport data executor task
     private static class DeleteSportExecutorTask {
         private final ExecutorService service = Executors.newSingleThreadExecutor();
         private final SportDao sportDao;
@@ -83,6 +89,7 @@ public class SportRepository {
         }
     }
 
+    //find sport data executor task
     private static class FindSportExecutorTask {
         private final ExecutorService service = Executors.newSingleThreadExecutor();
         private final SportDao sportDao;
@@ -92,14 +99,6 @@ public class SportRepository {
         protected Sport find(int userID, long date) {
             try {
                 return service.submit(() -> sportDao.findSport(userID, date)).get();
-            } catch (ExecutionException | InterruptedException e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
-        protected Sport get(int sportID) {
-            try {
-                return service.submit(() -> sportDao.getSport(sportID)).get();
             } catch (ExecutionException | InterruptedException e) {
                 e.printStackTrace();
             }

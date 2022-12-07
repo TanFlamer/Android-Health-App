@@ -36,10 +36,6 @@ public class TypeRepository {
         return new FindTypeExecutorTask(typeDao).find(userID, typeName);
     }
 
-    public Type getType(int typeID) {
-        return new FindTypeExecutorTask(typeDao).get(typeID);
-    }
-
     public LiveData<List<Type>> getAllTypes(int userID) {
         return typeDao.getAllTypes(userID);
     }
@@ -86,14 +82,6 @@ public class TypeRepository {
         protected Type find(int userID, String typeName) {
             try {
                 return service.submit(() -> typeDao.findType(userID, typeName)).get();
-            } catch (ExecutionException | InterruptedException e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
-        protected Type get(int typeID) {
-            try {
-                return service.submit(() -> typeDao.getType(typeID)).get();
             } catch (ExecutionException | InterruptedException e) {
                 e.printStackTrace();
             }

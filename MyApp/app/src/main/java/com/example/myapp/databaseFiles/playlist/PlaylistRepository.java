@@ -38,7 +38,7 @@ public class PlaylistRepository {
         new DeletePlaylistExecutorTask(playlistDao).execute(playlist);
     }
 
-    //check if playlist with specific name exists
+    //check if playlist with specific name exists for a user
     public Playlist findPlaylist(int userID, String playlistName) {
         return new FindPlaylistExecutorTask(playlistDao).find(userID, playlistName);
     }

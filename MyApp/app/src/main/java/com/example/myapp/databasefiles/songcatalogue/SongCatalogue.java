@@ -20,44 +20,33 @@ import com.example.myapp.databasefiles.song.Song;
 public class SongCatalogue {
 
     @NonNull
-    private Integer playlistID;
+    private final Integer playlistID; //playlist ID of a specific playlist
 
     @NonNull
-    private Integer songID;
+    private final Integer songID; //song ID of a specific song
 
     @NonNull
-    private Integer userID;
+    private final Integer userID; //user ID of the user who the song catalogue belongs to
 
+    //constructor for new song catalogue
     public SongCatalogue(@NonNull Integer playlistID, @NonNull Integer songID, @NonNull Integer userID){
         this.playlistID = playlistID;
         this.songID = songID;
         this.userID = userID;
     }
 
-    @NonNull
+    @NonNull //getter for playlist ID
     public Integer getPlaylistID() {
         return playlistID;
     }
 
-    public void setPlaylistID(@NonNull Integer playlistID) {
-        this.playlistID = playlistID;
-    }
-
-    @NonNull
+    @NonNull //getter for song ID
     public Integer getSongID() {
         return songID;
     }
 
-    public void setSongID(@NonNull Integer songID) {
-        this.songID = songID;
-    }
-
-    @NonNull
+    @NonNull //getter for user ID
     public Integer getUserID() {
         return userID;
-    }
-
-    public void setUserID(@NonNull Integer userID) {
-        this.userID = userID;
     }
 }

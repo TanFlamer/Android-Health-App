@@ -13,20 +13,17 @@ import java.util.List;
 public interface SongDao {
 
     @Insert
-    void insert(Song song);
+    void insert(Song song); //insert operation for new song
 
     @Update
-    void update(Song song);
+    void update(Song song); //update operation for existing song
 
     @Delete
-    void delete(Song song);
-
-    @Query("SELECT * FROM Songs WHERE songID=:songID")
-    Song getSong(int songID);
+    void delete(Song song); //delete operation for existing song
 
     @Query("SELECT * FROM Songs WHERE userID=:userID AND songName=:songName")
-    Song findSong(int userID, String songName);
+    Song findSong(int userID, String songName); //check if song with specific name exists for a user
 
     @Query("SELECT * FROM Songs WHERE userID=:userID")
-    LiveData<List<Song>> getAllSongs(int userID);
+    LiveData<List<Song>> getAllSongs(int userID); //returns live data of all songs belonging to a user
 }

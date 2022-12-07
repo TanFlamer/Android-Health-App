@@ -13,37 +13,41 @@ import java.util.concurrent.Executors;
 
 public class SongRepository {
 
+    //song data access object
     private final SongDao songDao;
 
+    //constructor for song repository
     public SongRepository(Application application) {
         Database database = Database.getInstance(application);
         songDao = database.getSongDao();
     }
 
+    //insert operation for song repository
     public void insert(Song song) {
         new InsertSongExecutorTask(songDao).execute(song);
     }
 
+    //update operation for song repository
     public void update(Song song) {
         new UpdateSongExecutorTask(songDao).execute(song);
     }
 
+    //delete operation for song repository
     public void delete(Song song) {
         new DeleteSongExecutorTask(songDao).execute(song);
     }
 
-    public Song getSong(int songID) {
-        return new FindSongExecutorTask(songDao).get(songID);
-    }
-
+    //check if song with specific name exists for a user
     public Song findSong(int userID, String songName) {
         return new FindSongExecutorTask(songDao).find(userID, songName);
     }
 
+    //returns live data of all songs belonging to a user
     public LiveData<List<Song>> getAllSongs(int userID) {
         return songDao.getAllSongs(userID);
     }
 
+    //insert song executor task
     private static class InsertSongExecutorTask {
         private final ExecutorService service = Executors.newSingleThreadExecutor();
         private final SongDao songDao;
@@ -55,6 +59,7 @@ public class SongRepository {
         }
     }
 
+    //update song executor task
     private static class UpdateSongExecutorTask {
         private final ExecutorService service = Executors.newSingleThreadExecutor();
         private final SongDao songDao;
@@ -66,6 +71,7 @@ public class SongRepository {
         }
     }
 
+    //delete song executor task
     private static class DeleteSongExecutorTask {
         private final ExecutorService service = Executors.newSingleThreadExecutor();
         private final SongDao songDao;
@@ -77,6 +83,7 @@ public class SongRepository {
         }
     }
 
+    //find song executor task
     private static class FindSongExecutorTask {
         private final ExecutorService service = Executors.newSingleThreadExecutor();
         private final SongDao songDao;
@@ -86,14 +93,6 @@ public class SongRepository {
         protected Song find(int userID, String songName) {
             try {
                 return service.submit(() -> songDao.findSong(userID, songName)).get();
-            } catch (ExecutionException | InterruptedException e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
-        protected Song get(int songID) {
-            try {
-                return service.submit(() -> songDao.getSong(songID)).get();
             } catch (ExecutionException | InterruptedException e) {
                 e.printStackTrace();
             }

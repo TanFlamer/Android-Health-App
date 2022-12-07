@@ -13,14 +13,14 @@ import java.util.List;
 public interface SongCatalogueDao {
 
     @Insert
-    void insert(SongCatalogue songCatalogue);
+    void insert(SongCatalogue songCatalogue); //insert operation for new song catalogue
 
     @Update
-    void update(SongCatalogue songCatalogue);
+    void update(SongCatalogue songCatalogue); //update operation for existing song catalogue
 
     @Delete
-    void delete(SongCatalogue songCatalogue);
+    void delete(SongCatalogue songCatalogue); //delete operation for existing song catalogue
 
     @Query("SELECT * FROM SongCatalogue WHERE userID=:userID")
-    LiveData<List<SongCatalogue>> getAllSongCatalogue(int userID);
+    LiveData<List<SongCatalogue>> getAllSongCatalogue(int userID); //returns live data of all song catalogues belonging to a user
 }

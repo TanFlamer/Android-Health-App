@@ -35,6 +35,7 @@ public class Song {
         return songID;
     }
 
+    //setter for song ID
     public void setSongID(Integer songID) {
         this.songID = songID;
     }
@@ -44,6 +45,7 @@ public class Song {
         return songName;
     }
 
+    //setter for song name
     public void setSongName(String songName) {
         this.songName = songName;
     }
@@ -53,14 +55,17 @@ public class Song {
         return songDuration;
     }
 
+    //setter for song duration
     public void setSongDuration(Integer songDuration) {
         this.songDuration = songDuration;
     }
 
+    //getter for user ID
     public Integer getUserID() {
         return userID;
     }
 
+    //setter for user ID
     public void setUserID(Integer userID) {
         this.userID = userID;
     }

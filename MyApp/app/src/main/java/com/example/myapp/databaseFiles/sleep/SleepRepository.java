@@ -37,7 +37,7 @@ public class SleepRepository {
         new DeleteSleepExecutorTask(sleepDao).execute(sleep);
     }
 
-    //check if sleep data with specific date exists
+    //check if sleep data with specific date exists for a user
     public Sleep findSleep(int userID, long date) {
         return new FindSleepExecutorTask(sleepDao).find(userID, date);
     }

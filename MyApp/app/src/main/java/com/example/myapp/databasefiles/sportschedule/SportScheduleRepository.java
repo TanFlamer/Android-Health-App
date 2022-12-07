@@ -12,29 +12,36 @@ import java.util.concurrent.Executors;
 
 public class SportScheduleRepository {
 
+    //sport schedule data access object
     private final SportScheduleDao sportScheduleDao;
 
+    //constructor for sport schedule repository
     public SportScheduleRepository(Application application) {
         Database database = Database.getInstance(application);
         sportScheduleDao = database.getTypeSportDao();
     }
 
+    //insert operation for sport schedule repository
     public void insert(SportSchedule sportSchedule) {
         new InsertTypeSportExecutorTask(sportScheduleDao).execute(sportSchedule);
     }
 
+    //update operation for sport schedule repository
     public void update(SportSchedule sportSchedule) {
         new UpdateTypeSportExecutorTask(sportScheduleDao).execute(sportSchedule);
     }
 
+    //delete operation for sport schedule repository
     public void delete(SportSchedule sportSchedule) {
         new DeleteTypeSportExecutorTask(sportScheduleDao).execute(sportSchedule);
     }
 
+    //returns live data of all sport schedules belonging to a user
     public LiveData<List<SportSchedule>> getAllSportSchedule(int userID) {
         return sportScheduleDao.getAllSportSchedule(userID);
     }
 
+    //insert sport schedule executor task
     private static class InsertTypeSportExecutorTask {
         private final ExecutorService service = Executors.newSingleThreadExecutor();
         private final SportScheduleDao sportScheduleDao;
@@ -46,6 +53,7 @@ public class SportScheduleRepository {
         }
     }
 
+    //update sport schedule executor task
     private static class UpdateTypeSportExecutorTask {
         private final ExecutorService service = Executors.newSingleThreadExecutor();
         private final SportScheduleDao sportScheduleDao;
@@ -57,6 +65,7 @@ public class SportScheduleRepository {
         }
     }
 
+    //delete sport schedule executor task
     private static class DeleteTypeSportExecutorTask {
         private final ExecutorService service = Executors.newSingleThreadExecutor();
         private final SportScheduleDao sportScheduleDao;

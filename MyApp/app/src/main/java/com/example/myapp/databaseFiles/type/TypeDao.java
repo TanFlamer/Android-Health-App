@@ -21,9 +21,6 @@ public interface TypeDao {
     @Delete
     void delete(Type type);
 
-    @Query("SELECT * FROM Types WHERE typeID=:typeID")
-    Type getType(int typeID);
-
     @Query("SELECT * FROM Types WHERE userID=:userID AND typeName=:typeName")
     Type findType(int userID, String typeName);
 
