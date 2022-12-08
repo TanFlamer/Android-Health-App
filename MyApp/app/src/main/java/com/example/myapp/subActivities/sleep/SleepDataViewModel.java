@@ -20,6 +20,7 @@ public class SleepDataViewModel extends AndroidViewModel {
     private final int userID;
     private Sleep sleep;
 
+    //constructor for view model
     public SleepDataViewModel(@NonNull Application application) {
         super(application);
         mainApplication = getApplication();
@@ -27,17 +28,20 @@ public class SleepDataViewModel extends AndroidViewModel {
         userID = mainApplication.getUserID();
     }
 
+    //load sleep data from database
     public Sleep loadSleepData(long date){
         sleep = sleepRepository.findSleep(userID, date);
         return sleep;
     }
 
+    //insert new sleep data to database
     public void insert(long date, int sleepTime, int wakeTime){
         LocalDate localDate = Instant.ofEpochMilli(date).atZone(ZoneId.systemDefault()).toLocalDate();
         updateSaveLogs("Sleep data for " + localDate + " added");
         sleepRepository.insert(new Sleep(date, sleepTime, wakeTime, userID));
     }
 
+    //update existing sleep data in database
     public void update(int sleepTime, int wakeTime){
         updateSaveLogs("Sleep data for " + getDate() + " updated");
         sleep.setSleepTime(sleepTime);
@@ -45,19 +49,17 @@ public class SleepDataViewModel extends AndroidViewModel {
         sleepRepository.update(sleep);
     }
 
-    public void delete(){
-        updateSaveLogs("Sleep data for " + getDate() + " deleted");
-        sleepRepository.delete(sleep);
-    }
-
+    //convert long to date
     public LocalDate getDate(){
         return Instant.ofEpochMilli(sleep.getDate()).atZone(ZoneId.systemDefault()).toLocalDate();
     }
 
+    //return sleep data
     public Sleep getSleep() {
         return sleep;
     }
 
+    //update any changes to logs
     public void updateSaveLogs(String saveLogs){
         mainApplication.updateSaveLogs(saveLogs);
     }

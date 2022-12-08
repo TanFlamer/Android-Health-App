@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".mainActivities.save.SaveActivity">
+    tools:context=".mainActivities.logs.LogsActivity">
 
     <LinearLayout
         android:id="@+id/mp3Player"

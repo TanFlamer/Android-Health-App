@@ -1,4 +1,4 @@
-package com.example.myapp.mainActivities.save;
+package com.example.myapp.mainActivities.logs;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -23,11 +23,11 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.ArrayList;
 
-public class SaveActivity extends AppCompatActivity {
+public class LogsActivity extends AppCompatActivity {
 
     MainApplication mainApplication;
-    SaveViewModel saveViewModel;
-    SaveListAdapter saveListAdapter;
+    LogsViewModel logsViewModel;
+    LogsListAdapter logsListAdapter;
     BottomNavigationView bottomNavigation;
     ListView listView;
     Button printButton;
@@ -40,9 +40,11 @@ public class SaveActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_save);
+        setContentView(R.layout.activity_logs);
+        //get main application
         mainApplication = (MainApplication) getApplication();
-        saveViewModel = new ViewModelProvider(this).get(SaveViewModel.class);
+        //get view model
+        logsViewModel = new ViewModelProvider(this).get(LogsViewModel.class);
         //initialise all components
         initialiseAll();
     }
@@ -55,6 +57,7 @@ public class SaveActivity extends AppCompatActivity {
         initialiseBottomNavigator();
         //initialise music player
         initialiseMusicPlayer();
+        //initialise logs list
         initialiseSaveLogs();
     }
 
@@ -78,7 +81,9 @@ public class SaveActivity extends AppCompatActivity {
         bottomNavigation.setSelectedItemId(R.id.save);
         //set bottom navigator listener
         bottomNavigation.setOnItemSelectedListener(item -> {
+            //get intent to other activity
             Intent intent = mainApplication.getIntent(item.getItemId(), R.id.save);
+            //if different activity, then start activity else stay in same activity
             if(intent != null) startActivity(intent);
             return true;
         });
@@ -94,24 +99,31 @@ public class SaveActivity extends AppCompatActivity {
         musicPlayer.initialiseSongProgress(songName, songProgress);
     }
 
+    //initialise logs list
     public void initialiseSaveLogs(){
-        saveListAdapter = new SaveListAdapter(this, R.layout.save_list_item, new ArrayList<>());
-        listView.setAdapter(saveListAdapter);
-        saveViewModel.getSaveLog().observeForever(saveLogs -> saveListAdapter.updateSaveLogs(saveLogs));
+        //initialise list adapter for logs
+        logsListAdapter = new LogsListAdapter(this, R.layout.logs_list_item, new ArrayList<>());
+        //set list adapter for list view
+        listView.setAdapter(logsListAdapter);
+        //observe the logs list to update when new logs appear
+        logsViewModel.getSaveLog().observeForever(saveLogs -> logsListAdapter.updateSaveLogs(saveLogs));
+        //check for permissions to print logs file to download folder
         printButton.setOnClickListener(v -> {
+            //if sdk version >= 30, no permission required
             if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.R)
-                saveViewModel.copyLogFile();
-            else
-                saveViewModel.downloadLogFile(requestPermissionLauncher);
+                logsViewModel.copyLogFile();
+            else //if sdk version < 30, ask for write external storage permission
+                logsViewModel.downloadLogFile(requestPermissionLauncher);
         });
     }
 
+    //ask for write external storage permission
     private final ActivityResultLauncher<String> requestPermissionLauncher =
             registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
-                if (isGranted) {
-                    saveViewModel.copyLogFile();
+                if (isGranted) { //if permission granted, print logs file to download folder
+                    logsViewModel.copyLogFile();
                 }
-                else {
+                else { //if permission denied, show toast
                     Toast.makeText(getApplicationContext(), "Permission not granted to print log files", Toast.LENGTH_SHORT).show();
                 }
             });

@@ -74,7 +74,9 @@ public class SleepActivity extends AppCompatActivity {
         bottomNavigation.setSelectedItemId(R.id.sleep);
         //set bottom navigator listener
         bottomNavigation.setOnItemSelectedListener(item -> {
+            //get intent to other activity
             Intent intent = mainApplication.getIntent(item.getItemId(), R.id.sleep);
+            //if different activity, then start activity else stay in same activity
             if(intent != null) startActivity(intent);
             return true;
         });

@@ -46,10 +46,6 @@ public class SleepListViewModel extends AndroidViewModel {
         return intent;
     }
 
-    public void delete(Sleep sleep){
-        sleepRepository.delete(sleep);
-    }
-
     public AlertDialog deleteDialog(Context context, Sleep sleep){
         return new AlertDialog.Builder(context)
                 .setTitle("Delete Item")

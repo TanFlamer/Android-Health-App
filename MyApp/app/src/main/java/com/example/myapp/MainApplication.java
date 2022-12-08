@@ -29,7 +29,7 @@ import com.example.myapp.mainActivities.InfoActivity;
 import com.example.myapp.mainActivities.MusicActivity;
 import com.example.myapp.mainActivities.SleepActivity;
 import com.example.myapp.mainActivities.SportActivity;
-import com.example.myapp.mainActivities.save.SaveActivity;
+import com.example.myapp.mainActivities.logs.LogsActivity;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -252,12 +252,14 @@ public class MainApplication extends Application {
     //get intent to move to different activity
     @SuppressLint("NonConstantResourceId")
     public Intent getIntent(int newActivity, int oldActivity){
+        //stay in same activity if same icon pressed
         if(newActivity == oldActivity)
             return null;
         else{
+            //move to different activity if different icon pressed
             switch(newActivity){
                 case R.id.save:
-                    return new Intent(getApplicationContext(), SaveActivity.class);
+                    return new Intent(getApplicationContext(), LogsActivity.class);
 
                 case R.id.sleep:
                     return new Intent(getApplicationContext(), SleepActivity.class);

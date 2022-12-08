@@ -87,7 +87,7 @@
                 android:value="" />
         </activity>
         <activity
-            android:name=".mainActivities.save.SaveActivity"
+            android:name=".mainActivities.logs.LogsActivity"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"

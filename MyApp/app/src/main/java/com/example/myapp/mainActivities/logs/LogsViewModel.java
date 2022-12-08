@@ -1,4 +1,4 @@
-package com.example.myapp.mainActivities.save;
+package com.example.myapp.mainActivities.logs;
 
 import android.Manifest;
 import android.app.Application;
@@ -23,39 +23,49 @@ import java.nio.file.StandardCopyOption;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public class SaveViewModel extends AndroidViewModel {
+public class LogsViewModel extends AndroidViewModel {
 
     private final MainApplication mainApplication;
     private final String filePath;
     private final int userID;
 
-    public SaveViewModel(@NonNull Application application) {
+    //constructor for logs view model
+    public LogsViewModel(@NonNull Application application) {
         super(application);
         mainApplication = getApplication();
         userID = mainApplication.getUserID();
         filePath = getApplication().getFilesDir().toString() + "/logs/" + userID + ".txt";
     }
 
+    //copy logs file to download folder
     public void copyLogFile(){
         try{
+            //get text file name
             String fileName = userID + ".txt";
+            //get path to logs folder
             Path source = Paths.get(filePath);
+            //get path to download folder
             Path dest = Paths.get(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).toString(), fileName);
+            //copy logs file to download folder, replacing any old file
             Files.copy(source, dest, StandardCopyOption.REPLACE_EXISTING);
+            //show toast
+            Toast.makeText(getApplication(), "Log file downloaded", Toast.LENGTH_SHORT).show();
         }
         catch (IOException e) {
             e.printStackTrace();
         }
-        Toast.makeText(getApplication(), "Log file downloaded", Toast.LENGTH_SHORT).show();
     }
 
+    //check for permission to write external storage
     public void downloadLogFile(ActivityResultLauncher<String> requestPermissionLauncher){
+        //if permission granted, copy logs file to download folder
         if (ContextCompat.checkSelfPermission(getApplication(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED)
             copyLogFile();
-        else
+        else //if permission denied, show toast
             requestPermissionLauncher.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE);
     }
 
+    //get save logs list from main application to show in list
     public MutableLiveData<List<Pair<String, LocalDateTime>>> getSaveLog() {
         return mainApplication.getSaveLog();
     }
