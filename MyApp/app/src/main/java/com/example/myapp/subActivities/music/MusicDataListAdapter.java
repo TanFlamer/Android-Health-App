@@ -30,8 +30,9 @@ public class MusicDataListAdapter extends ArrayAdapter<Pair<Song, Boolean>> {
         View currentItemView = convertView;
 
         //inflate new view for song if null
-        if(currentItemView == null)
+        if(currentItemView == null) {
             currentItemView = LayoutInflater.from(getContext()).inflate(R.layout.data_music_list_item, parent, false);
+        }
 
         //initialise song view data
         initialiseAll(currentItemView, position);

@@ -43,6 +43,7 @@ public class MusicListViewModel extends AndroidViewModel {
     private final String filePath;
     private final int userID;
 
+    //constructor for music list view model
     public MusicListViewModel(@NonNull Application application) {
         super(application);
         mainApplication = getApplication();
@@ -54,24 +55,34 @@ public class MusicListViewModel extends AndroidViewModel {
         mediaMetadataRetriever = new MediaMetadataRetriever();
     }
 
+    //get live data of song list
     public LiveData<List<Song>> getSongList(){
         return songList;
     }
 
+    //get music player
     public MusicPlayer getMusicPlayer() {
         return musicPlayer;
     }
 
+    //update any changes to logs
     public void updateSaveLogs(String saveLogs){
         mainApplication.updateSaveLogs(saveLogs);
     }
 
+    //copy music files from device to music folder
     public void copyFile(Uri uri, Context context) throws IOException {
+        //open input stream from uri
         InputStream source = context.getContentResolver().openInputStream(uri);
+        //get song file name
         String fileName = Objects.requireNonNull(DocumentFile.fromSingleUri(getApplication(), uri)).getName();
+        //get file path to music folder
         Path dest = Paths.get(filePath, fileName);
+        //copy song file from device to music folder
         Files.copy(source, dest, StandardCopyOption.REPLACE_EXISTING);
+        //insert or update song in database depending if song already exists
         checkFile(fileName, uri);
+        //show toast
         Toast.makeText(getApplication(), fileName + " copied successfully", Toast.LENGTH_SHORT).show();
     }
 
