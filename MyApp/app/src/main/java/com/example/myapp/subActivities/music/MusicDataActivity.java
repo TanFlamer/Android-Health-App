@@ -116,7 +116,7 @@ public class MusicDataActivity extends AppCompatActivity {
     //check if any songs from list selected
     public boolean selected(List<Pair<Song, Boolean>> songList){
         for(Pair<Song, Boolean> pair : songList)
-            if(pair.second) //if at least on song selected, return true
+            if(pair.second) //if at least one song selected, return true
                 return true;
         return false; //if no song selected, return false
     }
@@ -242,7 +242,7 @@ public class MusicDataActivity extends AppCompatActivity {
         playlistName = findViewById(R.id.playlistName);
         //set original playlist name if given else empty
         playlistName.setText(namePlaylist);
-        //add text listener
+        //add text watcher
         playlistName.addTextChangedListener(playlistNameTextWatcher);
         //add focus listener
         playlistName.setOnFocusChangeListener((v, hasFocus) -> validatePlaylistName(playlistNameInput, playlistName));
@@ -266,7 +266,7 @@ public class MusicDataActivity extends AppCompatActivity {
                 else if(operation < 0) //if new song in unselected list
                     musicDataViewModel.deleteSongPlaylist(songID); //delete old song catalogue
             });
-            finish();
+            finish(); //return to last activity
         });
         //get return button by ID
         returnButton = findViewById(R.id.returnButton);
@@ -304,7 +304,7 @@ public class MusicDataActivity extends AppCompatActivity {
         return !emptyPlaylistName && !playlistText.equals(namePlaylist);
     }
 
-    //set save button if changes detected and valid playlist name
+    //enable save button if changes detected and valid playlist name
     public void checkButton(){
         //check if playlist name different
         boolean differentPlaylistName = differentPlaylistName(playlistName);
@@ -327,7 +327,7 @@ public class MusicDataActivity extends AppCompatActivity {
 
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
-            //set save button if changes detected and valid playlist name
+            //enable save button if changes detected and valid playlist name
             checkButton();
         }
 

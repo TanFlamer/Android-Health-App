@@ -32,10 +32,11 @@ public class SportDataViewModel extends AndroidViewModel {
     private final HashMap<Integer, Type> typeMap;
     private final List<Type> typeList;
     private final List<SportSchedule> sportScheduleList;
-    private final int userID;
 
+    private final int userID;
     private Sport sport;
 
+    //constructor for view model
     public SportDataViewModel(@NonNull Application application) {
         super(application);
         mainApplication = getApplication();
@@ -51,6 +52,7 @@ public class SportDataViewModel extends AndroidViewModel {
         for(Type type : typeList)  typeMap.put(type.getTypeID(), type);
     }
 
+    //insert new sport data to database
     public void insertSport(long newDate){
         LocalDate localDate = Instant.ofEpochMilli(newDate).atZone(ZoneId.systemDefault()).toLocalDate();
         updateSaveLogs("Sleep data for " + localDate + " added");
@@ -58,39 +60,46 @@ public class SportDataViewModel extends AndroidViewModel {
         sport = new Sport(sportID, newDate, userID);
     }
 
+    //insert new sport schedule to database
     public void insertTypeSport(int typeID, int duration){
         String typeName = Objects.requireNonNull(typeMap.get(typeID)).getTypeName();
         updateSaveLogs("Sport Type " + typeName + " added to " + getDate());
         sportScheduleRepository.insert(new SportSchedule(sport.getSportID(), typeID, duration, userID));
     }
 
+    //update existing sport schedule in database
     public void updateTypeSport(int typeID, int duration){
         String typeName = Objects.requireNonNull(typeMap.get(typeID)).getTypeName();
         updateSaveLogs("Sport Type " + typeName + " from " + getDate() + " updated");
         sportScheduleRepository.update(new SportSchedule(sport.getSportID(), typeID, duration, userID));
     }
 
+    //delete existing sport schedule from database
     public void deleteTypeSport(int typeID, int duration){
         String typeName = Objects.requireNonNull(typeMap.get(typeID)).getTypeName();
         updateSaveLogs("Sport Type " + typeName + " deleted from " + getDate());
         sportScheduleRepository.delete(new SportSchedule(sport.getSportID(), typeID, duration, userID));
     }
 
+    //convert long to date
     public LocalDate getDate(){
         return Instant.ofEpochMilli(sport.getDate()).atZone(ZoneId.systemDefault()).toLocalDate();
     }
 
+    //initialise selected and unselected sport type list
     public Pair<List<Pair<Type, Integer>>, List<Type>> populateList(long date){
         sport = sportRepository.findSport(userID, date);
-        if(sport == null)
+        if(sport == null) //if no sport data given, set all sport type in unselected list
             return new Pair<>(new ArrayList<>(), new ArrayList<>(typeList));
         else{
             List<Pair<Type, Integer>> newTypeSport = new ArrayList<>();
             Set<Type> typeSet = new HashSet<>(typeList);
 
+            //else if sport data given, get all sport schedule belonging to sport data
             List<SportSchedule> sportSchedules = new ArrayList<>(sportScheduleList);
             sportSchedules.removeIf(typeSport -> !typeSport.getSportID().equals(sport.getSportID()));
 
+            //populate selected sport type list with sport schedule list
             for(SportSchedule sportSchedule : sportSchedules){
                 Type type = typeMap.get(sportSchedule.getTypeID());
                 int duration = sportSchedule.getSportDuration();
@@ -101,10 +110,12 @@ public class SportDataViewModel extends AndroidViewModel {
         }
     }
 
+    //return sport data
     public Sport getSport() {
         return sport;
     }
 
+    //update any changes to logs
     public void updateSaveLogs(String saveLogs){
         mainApplication.updateSaveLogs(saveLogs);
     }

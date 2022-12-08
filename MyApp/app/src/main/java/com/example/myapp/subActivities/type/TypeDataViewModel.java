@@ -17,6 +17,7 @@ public class TypeDataViewModel extends AndroidViewModel {
     private Type type;
 
 
+    //constructor for view model
     public TypeDataViewModel(@NonNull Application application) {
         super(application);
         mainApplication = getApplication();
@@ -24,19 +25,23 @@ public class TypeDataViewModel extends AndroidViewModel {
         userID = mainApplication.getUserID();
     }
 
+    //load sport type from database
     public void loadType(String typeName){
         type = typeName == null ? null : typeRepository.findType(userID, typeName);
     }
 
+    //check if sport type name taken
     public boolean validateTypeName(String typeName){
         return typeRepository.findType(userID, typeName) == null;
     }
 
+    //insert new sport type to database
     public void insert(String typeName, double calorie){
         updateSaveLogs("Sport Type " + typeName + " added");
         typeRepository.insert(new Type(typeName, calorie, userID));
     }
 
+    //update existing sport type in database
     public void update(String typeName, double calorie){
         updateSaveLogs("Sport Type " + typeName + " updated");
         type.setTypeName(typeName);
@@ -44,10 +49,12 @@ public class TypeDataViewModel extends AndroidViewModel {
         typeRepository.update(type);
     }
 
+    //return sport type
     public Type getType() {
         return type;
     }
 
+    //update any changes to logs
     public void updateSaveLogs(String saveLogs){
         mainApplication.updateSaveLogs(saveLogs);
     }

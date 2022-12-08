@@ -58,7 +58,7 @@ public class MusicDataListAdapter extends ArrayAdapter<Pair<Song, Boolean>> {
 
     //get song selected state
     public void initialiseSelected(View view, boolean selected){
-        //set song background colour depening on selected state
+        //set song background colour depending on selected state
         view.setBackgroundColor(selected ? Color.LTGRAY : Color.WHITE);
     }
 

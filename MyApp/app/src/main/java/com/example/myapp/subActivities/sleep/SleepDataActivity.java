@@ -113,6 +113,7 @@ public class SleepDataActivity extends AppCompatActivity{
     //initialise sleep time button
     @SuppressLint("DefaultLocale")
     public void initialiseSleepButton(){
+        //set on click listener
         sleepTime.setOnClickListener(view -> new TimePickerDialog(SleepDataActivity.this, (timePicker, i, i1) -> {
             //set sleep hour and minute
             sleepHour = i;
@@ -127,6 +128,7 @@ public class SleepDataActivity extends AppCompatActivity{
     //initialise wake time button
     @SuppressLint("DefaultLocale")
     public void initialiseWakeButton(){
+        //set on click listener
         wakeTime.setOnClickListener(view -> new TimePickerDialog(SleepDataActivity.this, (timePicker, i, i1) -> {
             //set wake hour and minute
             wakeHour = i;
@@ -140,7 +142,7 @@ public class SleepDataActivity extends AppCompatActivity{
 
     //initialise save and return button
     public void initialiseBottomButtons(){
-        //initialise save button
+        //set save button on click listener
         buttonSave.setOnClickListener(v -> {
             if(sleepDataViewModel.getSleep() == null) //insert new sleep data if no date data
                 sleepDataViewModel.insert(date, timeSleep, timeWake);
@@ -148,7 +150,7 @@ public class SleepDataActivity extends AppCompatActivity{
                 sleepDataViewModel.update(timeSleep, timeWake);
             finish(); //return to last activity
         });
-        //initialise return button to return to last activity
+        //set return button on click listener to return to last activity
         buttonReturn.setOnClickListener(v -> finish());
     }
 
