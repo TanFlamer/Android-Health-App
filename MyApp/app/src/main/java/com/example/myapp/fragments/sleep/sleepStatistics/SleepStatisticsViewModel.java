@@ -15,18 +15,20 @@ import java.util.List;
 
 public class SleepStatisticsViewModel extends AndroidViewModel {
 
-    private SleepRepository sleepRepository;
-    private LiveData<List<Sleep>> sleepList;
-    private int userID;
+    private final LiveData<List<Sleep>> sleepList;
 
+    //constructor for sleep statistics view model
     public SleepStatisticsViewModel(@NonNull Application application) {
         super(application);
-        sleepRepository = new SleepRepository(application);
-        userID = ((MainApplication) getApplication()).getUserID();
+        MainApplication mainApplication = (MainApplication) getApplication();
+        SleepRepository sleepRepository = mainApplication.getSleepRepository();
+        int userID = mainApplication.getUserID();
         sleepList = sleepRepository.getAllSleep(userID);
     }
 
+    //compile sleep statistics
     public double[] processResults(List<Sleep> sleepList){
+        //if no sleep data, return empty statistics
         if(sleepList.size() == 0) return new double[9];
 
         int[] results = new int[] {0, 0, 1440, 719, 720, 1439, 0, 0};
@@ -42,9 +44,11 @@ public class SleepStatisticsViewModel extends AndroidViewModel {
             results[6] = (normalisedWakeTime(sleep.getWakeTime()) > normalisedWakeTime(results[6])) ? sleep.getWakeTime() : results[6]; //latest wake
             results[7] += 1; //sleep days
         }
+        //convert sleep results
         return compileResults(results);
     }
 
+    //convert sleep results
     public double[] compileResults(int[] results){
         double[] newResults = new double[9];
         newResults[0] = (double) results[0] / 60;
@@ -59,21 +63,20 @@ public class SleepStatisticsViewModel extends AndroidViewModel {
         return newResults;
     }
 
+    //return normalised sleep time
     public int normalisedSleepTime(int time){
         time -= 720;
         if(time < 0) time += 1440;
         return time;
     }
 
+    //return normalised wake time
     public int normalisedWakeTime(int time){
         return time - 720;
     }
 
+    //return live data for sleep data list
     public LiveData<double[]> getSleepLiveData(){
         return Transformations.map(sleepList, this::processResults);
-    }
-
-    public int getUserID() {
-        return userID;
     }
 }

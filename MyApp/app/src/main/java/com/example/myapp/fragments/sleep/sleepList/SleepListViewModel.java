@@ -26,6 +26,7 @@ public class SleepListViewModel extends AndroidViewModel {
     private final SleepRepository sleepRepository;
     private final LiveData<List<Sleep>> sleepList;
 
+    //constructor for sleep list view model
     public SleepListViewModel(@NonNull Application application) {
         super(application);
         mainApplication = (MainApplication) getApplication();
@@ -33,6 +34,7 @@ public class SleepListViewModel extends AndroidViewModel {
         sleepList = sleepRepository.getAllSleep(mainApplication.getUserID());
     }
 
+    //add or update current date sleep data
     public Intent sleepAdd(){
         Intent intent = new Intent(getApplication(), SleepDataActivity.class);
         long date = LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli();
@@ -40,12 +42,14 @@ public class SleepListViewModel extends AndroidViewModel {
         return intent;
     }
 
+    //update selected date sleep data
     public Intent sleepEdit(long date){
         Intent intent = new Intent(getApplication(), SleepDataActivity.class);
         intent.putExtra("date", date);
         return intent;
     }
 
+    //dialog to validate sleep data deletion
     public AlertDialog deleteDialog(Context context, Sleep sleep){
         return new AlertDialog.Builder(context)
                 .setTitle("Delete Item")
@@ -59,11 +63,13 @@ public class SleepListViewModel extends AndroidViewModel {
                 .create();
     }
 
+    //sort sleep list
     public void sortSleepList(List<Sleep> sleepList, String data, String order){
         Comparator<Sleep> sleepComparator = getComparator(data, order);
         sleepList.sort(sleepComparator);
     }
 
+    //get comparator to sort sleep list
     public Comparator<Sleep> getComparator(String data, String order){
         Comparator<Sleep> sleepComparator = Comparator.comparingLong(Sleep::getDate);
         switch (data) {
@@ -83,21 +89,25 @@ public class SleepListViewModel extends AndroidViewModel {
         return order.equals("Ascending") ? sleepComparator : sleepComparator.reversed();
     }
 
+    //return normalised sleep and wake time
     public int normalisedTime(int time){
         time -= 720;
         if(time < 0) time += 1440;
         return time;
     }
 
+    //return sleep duration
     public int getDuration(Sleep sleep){
         int duration = sleep.getWakeTime() - sleep.getSleepTime();
         return (duration >= 0) ? duration : duration + 1440;
     }
 
+    //update any changes to logs
     public void updateSaveLogs(String saveLogs){
         mainApplication.updateSaveLogs(saveLogs);
     }
 
+    //return live data of sleep data list
     public LiveData<List<Sleep>> getSleepList(){
         return sleepList;
     }

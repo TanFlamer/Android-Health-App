@@ -53,13 +53,15 @@ public class SportListFragment extends Fragment {
     }
 
     public void initialiseListView(){
-        String data = dataSpinner.getSelectedItem().toString();
-        String order = orderSpinner.getSelectedItem().toString();
         expandableListView = requireView().findViewById(R.id.sportExpandableListView);
         sportListAdapter = new SportListAdapter(requireContext(), new HashMap<>(), sportListViewModel);
         expandableListView.setAdapter(sportListAdapter);
         expandableListView.setOnItemLongClickListener(onItemLongClickListener);
-        sportListViewModel.getSportDataMerger().observe(getViewLifecycleOwner(), sportListHashMap -> sportListAdapter.updateSportList(sportListHashMap, data, order));
+        sportListViewModel.getSportDataMerger().observe(getViewLifecycleOwner(), sportListHashMap -> {
+            String data = dataSpinner.getSelectedItem().toString();
+            String order = orderSpinner.getSelectedItem().toString();
+            sportListAdapter.updateSportList(sportListHashMap, data, order);
+        });
     }
 
     public void initialiseSpinners(){

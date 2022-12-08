@@ -31,6 +31,7 @@ public class SleepListFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //get view model
         sleepListViewModel = new ViewModelProvider(this).get(SleepListViewModel.class);
     }
 
@@ -44,47 +45,67 @@ public class SleepListFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        //initialise all components
         initialiseAll();
     }
 
     public void initialiseAll(){
-        initialiseRecyclerView();
+        //initialise sort spinners
         initialiseSpinners();
+        //initialise sleep recycler view
+        initialiseRecyclerView();
+        //initialise floating button
         initialiseFloatingButton();
     }
 
+    //initialise sleep recycler view
     public void initialiseRecyclerView(){
+        //get recycler view by ID
         recyclerView = requireView().findViewById(R.id.sleepRecyclerView);
+        //initialise list adapter
         sleepListAdapter = new SleepListAdapter(requireContext(), new ArrayList<>(), sleepListViewModel);
+        //set recycler view adapter
         recyclerView.setAdapter(sleepListAdapter);
+        //set recycler view fixed size
         recyclerView.setHasFixedSize(true);
+        //set recycler view layout manager
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        //observe and reset sleep list when sleep data list changes
         sleepListViewModel.getSleepList().observe(getViewLifecycleOwner(), songList -> {
+            //get sort data
             String data = dataSpinner.getSelectedItem().toString();
+            //get sort order
             String order = orderSpinner.getSelectedItem().toString();
+            //update sleep list in adapter
             sleepListAdapter.updateSleepList(songList, data, order);
         });
     }
 
+    //initialise sort spinners
     public void initialiseSpinners(){
+        //spinner sort choices
         String[] data = new String[] {"Sleep Date", "Sleep Time", "Wake Time", "Sleep Duration"};
         String[] order = new String[] {"Ascending", "Descending"};
-
+        //get spinners by ID
         dataSpinner = requireView().findViewById(R.id.dataSpinner);
         orderSpinner = requireView().findViewById(R.id.orderSpinner);
-
+        //set spinners with adapters
         dataSpinner.setAdapter(new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item, data));
         orderSpinner.setAdapter(new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item, order));
-
+        //set on item selected listener to spinners
         dataSpinner.setOnItemSelectedListener(onItemSelectedListener);
         orderSpinner.setOnItemSelectedListener(onItemSelectedListener);
     }
 
+    //on item selected listener for spinners
     public AdapterView.OnItemSelectedListener onItemSelectedListener = new AdapterView.OnItemSelectedListener() {
         @Override
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+            //get sort data
             String data = dataSpinner.getSelectedItem().toString();
+            //get sort order
             String order = orderSpinner.getSelectedItem().toString();
+            //sort sleep list
             sleepListAdapter.sortSleepList(data, order);
         }
 
@@ -94,8 +115,11 @@ public class SleepListFragment extends Fragment {
         }
     };
 
+    //initialise floating button
     public void initialiseFloatingButton(){
+        //get floating button by ID
         floatingActionButton = requireView().findViewById(R.id.buttonFloating);
+        //go to add sleep data activity
         floatingActionButton.setOnClickListener(view1 -> startActivity(sleepListViewModel.sleepAdd()));
     }
 }

@@ -56,10 +56,10 @@ public class MusicListFragment extends Fragment {
 
     //initialise all components
     public void initialiseAll(){
-        //initialise song list view
-        initialiseListView();
         //initialise sort spinners
         initialiseSpinners();
+        //initialise song list view
+        initialiseListView();
         //initialise floating button
         initialiseFloatingButton();
     }

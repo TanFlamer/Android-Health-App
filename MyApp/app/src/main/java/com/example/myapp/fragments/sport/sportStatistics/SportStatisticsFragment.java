@@ -46,8 +46,8 @@ public class SportStatisticsFragment extends Fragment {
     }
 
     public void initialiseAll(){
-        initialiseRecyclerView();
         initialiseSpinners();
+        initialiseRecyclerView();
     }
 
     public void initialiseRecyclerView(){

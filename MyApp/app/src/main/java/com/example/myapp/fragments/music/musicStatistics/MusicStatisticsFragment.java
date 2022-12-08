@@ -1,7 +1,6 @@
 package com.example.myapp.fragments.music.musicStatistics;
 
 import android.os.Bundle;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,13 +9,9 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.myapp.R;
-import com.example.myapp.databasefiles.song.Song;
-
-import java.util.List;
 
 public class MusicStatisticsFragment extends Fragment {
 
@@ -27,6 +22,7 @@ public class MusicStatisticsFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //get view model
         musicStatisticsViewModel = new ViewModelProvider(this).get(MusicStatisticsViewModel.class);
     }
 
@@ -40,15 +36,21 @@ public class MusicStatisticsFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        //initialise all components
         initialiseAll();
     }
 
+    //initialise all components
     public void initialiseAll(){
+        //get ID for song statistics text views
         initialiseSongViews();
+        //get ID for playlist statistics text views
         initialisePlaylistViews();
+        //observe live data for playlists and song list
         initialiseLiveData();
     }
 
+    //get ID for song statistics text views
     public void initialiseSongViews(){
         songTotal = requireView().findViewById(R.id.songTotal);
         songNumber = requireView().findViewById(R.id.songNumber);
@@ -57,6 +59,7 @@ public class MusicStatisticsFragment extends Fragment {
         songShortest = requireView().findViewById(R.id.songShortest);
     }
 
+    //get ID for playlist statistics text views
     public void initialisePlaylistViews(){
         playlistNumber = requireView().findViewById(R.id.playlistNumber);
         playlistLength = requireView().findViewById(R.id.playlistLength);
@@ -67,11 +70,15 @@ public class MusicStatisticsFragment extends Fragment {
         playlistLowest = requireView().findViewById(R.id.playlistLowest);
     }
 
+    //observe live data for song list and song catalogue list
     public void initialiseLiveData(){
+        //observe live data for song list and update statistics
         musicStatisticsViewModel.getSongLiveData().observe(getViewLifecycleOwner(), this::updateSongResults);
+        //observe live data merger of song list and song catalogue list and update statistics
         musicStatisticsViewModel.getMusicDateMerger().observe(getViewLifecycleOwner(), this::updatePlaylistResults);
     }
 
+    //update song statistics if song list changes
     public void updateSongResults(double[] songResults){
         songTotal.setText(String.valueOf(songResults[0]));
         songNumber.setText(String.valueOf(songResults[1]));
@@ -80,6 +87,7 @@ public class MusicStatisticsFragment extends Fragment {
         songShortest.setText(String.valueOf(songResults[4]));
     }
 
+    //update playlists statistics if song list or song catalogue list changes
     public void updatePlaylistResults(double[] playlistResults){
         playlistNumber.setText(String.valueOf(playlistResults[0]));
         playlistLength.setText(String.valueOf(playlistResults[1]));

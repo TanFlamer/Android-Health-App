@@ -16,16 +16,19 @@ public class SleepCalendarViewModel extends AndroidViewModel {
     private final SleepRepository sleepRepository;
     private final int userID;
 
+    //constructor for sleep calendar view model
     public SleepCalendarViewModel(@NonNull Application application) {
         super(application);
         sleepRepository = new SleepRepository(application);
         userID = ((MainApplication) getApplication()).getUserID();
     }
 
+    //check if selected date has sleep data
     public Sleep findSleep(long date){
         return sleepRepository.findSleep(userID, date);
     }
 
+    //send date to edit sleep data activity
     public Intent sleepData(long date){
         Intent intent = new Intent(getApplication(), SleepDataActivity.class);
         intent.putExtra("date", date);

@@ -70,7 +70,7 @@ public class MusicListViewModel extends AndroidViewModel {
         mainApplication.updateSaveLogs(saveLogs);
     }
 
-    //copy music files from device to music folder
+    //copy song from device to music folder
     public void copyFile(Uri uri, Context context) throws IOException {
         //open input stream from uri
         InputStream source = context.getContentResolver().openInputStream(uri);
@@ -86,38 +86,50 @@ public class MusicListViewModel extends AndroidViewModel {
         Toast.makeText(getApplication(), fileName + " copied successfully", Toast.LENGTH_SHORT).show();
     }
 
+    //delete song form music folder
     public void deleteFile(Song song){
+        //reset media player
         musicPlayer.resetMediaPlayer();
+        //delete song from database
         songRepository.delete(song);
+        //update logs
         updateSaveLogs("Song " + song.getSongName() + " deleted");
+        //get file path to song
         File musicFile = new File(filePath, song.getSongName());
+        //delete song from music folder
         boolean fileDeletion = musicFile.delete();
+        //show toast
         Toast.makeText(getApplication(), "File deletion " + (fileDeletion ? "successful" : "failed"), Toast.LENGTH_SHORT).show();
     }
 
+    //insert or update song in database depending if song already exists
     public void checkFile(String fileName, Uri uri){
+        //check if song exists in database
         Song song = findSong(userID, fileName);
-        if(song == null) {
+        if(song == null) { //if song does not exist, insert new song
             songRepository.insert(new Song(fileName, getSongDuration(uri), userID));
             updateSaveLogs("Song " + fileName + " added");
         }
-        else {
-            song.setSongDuration(getSongDuration(uri));
-            songRepository.update(song);
+        else { //if song exists
+            song.setSongDuration(getSongDuration(uri)); //update song duration
+            songRepository.update(song); //update song in database
             updateSaveLogs("Song " + fileName + " updated");
         }
     }
 
+    //check if song exists in database
     public Song findSong(int userID, String songName){
         return songRepository.findSong(userID, songName);
     }
 
+    //get song duration
     public int getSongDuration(Uri uri){
         mediaMetadataRetriever.setDataSource(getApplication(), uri);
         String duration = mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
         return Integer.parseInt(duration) / 1000;
     }
 
+    //dialog to validate song deletion
     public AlertDialog deleteSong(Context context, Song song){
         return new AlertDialog.Builder(context)
                 .setTitle("Delete Item")
@@ -127,19 +139,23 @@ public class MusicListViewModel extends AndroidViewModel {
                 .create();
     }
 
+    //get permission to read music files
     public void getMusicFile(ActivityResultLauncher<String> mGetContent, ActivityResultLauncher<String> requestPermissionLauncher){
+        //get read media store permission if sdk >= 33 else get read external storage permission
         String permission = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU ? Manifest.permission.READ_MEDIA_AUDIO : Manifest.permission.READ_EXTERNAL_STORAGE;
         if (ContextCompat.checkSelfPermission(getApplication(), permission) == PackageManager.PERMISSION_GRANTED)
-            mGetContent.launch("audio/*");
+            mGetContent.launch("audio/*"); //if permission granted, launch content getter
         else
-            requestPermissionLauncher.launch(permission);
+            requestPermissionLauncher.launch(permission); //else ask for permission
     }
 
+    //sort song list
     public void sortSongList(List<Song> songList, String data, String order){
         Comparator<Song> songComparator = getComparator(data, order);
         songList.sort(songComparator);
     }
 
+    //return comparator to sort song list
     public Comparator<Song> getComparator(String data, String order){
         Comparator<Song> songComparator = Comparator.comparingInt(Song::getSongID);
         switch (data) {

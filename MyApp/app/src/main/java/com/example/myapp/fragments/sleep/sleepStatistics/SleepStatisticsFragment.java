@@ -22,6 +22,7 @@ public class SleepStatisticsFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //get view model
         sleepStatisticsViewModel = new ViewModelProvider(this).get(SleepStatisticsViewModel.class);
     }
 
@@ -35,14 +36,19 @@ public class SleepStatisticsFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        //initialise all components
         initialiseAll();
     }
 
+    //initialise all components
     public void initialiseAll(){
+        //get ID for sleep statistics text views
         initialiseViews();
+        //observe live data for sleep data list
         initialiseLiveData();
     }
 
+    //get ID for sleep statistics text views
     public void initialiseViews(){
         sleepTotal = requireView().findViewById(R.id.sleepTotal);
         dayTotal = requireView().findViewById(R.id.dayTotal);
@@ -55,10 +61,12 @@ public class SleepStatisticsFragment extends Fragment {
         wakeLatest = requireView().findViewById(R.id.wakeLatest);
     }
 
+    //observe live data for sleep data list
     public void initialiseLiveData(){
         sleepStatisticsViewModel.getSleepLiveData().observe(getViewLifecycleOwner(), this::updateResults);
     }
 
+    //update sleep statistics if sleep data list changes
     @SuppressLint("DefaultLocale")
     public void updateResults(double[] results){
         sleepTotal.setText(String.valueOf(results[0]));
