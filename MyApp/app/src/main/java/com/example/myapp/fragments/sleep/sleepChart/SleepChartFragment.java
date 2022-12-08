@@ -164,7 +164,7 @@ public class SleepChartFragment extends Fragment {
         //set visible bars to 5
         barChart.setVisibleXRangeMaximum(5);
         //move view to last bar
-        barChart.moveViewToX(xAxisLabels.size() - 1);
+        barChart.moveViewToX(Math.max(0, xAxisLabels.size() - 1));
         //get x-axis value formatter
         barChart.getXAxis().setValueFormatter(new ValueFormatter() {
             @Override
@@ -190,7 +190,7 @@ public class SleepChartFragment extends Fragment {
     public AdapterView.OnItemSelectedListener onItemSelectedListener = new AdapterView.OnItemSelectedListener() {
         @Override
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-            //get view data
+            //get bar data
             String data = dataSpinner.getSelectedItem().toString();
             //refresh bar chart
             refreshBarChart(sleepChartViewModel.changeData(data));

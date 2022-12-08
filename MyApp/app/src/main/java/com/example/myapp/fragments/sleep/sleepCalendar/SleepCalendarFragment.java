@@ -52,7 +52,7 @@ public class SleepCalendarFragment extends Fragment {
         initialiseCalendar();
         //initialise add and info button
         initialiseButtons();
-        //enable button if selected date has sleep data
+        //enable button if current date has sleep data
         checkDateData(getCurrentDate());
     }
 

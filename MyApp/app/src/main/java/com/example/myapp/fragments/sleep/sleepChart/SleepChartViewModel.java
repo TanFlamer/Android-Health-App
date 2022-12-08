@@ -40,7 +40,7 @@ public class SleepChartViewModel extends AndroidViewModel {
         barEntryList = new ArrayList<>();
     }
 
-    //get live data of sleep data list
+    //return live data of sleep data list
     public LiveData<List<Sleep>> getSleepList(){
         return sleepList;
     }
@@ -63,7 +63,7 @@ public class SleepChartViewModel extends AndroidViewModel {
         return new Pair<>(xAxisLabels, barEntryList);
     }
 
-    //change view data
+    //change bar data
     public Pair<List<String>, List<BarEntry>> changeData(String data){
         //refresh bar entry list
         refreshBarEntryList(data);
@@ -80,6 +80,7 @@ public class SleepChartViewModel extends AndroidViewModel {
             Sleep sleep = currentSleepList.get(i);
             //return data depending on spinner data selected
             int yValue = returnTime(sleep, data);
+            //add new bar entry
             barEntryList.add(new BarEntry((float) i, (float) yValue / 60));
         }
     }

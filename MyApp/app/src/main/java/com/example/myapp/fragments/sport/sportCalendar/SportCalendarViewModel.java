@@ -16,16 +16,19 @@ public class SportCalendarViewModel extends AndroidViewModel {
     private final SportRepository sportRepository;
     private final int userID;
 
+    //constructor for sport calendar view model
     public SportCalendarViewModel(@NonNull Application application) {
         super(application);
         sportRepository = new SportRepository(application);
         userID = ((MainApplication) getApplication()).getUserID();
     }
 
+    //check if selected date has sport data
     public Sport findSport(long date){
         return sportRepository.findSport(userID, date);
     }
 
+    //send date to edit sport data activity
     public Intent sportData(long date){
         Intent intent = new Intent(getApplication(), SportDataActivity.class);
         intent.putExtra("date", date);

@@ -71,7 +71,7 @@ public class MusicPlaylistsViewModel extends AndroidViewModel {
         musicDateMerger.addSource(songCatalogueLiveData, songCatalogues -> musicDateMerger.setValue(processResults(mainApplication.getPlaylistList(), mainApplication.getSongList(), mainApplication.getSongCatalogueList())));
     }
 
-    //add songs to playlists
+    //link songs to playlists
     public HashMap<Playlist, List<Song>> processResults(List<Playlist> playlists, List<Song> songs, List<SongCatalogue> songCatalogues){
         //if playlists, song list or song catalogue list empty, return empty map
         if(playlists.size() == 0 || songs.size() == 0 || songCatalogues.size() == 0) return new HashMap<>();

@@ -1,6 +1,8 @@
 package com.example.myapp.fragments.sport.sportType;
 
+import android.app.AlertDialog;
 import android.app.Application;
+import android.content.Context;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -18,34 +20,41 @@ public class SportTypeViewModel extends AndroidViewModel {
     private final MainApplication mainApplication;
     private final TypeRepository typeRepository;
     private final LiveData<List<Type>> typeList;
-    private final int userID;
 
+    //constructor for sport type view model
     public SportTypeViewModel(@NonNull Application application) {
         super(application);
         mainApplication = (MainApplication) getApplication();
         typeRepository = mainApplication.getTypeRepository();
-        userID = mainApplication.getUserID();
+        int userID = mainApplication.getUserID();
         typeList = typeRepository.getAllTypes(userID);
     }
 
-    public void delete(Type type){
-        typeRepository.delete(type);
-        updateSaveLogs("Sport type " + type.getTypeName() + " deleted");
+    //dialog to validate sport type deletion
+    public AlertDialog deleteSportType(Context context, Type type){
+        return new AlertDialog.Builder(context)
+                .setTitle("Delete Item")
+                .setMessage("Are you sure you want to delete this item?")
+                .setPositiveButton("Yes", (dialog, which) -> {
+                    typeRepository.delete(type);
+                    updateSaveLogs("Sport type " + type.getTypeName() + " deleted");
+                })
+                .setNegativeButton("No", null)
+                .create();
     }
 
+    //return live data of sport type list
     public LiveData<List<Type>> getTypeList(){
         return typeList;
     }
 
-    public int getUserID() {
-        return userID;
-    }
-
+    //sort sport type list
     public void sortTypeList(List<Type> typeList, String data, String order){
         Comparator<Type> typeComparator = getComparator(data, order);
         typeList.sort(typeComparator);
     }
 
+    //get comparator to sort sport type list
     public Comparator<Type> getComparator(String data, String order){
         Comparator<Type> typeComparator = Comparator.comparingInt(Type::getTypeID);
         switch (data) {
@@ -62,6 +71,7 @@ public class SportTypeViewModel extends AndroidViewModel {
         return order.equals("Ascending") ? typeComparator : typeComparator.reversed();
     }
 
+    //update any changes to logs
     public void updateSaveLogs(String saveLogs){
         mainApplication.updateSaveLogs(saveLogs);
     }

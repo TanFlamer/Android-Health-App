@@ -37,7 +37,6 @@ public class MusicListAdapter extends ArrayAdapter<Song> {
         for(Song song : songList) buttonMap.put(song, false);
     }
 
-    @SuppressLint("SetTextI18n")
     @NonNull
     @Override //get view for each song
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
@@ -65,21 +64,6 @@ public class MusicListAdapter extends ArrayAdapter<Song> {
         initialiseLengthView(view, song);
         //initialise song delete button
         initialiseDeleteButton(view, song);
-    }
-
-    //play clicked song on music player
-    public void onClick(MusicPlayer musicPlayer, int position){
-        musicPlayer.setPlaylist(songList, position);
-    }
-
-    //show or hide hidden layout on long click
-    public void onLongClick(int position){
-        //get long click position
-        Song song = songList.get(position);
-        //invert hidden layout visibility
-        buttonMap.put(song, Boolean.FALSE.equals(buttonMap.get(song)));
-        //notify adapter dataset changed
-        notifyDataSetChanged();
     }
 
     //initialise song hidden layout
@@ -112,8 +96,23 @@ public class MusicListAdapter extends ArrayAdapter<Song> {
     public void initialiseDeleteButton(View currentItemView, Song song){
         //get delete button by ID
         ImageView clickDelete = currentItemView.findViewById(R.id.clickDelete);
-        //show delete dialog on click
+        //show dialog to validate song deletion on click
         clickDelete.setOnClickListener(view -> musicListViewModel.deleteSong(context, song).show());
+    }
+
+    //play clicked song on music player
+    public void onClick(MusicPlayer musicPlayer, int position){
+        musicPlayer.setPlaylist(songList, position);
+    }
+
+    //show or hide hidden layout on long click
+    public void onLongClick(int position){
+        //get song on long click position
+        Song song = songList.get(position);
+        //invert hidden layout visibility
+        buttonMap.put(song, Boolean.FALSE.equals(buttonMap.get(song)));
+        //notify adapter dataset changed
+        notifyDataSetChanged();
     }
 
     //update song list when song list changes
