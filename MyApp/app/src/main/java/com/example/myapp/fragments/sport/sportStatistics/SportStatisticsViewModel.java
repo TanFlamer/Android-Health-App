@@ -105,7 +105,7 @@ public class SportStatisticsViewModel extends AndroidViewModel {
     //sort sport statistics list
     public void sortSportStatistics(List<Type> typeList, HashMap<Type, double[]> sportResults, String data, String order){
         Comparator<Type> typeComparator = getComparator(data, order, sportResults);
-        typeList.sort(typeComparator);
+        typeList.sort(Comparator.nullsLast(typeComparator));
     }
 
     //get comparator to sort sport statistics list

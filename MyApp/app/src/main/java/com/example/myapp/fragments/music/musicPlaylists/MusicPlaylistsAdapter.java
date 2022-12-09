@@ -212,6 +212,8 @@ public class MusicPlaylistsAdapter extends BaseExpandableListAdapter {
         songPlaylists.clear();
         //add new song lists
         songPlaylists.putAll(newSongPlaylists);
+        //remove null songs
+        removeNull();
         //sort playlists and song lists
         sortMusicPlaylists(data, order);
     }
@@ -224,5 +226,12 @@ public class MusicPlaylistsAdapter extends BaseExpandableListAdapter {
         for(Playlist playlist : playlistList) buttonMap.put(playlist, false);
         //notify adapter dataset changed
         notifyDataSetChanged();
+    }
+
+    //remove null songs
+    public void removeNull(){
+        for(List<Song> songList : songPlaylists.values()){
+            songList.removeIf(Objects::isNull);
+        }
     }
 }

@@ -129,7 +129,7 @@ public class MusicPlaylistsViewModel extends AndroidViewModel {
         Comparator<Playlist> playlistComparator = getPlaylistComparator(data, order, songPlaylists);
         playlists.sort(playlistComparator);
         Comparator<Song> songComparator = getSongComparator(data, order);
-        for(List<Song> songList : songPlaylists.values()) songList.sort(songComparator);
+        for(List<Song> songList : songPlaylists.values()) songList.sort(Comparator.nullsLast(songComparator));
     }
 
     //get comparator to sort playlists

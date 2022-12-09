@@ -128,7 +128,7 @@ public class SportListViewModel extends AndroidViewModel {
         Comparator<Sport> sportComparator = getSportComparator(data, order, newTypeSports);
         sportList.sort(sportComparator);
         Comparator<Pair<Type, Integer>> typeComparator = getTypeComparator(data, order);
-        for(List<Pair<Type, Integer>> typeList : newTypeSports.values()) typeList.sort(typeComparator);
+        for(List<Pair<Type, Integer>> typeList : newTypeSports.values()) typeList.sort(Comparator.nullsLast(typeComparator));
     }
 
     //get comparator to sort sport data list

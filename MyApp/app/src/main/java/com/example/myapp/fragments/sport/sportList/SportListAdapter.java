@@ -12,6 +12,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.myapp.R;
+import com.example.myapp.databasefiles.song.Song;
 import com.example.myapp.databasefiles.sport.Sport;
 import com.example.myapp.databasefiles.type.Type;
 
@@ -216,6 +217,8 @@ public class SportListAdapter extends BaseExpandableListAdapter {
         typeSports.clear();
         //add new sport type list
         typeSports.putAll(newTypeSports);
+        //remove null sport types
+        removeNull();
         //sort sport data and sport type lists
         sortSportList(data, order);
     }
@@ -228,5 +231,12 @@ public class SportListAdapter extends BaseExpandableListAdapter {
         for(Sport sport : sportList) buttonMap.put(sport, false);
         //notify adapter dataset changed
         notifyDataSetChanged();
+    }
+
+    //remove null sport types
+    public void removeNull(){
+        for(List<Pair<Type, Integer>> pairList : typeSports.values()){
+            pairList.removeIf(pair -> pair == null || pair.first == null || pair.second == null);
+        }
     }
 }

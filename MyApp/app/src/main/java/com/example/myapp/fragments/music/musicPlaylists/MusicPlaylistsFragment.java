@@ -72,6 +72,8 @@ public class MusicPlaylistsFragment extends Fragment {
         expandableListView.setOnItemLongClickListener(onItemLongClickListener);
         //observe and reset playlists list when playlists list changes
         musicPlaylistsViewModel.getMusicDateMerger().observe(getViewLifecycleOwner(), songCatalogueHashMap -> {
+            //collapse all expanded playlists
+            collapseAllGroups();
             //get sort data
             String data = dataSpinner.getSelectedItem().toString();
             //get sort order

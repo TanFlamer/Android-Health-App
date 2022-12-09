@@ -95,10 +95,10 @@ public class MusicStatisticsViewModel extends AndroidViewModel {
     public double[] processPlaylistResults(HashMap<Integer, List<Song>> songCatalogueHashMap){
         int[] results = new int[] {0, Integer.MIN_VALUE, Integer.MAX_VALUE, 0, Integer.MIN_VALUE, Integer.MAX_VALUE, 0};
         for(List<Song> songs : songCatalogueHashMap.values()){
-            if(songs == null) continue;
             int songDuration = 0;
             int songCount = 0;
             for(Song song : songs){
+                if(song == null) continue;
                 songCount++;
                 songDuration += song.getSongDuration();
             }

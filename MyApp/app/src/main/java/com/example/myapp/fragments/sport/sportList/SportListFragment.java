@@ -70,6 +70,8 @@ public class SportListFragment extends Fragment {
         expandableListView.setOnItemLongClickListener(onItemLongClickListener);
         //observe and reset sport list when sport data list changes
         sportListViewModel.getSportDataMerger().observe(getViewLifecycleOwner(), sportListHashMap -> {
+            //collapse all expanded playlists
+            collapseAllGroups();
             //get sort data
             String data = dataSpinner.getSelectedItem().toString();
             //get sort order
