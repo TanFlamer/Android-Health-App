@@ -106,6 +106,8 @@ public class MusicPlaylistsViewModel extends AndroidViewModel {
 
     //send playlist name to edit playlist activity
     public Intent editPlaylist(String playlistName){
+        //reset media player
+        musicPlayer.resetMediaPlayer();
         Intent intent = new Intent(getApplication(), MusicDataActivity.class);
         intent.putExtra("playlistName", playlistName);
         return intent;
@@ -117,6 +119,8 @@ public class MusicPlaylistsViewModel extends AndroidViewModel {
                 .setTitle("Delete Item")
                 .setMessage("Are you sure you want to delete this item?")
                 .setPositiveButton("Yes", (dialog, which) -> {
+                    //reset media player
+                    musicPlayer.resetMediaPlayer();
                     playlistRepository.delete(playlist);
                     updateSaveLogs("Playlist " + playlist.getPlaylistName() + " deleted");
                 })

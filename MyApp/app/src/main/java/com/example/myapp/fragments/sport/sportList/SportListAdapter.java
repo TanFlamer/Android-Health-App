@@ -12,7 +12,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.myapp.R;
-import com.example.myapp.databasefiles.song.Song;
 import com.example.myapp.databasefiles.sport.Sport;
 import com.example.myapp.databasefiles.type.Type;
 
