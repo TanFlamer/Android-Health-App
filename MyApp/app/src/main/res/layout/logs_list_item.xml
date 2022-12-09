@@ -9,6 +9,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
+        <!-- Text view to show logs text -->
         <TextView
             android:id="@+id/saveLog"
             android:layout_width="0dp"
@@ -25,6 +26,7 @@
             android:background="#000000"
             android:orientation="horizontal" />
 
+        <!-- Text view to show logs time -->
         <TextView
             android:id="@+id/saveTime"
             android:layout_width="0dp"

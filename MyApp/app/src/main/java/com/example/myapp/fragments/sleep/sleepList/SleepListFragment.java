@@ -52,17 +52,17 @@ public class SleepListFragment extends Fragment {
     public void initialiseAll(){
         //initialise sort spinners
         initialiseSpinners();
-        //initialise sleep recycler view
+        //initialise sleep data recycler view
         initialiseRecyclerView();
         //initialise floating button
         initialiseFloatingButton();
     }
 
-    //initialise sleep recycler view
+    //initialise sleep data recycler view
     public void initialiseRecyclerView(){
         //get recycler view by ID
         recyclerView = requireView().findViewById(R.id.sleepRecyclerView);
-        //initialise list adapter
+        //initialise recycler adapter
         sleepListAdapter = new SleepListAdapter(requireContext(), new ArrayList<>(), sleepListViewModel);
         //set recycler view adapter
         recyclerView.setAdapter(sleepListAdapter);
@@ -70,13 +70,13 @@ public class SleepListFragment extends Fragment {
         recyclerView.setHasFixedSize(true);
         //set recycler view layout manager
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        //observe and reset sleep list when sleep data list changes
+        //observe and reset sleep data list when sleep data changes
         sleepListViewModel.getSleepList().observe(getViewLifecycleOwner(), songList -> {
             //get sort data
             String data = dataSpinner.getSelectedItem().toString();
             //get sort order
             String order = orderSpinner.getSelectedItem().toString();
-            //update sleep list in adapter
+            //update sleep data list in adapter
             sleepListAdapter.updateSleepList(songList, data, order);
         });
     }
@@ -105,7 +105,7 @@ public class SleepListFragment extends Fragment {
             String data = dataSpinner.getSelectedItem().toString();
             //get sort order
             String order = orderSpinner.getSelectedItem().toString();
-            //sort sleep list
+            //sort sleep data list
             sleepListAdapter.sortSleepList(data, order);
         }
 

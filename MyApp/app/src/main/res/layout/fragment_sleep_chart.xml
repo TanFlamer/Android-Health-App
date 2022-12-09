@@ -20,6 +20,7 @@
         android:gravity="center"
         android:orientation="horizontal">
 
+        <!-- Spinner to choose sleep data -->
         <Spinner
             android:id="@+id/dataSpinner"
             android:layout_width="match_parent"
@@ -36,6 +37,7 @@
 
     </LinearLayout>
 
+    <!-- Bar chart to display sleep data -->
     <com.github.mikephil.charting.charts.BarChart
         android:id="@+id/sleepBarChart"
         android:layout_width="match_parent"

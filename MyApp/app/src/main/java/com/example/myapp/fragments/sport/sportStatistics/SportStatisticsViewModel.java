@@ -30,6 +30,7 @@ public class SportStatisticsViewModel extends AndroidViewModel {
 
     private final int userID;
 
+    //constructor for sport statistics view model
     public SportStatisticsViewModel(@NonNull Application application) {
         super(application);
         mainApplication = getApplication();
@@ -40,23 +41,29 @@ public class SportStatisticsViewModel extends AndroidViewModel {
         initialiseLiveDataMerger();
     }
 
+    //initialise live data for sport type list and sport schedule list
     public void initialiseLiveData(){
         typeLiveData = typeRepository.getAllTypes(userID);
         typeSportLiveData = sportScheduleRepository.getAllSportSchedule(userID);
     }
 
+    //merge live data for sport type list and sport schedule list
     public void initialiseLiveDataMerger(){
         sportDateMerger = new MediatorLiveData<>();
         sportDateMerger.addSource(typeLiveData, typeList -> sportDateMerger.setValue(processResults(mainApplication.getTypeList(), mainApplication.getSportScheduleList())));
         sportDateMerger.addSource(typeSportLiveData, typeSportList -> sportDateMerger.setValue(processResults(mainApplication.getTypeList(), mainApplication.getSportScheduleList())));
     }
 
+    //get sport statistics
     public HashMap<Type, double[]> processResults(List<Type> typeList, List<SportSchedule> sportScheduleList){
+        //if sport type list or sport catalogue list empty, return empty map
         if(typeList.size() == 0 || sportScheduleList.size() == 0) return new HashMap<>();
 
+        //get all sport types
         HashMap<Integer, Type> typeHashMap = new HashMap<>();
         for(Type type : typeList) typeHashMap.put(type.getTypeID(), type);
 
+        //link sport type with sport statistics
         HashMap<Type, double[]> sportResults = new HashMap<>();
         for(SportSchedule sportSchedule : sportScheduleList){
             Type type = typeHashMap.get(sportSchedule.getTypeID());
@@ -69,11 +76,15 @@ public class SportStatisticsViewModel extends AndroidViewModel {
             results[3] += 1; //number of days
             sportResults.put(type, results);
         }
+        //compile sport statistics
         return compileResults(sportResults);
     }
 
+    //compile sport statistics
     public HashMap<Type, double[]> compileResults(HashMap<Type, double[]> results){
+        HashMap<Type, double[]> processedResults = new HashMap<>();
         for(Type type : results.keySet()){
+            if(type == null) continue;
             double[] initial = results.get(type);
             double[] processed = new double[9];
             double calorie = type.getCaloriePerMinute();
@@ -86,16 +97,18 @@ public class SportStatisticsViewModel extends AndroidViewModel {
             processed[6] = initial[2];
             processed[7] = initial[1] * calorie;
             processed[8] = initial[2] * calorie;
-            results.put(type, processed);
+            processedResults.put(type, processed);
         }
-        return results;
+        return processedResults;
     }
 
+    //sort sport statistics list
     public void sortSportStatistics(List<Type> typeList, HashMap<Type, double[]> sportResults, String data, String order){
         Comparator<Type> typeComparator = getComparator(data, order, sportResults);
         typeList.sort(typeComparator);
     }
 
+    //get comparator to sort sport statistics list
     public Comparator<Type> getComparator(String data, String order, HashMap<Type, double[]> sportResults){
         Comparator<Type> typeComparator = Comparator.comparingInt(Type::getTypeID);
         switch (data) {
@@ -136,15 +149,13 @@ public class SportStatisticsViewModel extends AndroidViewModel {
         return order.equals("Ascending") ? typeComparator : typeComparator.reversed();
     }
 
+    //get specific result from sport statistics
     public double getResults(Type type, int result, HashMap<Type, double[]> sportResults){
         return Objects.requireNonNull(sportResults.get(type))[result];
     }
 
+    //return live data merger of sport statistics
     public MediatorLiveData<HashMap<Type, double[]>> getSportDateMerger() {
         return sportDateMerger;
-    }
-
-    public int getUserID() {
-        return userID;
     }
 }

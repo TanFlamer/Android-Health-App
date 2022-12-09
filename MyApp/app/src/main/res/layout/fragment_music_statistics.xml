@@ -59,6 +59,7 @@
                     android:background="#000000"
                     android:orientation="horizontal" />
 
+                <!-- Text view to display total playtime -->
                 <TextView
                     android:id="@+id/songTotal"
                     android:layout_width="0dp"
@@ -97,6 +98,7 @@
                     android:background="#000000"
                     android:orientation="horizontal" />
 
+                <!-- Text view to display number of songs -->
                 <TextView
                     android:id="@+id/songNumber"
                     android:layout_width="0dp"
@@ -135,6 +137,7 @@
                     android:background="#000000"
                     android:orientation="horizontal" />
 
+                <!-- Text view to display average song length -->
                 <TextView
                     android:id="@+id/songAverage"
                     android:layout_width="0dp"
@@ -173,6 +176,7 @@
                     android:background="#000000"
                     android:orientation="horizontal" />
 
+                <!-- Text view to display longest song length -->
                 <TextView
                     android:id="@+id/songLongest"
                     android:layout_width="0dp"
@@ -211,6 +215,7 @@
                     android:background="#000000"
                     android:orientation="horizontal" />
 
+                <!-- Text view to display shortest song length -->
                 <TextView
                     android:id="@+id/songShortest"
                     android:layout_width="0dp"
@@ -272,6 +277,7 @@
                     android:background="#000000"
                     android:orientation="horizontal" />
 
+                <!-- Text view to display number of playlists -->
                 <TextView
                     android:id="@+id/playlistNumber"
                     android:layout_width="0dp"
@@ -310,6 +316,7 @@
                     android:background="#000000"
                     android:orientation="horizontal" />
 
+                <!-- Text view to display average playlist length -->
                 <TextView
                     android:id="@+id/playlistLength"
                     android:layout_width="0dp"
@@ -348,6 +355,7 @@
                     android:background="#000000"
                     android:orientation="horizontal" />
 
+                <!-- Text view to display average playlist song count -->
                 <TextView
                     android:id="@+id/playlistCount"
                     android:layout_width="0dp"
@@ -386,6 +394,7 @@
                     android:background="#000000"
                     android:orientation="horizontal" />
 
+                <!-- Text view to display longest playlist length -->
                 <TextView
                     android:id="@+id/playlistLongest"
                     android:layout_width="0dp"
@@ -424,6 +433,7 @@
                     android:background="#000000"
                     android:orientation="horizontal" />
 
+                <!-- Text view to display shortest playlist length -->
                 <TextView
                     android:id="@+id/playlistShortest"
                     android:layout_width="0dp"
@@ -462,6 +472,7 @@
                     android:background="#000000"
                     android:orientation="horizontal" />
 
+                <!-- Text view to display highest playlist song count -->
                 <TextView
                     android:id="@+id/playlistHighest"
                     android:layout_width="0dp"
@@ -500,6 +511,7 @@
                     android:background="#000000"
                     android:orientation="horizontal" />
 
+                <!-- Text view to display lowest playlist song count -->
                 <TextView
                     android:id="@+id/playlistLowest"
                     android:layout_width="0dp"

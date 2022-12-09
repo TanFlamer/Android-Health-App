@@ -18,6 +18,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
+            <!-- Text view to show current song -->
             <TextView
                 android:id="@+id/songName"
                 android:layout_width="0dp"
@@ -35,6 +36,7 @@
                 android:textSize="24sp" />
             <requestFocus />
 
+            <!-- Image button to play previous song -->
             <ImageButton
                 android:id="@+id/songPrevious"
                 android:layout_width="0dp"
@@ -43,6 +45,7 @@
                 app:srcCompat="@drawable/ic_previous"
                 tools:ignore="SpeakableTextPresentCheck" />
 
+            <!-- Image button to play and pause song -->
             <ImageButton
                 android:id="@+id/songPause"
                 android:layout_width="0dp"
@@ -51,6 +54,7 @@
                 app:srcCompat="@drawable/ic_pause"
                 tools:ignore="SpeakableTextPresentCheck" />
 
+            <!-- Image button to play next song -->
             <ImageButton
                 android:id="@+id/songNext"
                 android:layout_width="0dp"
@@ -61,6 +65,7 @@
 
         </LinearLayout>
 
+        <!-- Seek bar to view and change song progress -->
         <SeekBar
             android:id="@+id/songProgress"
             style="?android:attr/progressBarStyleHorizontal"
@@ -229,7 +234,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:text="This app was created to monitor the sleeping and exercise schedule of the user to maintain their health"
+                    android:text="@string/this_app_was_created_to_monitor_the_sleeping_and_exercise_schedule_of_the_user_to_maintain_their_health"
                     android:textSize="20sp" />
 
                 <LinearLayout
@@ -243,6 +248,7 @@
         </LinearLayout>
     </ScrollView>
 
+    <!-- Bottom navigator to navigate to other activity -->
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_navigator"
         android:layout_width="match_parent"

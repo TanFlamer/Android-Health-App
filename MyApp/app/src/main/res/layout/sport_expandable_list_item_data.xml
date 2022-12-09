@@ -30,6 +30,7 @@
             android:background="#000000"
             android:orientation="horizontal" />
 
+        <!-- Text view to show sport type name -->
         <TextView
             android:id="@+id/sportName"
             android:layout_width="0dp"
@@ -66,6 +67,7 @@
             android:background="#000000"
             android:orientation="horizontal" />
 
+        <!-- Text view to show sport type duration -->
         <TextView
             android:id="@+id/sportDuration"
             android:layout_width="0dp"
@@ -102,6 +104,7 @@
             android:background="#000000"
             android:orientation="horizontal" />
 
+        <!-- Text view to show sport type calorie -->
         <TextView
             android:id="@+id/sportCalorie"
             android:layout_width="0dp"

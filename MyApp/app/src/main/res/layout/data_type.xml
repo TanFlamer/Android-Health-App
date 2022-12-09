@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:text="Sport Type"
+        android:text="@string/sport_type"
         android:textSize="30sp"
         android:textStyle="bold" />
 
@@ -31,6 +31,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
+            <!-- Edit text to get sport type name -->
             <EditText
                 android:id="@+id/name"
                 android:layout_width="match_parent"
@@ -53,6 +54,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
+            <!-- Edit text to get sport type calorie -->
             <EditText
                 android:id="@+id/calorie"
                 android:layout_width="match_parent"
@@ -75,6 +77,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1" />
 
+        <!-- Button to save changes to sport type -->
         <Button
             android:id="@+id/buttonSave"
             android:layout_width="0dp"
@@ -83,6 +86,7 @@
             android:enabled="false"
             android:text="Save" />
 
+        <!-- Button to return to last activity -->
         <Button
             android:id="@+id/buttonReturn"
             android:layout_width="0dp"

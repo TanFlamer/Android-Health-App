@@ -25,6 +25,7 @@
             android:gravity="center"
             android:orientation="horizontal">
 
+            <!-- Spinner to choose sort data -->
             <Spinner
                 android:id="@+id/dataSpinner"
                 android:layout_width="0dp"
@@ -39,6 +40,7 @@
                 android:background="#000000"
                 android:orientation="horizontal" />
 
+            <!-- Spinner to choose sort order -->
             <Spinner
                 android:id="@+id/orderSpinner"
                 android:layout_width="0dp"
@@ -99,6 +101,7 @@
 
         </LinearLayout>
 
+        <!-- List view to display all sport types -->
         <ListView
             android:id="@+id/sportListView"
             android:layout_width="match_parent"
@@ -106,6 +109,7 @@
 
     </LinearLayout>
 
+    <!-- Floating button to add new sport type -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/buttonFloating"
         android:layout_width="match_parent"

@@ -30,6 +30,7 @@
             android:background="#000000"
             android:orientation="horizontal" />
 
+        <!-- Text view to show song name -->
         <TextView
             android:id="@+id/musicSongName"
             android:layout_width="0dp"
@@ -66,6 +67,7 @@
             android:background="#000000"
             android:orientation="horizontal" />
 
+        <!-- Text view to show song duration -->
         <TextView
             android:id="@+id/musicSongLength"
             android:layout_width="0dp"

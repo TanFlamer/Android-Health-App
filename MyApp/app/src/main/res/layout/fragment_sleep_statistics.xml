@@ -37,6 +37,7 @@
                 android:background="#000000"
                 android:orientation="horizontal" />
 
+            <!-- Text view to display total sleep time -->
             <TextView
                 android:id="@+id/sleepTotal"
                 android:layout_width="0dp"
@@ -74,6 +75,7 @@
                 android:background="#000000"
                 android:orientation="horizontal" />
 
+            <!-- Text view to display total sleep days -->
             <TextView
                 android:id="@+id/dayTotal"
                 android:layout_width="0dp"
@@ -111,6 +113,7 @@
                 android:background="#000000"
                 android:orientation="horizontal" />
 
+            <!-- Text view to display longest sleep time -->
             <TextView
                 android:id="@+id/sleepLongest"
                 android:layout_width="0dp"
@@ -148,6 +151,7 @@
                 android:background="#000000"
                 android:orientation="horizontal" />
 
+            <!-- Text view to display shortest sleep time -->
             <TextView
                 android:id="@+id/sleepShortest"
                 android:layout_width="0dp"
@@ -185,6 +189,7 @@
                 android:background="#000000"
                 android:orientation="horizontal" />
 
+            <!-- Text view to display average sleep time -->
             <TextView
                 android:id="@+id/sleepAverage"
                 android:layout_width="0dp"
@@ -222,6 +227,7 @@
                 android:background="#000000"
                 android:orientation="horizontal" />
 
+            <!-- Text view to display earliest sleep time -->
             <TextView
                 android:id="@+id/sleepEarliest"
                 android:layout_width="0dp"
@@ -259,6 +265,7 @@
                 android:background="#000000"
                 android:orientation="horizontal" />
 
+            <!-- Text view to display latest sleep time -->
             <TextView
                 android:id="@+id/sleepLatest"
                 android:layout_width="0dp"
@@ -296,6 +303,7 @@
                 android:background="#000000"
                 android:orientation="horizontal" />
 
+            <!-- Text view to display earliest wake time -->
             <TextView
                 android:id="@+id/wakeEarliest"
                 android:layout_width="0dp"
@@ -333,6 +341,7 @@
                 android:background="#000000"
                 android:orientation="horizontal" />
 
+            <!-- Text view to display latest wake time -->
             <TextView
                 android:id="@+id/wakeLatest"
                 android:layout_width="0dp"

@@ -25,6 +25,7 @@
             android:gravity="center"
             android:orientation="horizontal">
 
+            <!-- Spinner to choose sort data -->
             <Spinner
                 android:id="@+id/dataSpinner"
                 android:layout_width="0dp"
@@ -39,6 +40,7 @@
                 android:background="#000000"
                 android:orientation="horizontal" />
 
+            <!-- Spinner to choose sort order -->
             <Spinner
                 android:id="@+id/orderSpinner"
                 android:layout_width="0dp"
@@ -57,6 +59,7 @@
 
         </LinearLayout>
 
+        <!-- Recycler view to display all sleep data -->
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/sleepRecyclerView"
             android:layout_width="match_parent"
@@ -64,6 +67,7 @@
 
     </LinearLayout>
 
+    <!-- Floating button to add new sleep data -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/buttonFloating"
         android:layout_width="match_parent"

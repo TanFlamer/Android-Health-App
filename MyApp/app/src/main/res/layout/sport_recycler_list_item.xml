@@ -55,6 +55,7 @@
                     android:background="#000000"
                     android:orientation="horizontal" />
 
+                <!-- Text view to display total sport time -->
                 <TextView
                     android:id="@+id/sportTotalTime"
                     android:layout_width="0dp"
@@ -91,6 +92,7 @@
                     android:background="#000000"
                     android:orientation="horizontal" />
 
+                <!-- Text view to display total sport calorie -->
                 <TextView
                     android:id="@+id/sportTotalCalorie"
                     android:layout_width="0dp"
@@ -127,6 +129,7 @@
                     android:background="#000000"
                     android:orientation="horizontal" />
 
+                <!-- Text view to display total sport days -->
                 <TextView
                     android:id="@+id/sportTotalDays"
                     android:layout_width="0dp"
@@ -163,6 +166,7 @@
                     android:background="#000000"
                     android:orientation="horizontal" />
 
+                <!-- Text view to display average sport time -->
                 <TextView
                     android:id="@+id/sportAverageTime"
                     android:layout_width="0dp"
@@ -199,6 +203,7 @@
                     android:background="#000000"
                     android:orientation="horizontal" />
 
+                <!-- Text view to display average sport calorie -->
                 <TextView
                     android:id="@+id/sportAverageCalorie"
                     android:layout_width="0dp"
@@ -235,6 +240,7 @@
                     android:background="#000000"
                     android:orientation="horizontal" />
 
+                <!-- Text view to display longest sport time -->
                 <TextView
                     android:id="@+id/sportLongestTime"
                     android:layout_width="0dp"
@@ -271,6 +277,7 @@
                     android:background="#000000"
                     android:orientation="horizontal" />
 
+                <!-- Text view to display shortest sport time -->
                 <TextView
                     android:id="@+id/sportShortestTime"
                     android:layout_width="0dp"
@@ -307,6 +314,7 @@
                     android:background="#000000"
                     android:orientation="horizontal" />
 
+                <!-- Text view to display most sport calorie -->
                 <TextView
                     android:id="@+id/sportMostCalorie"
                     android:layout_width="0dp"
@@ -343,6 +351,7 @@
                     android:background="#000000"
                     android:orientation="horizontal" />
 
+                <!-- Text view to display least sport calorie -->
                 <TextView
                     android:id="@+id/sportLeastCalorie"
                     android:layout_width="0dp"

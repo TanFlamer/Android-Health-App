@@ -112,7 +112,7 @@ public class MusicPlaylistsAdapter extends BaseExpandableListAdapter {
 
     //show or hide hidden layout on long click
     public void onLongClick(int position){
-        //get long click position
+        //get playlist on long click position
         Playlist playlist = playlistList.get(position);
         //invert hidden layout visibility
         buttonMap.put(playlist, Boolean.FALSE.equals(buttonMap.get(playlist)));
@@ -132,7 +132,7 @@ public class MusicPlaylistsAdapter extends BaseExpandableListAdapter {
     public void initialiseEditButton(View view, Playlist playlist){
         //get edit button by ID
         ImageView clickEdit = view.findViewById(R.id.clickEdit);
-        //send to edit playlist on click
+        //send to edit playlist activity on click
         clickEdit.setOnClickListener(v -> context.startActivity(musicPlaylistsViewModel.editPlaylist(playlist.getPlaylistName())));
     }
 
@@ -140,7 +140,7 @@ public class MusicPlaylistsAdapter extends BaseExpandableListAdapter {
     public void initialiseDeleteButton(View view, Playlist playlist){
         //get delete button by ID
         ImageView clickDelete = view.findViewById(R.id.clickDelete);
-        //show delete dialog on click
+        //show dialog to validate playlist deletion on click
         clickDelete.setOnClickListener(view1 -> musicPlaylistsViewModel.deletePlaylist(context, playlist).show());
     }
 

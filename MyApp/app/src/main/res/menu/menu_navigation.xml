@@ -3,27 +3,27 @@
 
     <item
         android:id="@+id/save"
-        android:title="Save"
+        android:title="@string/logs"
         android:icon="@drawable/ic_save" />
 
     <item
         android:id="@+id/sleep"
-        android:title="Sleep"
+        android:title="@string/sleep"
         android:icon="@drawable/ic_sleep" />
 
     <item
         android:id="@+id/music"
-        android:title="Music"
+        android:title="@string/music"
         android:icon="@drawable/ic_music" />
 
     <item
         android:id="@+id/sport"
-        android:title="Sport"
+        android:title="@string/sport"
         android:icon="@drawable/ic_sport" />
 
     <item
         android:id="@+id/info"
-        android:title="Info"
+        android:title="@string/info"
         android:icon="@drawable/ic_info" />
 
 </menu>

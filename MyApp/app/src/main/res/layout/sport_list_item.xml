@@ -23,6 +23,7 @@
             android:layout_weight="6"
             android:orientation="horizontal">
 
+            <!-- Text view to show sport type name -->
             <TextView
                 android:id="@+id/sportType"
                 android:layout_width="0dp"
@@ -39,6 +40,7 @@
                 android:background="#000000"
                 android:orientation="horizontal" />
 
+            <!-- Text view to show sport type calorie -->
             <TextView
                 android:id="@+id/sportEnergy"
                 android:layout_width="0dp"
@@ -63,6 +65,7 @@
                 android:background="#000000"
                 android:orientation="horizontal" />
 
+            <!-- Image view to edit sport type -->
             <ImageView
                 android:id="@+id/clickEdit"
                 android:layout_width="wrap_content"
@@ -79,6 +82,7 @@
                 android:background="#000000"
                 android:orientation="horizontal" />
 
+            <!-- Image view to delete sport type -->
             <ImageView
                 android:id="@+id/clickDelete"
                 android:layout_width="wrap_content"

@@ -18,6 +18,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
+        <!-- Text view to show sport date -->
         <TextView
             android:id="@+id/sportDate"
             android:layout_width="0dp"
@@ -41,6 +42,7 @@
                 android:background="#000000"
                 android:orientation="horizontal" />
 
+            <!-- Image view to edit sport data -->
             <ImageView
                 android:id="@+id/clickEdit"
                 android:layout_width="0dp"
@@ -56,6 +58,7 @@
                 android:background="#000000"
                 android:orientation="horizontal" />
 
+            <!-- Image view to delete sport data -->
             <ImageView
                 android:id="@+id/clickDelete"
                 android:layout_width="0dp"

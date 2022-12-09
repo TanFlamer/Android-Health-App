@@ -60,6 +60,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/playlistNameInput">
 
+            <!-- Edit text to get username -->
             <EditText
                 android:id="@+id/username"
                 android:layout_width="match_parent"
@@ -75,6 +76,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/passwordInput">
 
+            <!-- Edit text to get password -->
             <EditText
                 android:id="@+id/password"
                 android:layout_width="match_parent"
@@ -95,6 +97,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1" />
 
+            <!-- Button to login user -->
             <Button
                 android:id="@+id/buttonLogin"
                 android:layout_width="0dp"
@@ -136,6 +139,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1" />
 
+            <!-- Button to login new user -->
             <Button
                 android:id="@+id/buttonNew"
                 android:layout_width="0dp"
@@ -153,7 +157,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="Guest Login"
+            android:text="@string/guest_login"
             android:textSize="20sp"
             android:textStyle="bold" />
 
@@ -167,12 +171,13 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1" />
 
+            <!-- Button to login guest -->
             <Button
                 android:id="@+id/buttonGuest"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Guest" />
+                android:text="@string/guest" />
 
             <Space
                 android:layout_width="0dp"

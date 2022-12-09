@@ -12,6 +12,7 @@
         android:background="#000000"
         android:orientation="vertical" />
 
+    <!-- Calendar view to show presence of sleep data -->
     <CalendarView
         android:id="@+id/calendarSleep"
         android:layout_width="match_parent"
@@ -39,6 +40,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1" />
 
+            <!-- Button to add new sleep data -->
             <Button
                 android:id="@+id/addButton"
                 android:layout_width="0dp"
@@ -47,6 +49,7 @@
                 android:enabled="false"
                 android:text="Add" />
 
+            <!-- Button to edit existing sleep data -->
             <Button
                 android:id="@+id/infoButton"
                 android:layout_width="0dp"

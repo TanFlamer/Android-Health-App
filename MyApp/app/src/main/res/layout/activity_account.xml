@@ -11,6 +11,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
+        <!-- Text view to welcome user -->
         <TextView
             android:id="@+id/titleText"
             android:layout_width="match_parent"
@@ -73,6 +74,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
 
+                        <!-- Edit text to get new username -->
                         <EditText
                             android:id="@+id/newUsername"
                             android:layout_width="match_parent"
@@ -88,6 +90,7 @@
                         android:layout_height="wrap_content"
                         android:id="@+id/newPasswordInput">
 
+                        <!-- Edit text to get new password -->
                         <EditText
                             android:id="@+id/newPassword"
                             android:layout_width="match_parent"
@@ -103,6 +106,7 @@
                         android:layout_height="wrap_content"
                         android:id="@+id/newPasswordConfirmInput">
 
+                        <!-- Edit text to validate new password -->
                         <EditText
                             android:id="@+id/newPasswordConfirm"
                             android:layout_width="match_parent"
@@ -123,6 +127,7 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1" />
 
+                        <!-- Button to create new user -->
                         <Button
                             android:id="@+id/newUserButton"
                             android:layout_width="0dp"
@@ -193,6 +198,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
 
+                        <!-- Edit text to change username -->
                         <EditText
                             android:id="@+id/changeUsername"
                             android:layout_width="match_parent"
@@ -213,6 +219,7 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1" />
 
+                        <!-- Button to change username -->
                         <Button
                             android:id="@+id/changeUsernameButton"
                             android:layout_width="0dp"
@@ -282,6 +289,7 @@
                         android:layout_height="wrap_content"
                         android:id="@+id/changePasswordInput">
 
+                        <!-- Edit text to change password -->
                         <EditText
                             android:id="@+id/changePassword"
                             android:layout_width="match_parent"
@@ -297,6 +305,7 @@
                         android:layout_height="wrap_content"
                         android:id="@+id/changePasswordConfirmInput">
 
+                        <!-- Edit text to validate change password -->
                         <EditText
                             android:id="@+id/changePasswordConfirm"
                             android:layout_width="match_parent"
@@ -317,6 +326,7 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1" />
 
+                        <!-- Button to change password -->
                         <Button
                             android:id="@+id/changePasswordButton"
                             android:layout_width="0dp"
@@ -386,6 +396,7 @@
                         android:layout_height="wrap_content"
                         android:id="@+id/deletePasswordInput">
 
+                        <!-- Edit text to delete account -->
                         <EditText
                             android:id="@+id/deletePassword"
                             android:layout_width="match_parent"
@@ -401,6 +412,7 @@
                         android:layout_height="wrap_content"
                         android:id="@+id/deletePasswordConfirmInput">
 
+                        <!-- Edit text to validate delete account -->
                         <EditText
                             android:id="@+id/deletePasswordConfirm"
                             android:layout_width="match_parent"
@@ -421,6 +433,7 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1" />
 
+                        <!-- Button to delete account -->
                         <Button
                             android:id="@+id/deleteUserButton"
                             android:layout_width="0dp"
@@ -456,6 +469,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1" />
 
+            <!-- Button to login into app -->
             <Button
                 android:id="@+id/loginButton"
                 android:layout_width="0dp"

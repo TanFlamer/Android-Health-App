@@ -12,6 +12,7 @@
         android:background="#000000"
         android:orientation="vertical" />
 
+    <!-- Calendar view to show presence of sport data -->
     <CalendarView
         android:id="@+id/calendarSport"
         android:layout_width="match_parent"
@@ -39,18 +40,22 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1" />
 
+            <!-- Button to add new sport data -->
             <Button
                 android:id="@+id/addButton"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="2"
+                android:enabled="false"
                 android:text="Add" />
 
+            <!-- Button to edit existing sport data -->
             <Button
                 android:id="@+id/infoButton"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="2"
+                android:enabled="false"
                 android:text="More Info" />
 
             <Space

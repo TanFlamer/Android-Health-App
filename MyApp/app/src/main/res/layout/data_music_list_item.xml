@@ -9,6 +9,7 @@
         android:layout_height="match_parent"
         android:orientation="horizontal">
 
+        <!-- Text view to show song name -->
         <TextView
             android:id="@+id/musicName"
             android:layout_width="match_parent"

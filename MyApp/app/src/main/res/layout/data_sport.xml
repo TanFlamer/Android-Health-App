@@ -50,6 +50,7 @@
                 android:background="#000000"
                 android:orientation="vertical" />
 
+            <!-- Button to select sport date -->
             <Button
                 android:id="@+id/buttonDate"
                 android:layout_width="0dp"
@@ -96,6 +97,7 @@
                     android:background="#000000"
                     android:orientation="vertical" />
 
+                <!-- Spinner to display unselected sport types -->
                 <Spinner
                     android:id="@+id/typeSpinner"
                     android:layout_width="0dp"
@@ -215,6 +217,7 @@
 
             </LinearLayout>
 
+            <!-- List view to display selected sport types -->
             <ListView
                 android:id="@+id/sportDataListView"
                 android:layout_width="match_parent"
@@ -248,6 +251,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1" />
 
+            <!-- Button to edit and save changes to sport data -->
             <Button
                 android:id="@+id/buttonEditSave"
                 android:layout_width="0dp"
@@ -255,6 +259,7 @@
                 android:layout_weight="2"
                 android:text="Edit" />
 
+            <!-- Button to return to last activity -->
             <Button
                 android:id="@+id/buttonReturn"
                 android:layout_width="0dp"

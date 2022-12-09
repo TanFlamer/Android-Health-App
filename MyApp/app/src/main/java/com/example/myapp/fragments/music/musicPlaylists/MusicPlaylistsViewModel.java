@@ -104,21 +104,6 @@ public class MusicPlaylistsViewModel extends AndroidViewModel {
         return songCatalogueHashMap;
     }
 
-    //return music player
-    public MusicPlayer getMusicPlayer() {
-        return musicPlayer;
-    }
-
-    //return live data merger of playlists, song list and song catalogue list
-    public MediatorLiveData<HashMap<Playlist, List<Song>>> getMusicDateMerger() {
-        return musicDateMerger;
-    }
-
-    //update any changes to logs
-    public void updateSaveLogs(String saveLogs){
-        mainApplication.updateSaveLogs(saveLogs);
-    }
-
     //send playlist name to edit playlist activity
     public Intent editPlaylist(String playlistName){
         Intent intent = new Intent(getApplication(), MusicDataActivity.class);
@@ -187,5 +172,20 @@ public class MusicPlaylistsViewModel extends AndroidViewModel {
         for(Song song : Objects.requireNonNull(songPlaylists.get(playlist)))
             duration += song.getSongDuration();
         return duration;
+    }
+
+    //return music player
+    public MusicPlayer getMusicPlayer() {
+        return musicPlayer;
+    }
+
+    //return live data merger of playlists, song list and song catalogue list
+    public MediatorLiveData<HashMap<Playlist, List<Song>>> getMusicDateMerger() {
+        return musicDateMerger;
+    }
+
+    //update any changes to logs
+    public void updateSaveLogs(String saveLogs){
+        mainApplication.updateSaveLogs(saveLogs);
     }
 }

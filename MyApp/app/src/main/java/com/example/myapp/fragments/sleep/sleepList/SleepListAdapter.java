@@ -87,6 +87,10 @@ public class SleepListAdapter extends RecyclerView.Adapter<SleepListAdapter.Slee
         sleepList.clear();
         //add new sleep list
         sleepList.addAll(newSleepList);
+        //clear old hidden layout map
+        visibilityMap.clear();
+        //clear old hidden button map
+        buttonMap.clear();
         //sort new sleep list
         sortSleepList(data, order);
     }
@@ -96,10 +100,11 @@ public class SleepListAdapter extends RecyclerView.Adapter<SleepListAdapter.Slee
     public void sortSleepList(String data, String order){
         //sort sleep list
         sleepListViewModel.sortSleepList(sleepList, data, order);
-        //hide all hidden layouts
-        for(Sleep sleep : sleepList) visibilityMap.put(sleep, false);
-        //hide all hidden buttons
-        for(Sleep sleep : sleepList) buttonMap.put(sleep, false);
+        //hide all hidden layouts and buttons
+        for(Sleep sleep : sleepList){
+            visibilityMap.put(sleep, false);
+            buttonMap.put(sleep, false);
+        }
         //notify adapter dataset changed
         notifyDataSetChanged();
     }

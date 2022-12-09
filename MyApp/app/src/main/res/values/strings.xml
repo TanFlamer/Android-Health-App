@@ -18,4 +18,23 @@
     <string name="playlist_name">Playlist Name</string>
     <string name="name">Name</string>
     <string name="calorie_per_minute">Calorie per Minute</string>
+    <string name="this_app_was_created_to_monitor_the_sleeping_and_exercise_schedule_of_the_user_to_maintain_their_health">This app was created to monitor the sleeping and exercise schedule of the user to maintain their health</string>
+    <string name="guest">Guest</string>
+    <string name="guest_login">Guest Login</string>
+    <string name="no_music_playing">No Music Playing</string>
+    <string name="songs">Songs</string>
+    <string name="playlists">Playlists</string>
+    <string name="statistics">Statistics</string>
+    <string name="list">List</string>
+    <string name="chart">Chart</string>
+    <string name="calendar">Calendar</string>
+    <string name="logs">Logs</string>
+    <string name="sleep">Sleep</string>
+    <string name="music">Music</string>
+    <string name="sport">Sport</string>
+    <string name="info">Info</string>
+    <string name="text">Text</string>
+    <string name="sport_type">Sport Type</string>
+    <string name="all_songs">All Songs</string>
+    <string name="playlist_songs">Playlist Songs</string>
 </resources>

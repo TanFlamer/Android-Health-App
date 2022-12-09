@@ -42,9 +42,10 @@ public class SportListViewModel extends AndroidViewModel {
 
     private final int userID;
 
+    //constructor for sport list view model
     public SportListViewModel(@NonNull Application application) {
         super(application);
-        mainApplication = (MainApplication) getApplication();
+        mainApplication = getApplication();
         sportRepository = mainApplication.getSportRepository();
         typeRepository = mainApplication.getTypeRepository();
         sportScheduleRepository = mainApplication.getSportScheduleRepository();
@@ -53,27 +54,34 @@ public class SportListViewModel extends AndroidViewModel {
         initialiseLiveDataMerger();
     }
 
+    //initialise live data of sport type and sport schedule list
     public void initialiseLiveData(){
         typeLiveData = typeRepository.getAllTypes(userID);
         typeSportLiveData = sportScheduleRepository.getAllSportSchedule(userID);
     }
 
+    //merge live data of sport type and sport schedule list
     public void initialiseLiveDataMerger(){
         sportDataMerger = new MediatorLiveData<>();
         sportDataMerger.addSource(typeLiveData, typeList -> sportDataMerger.setValue(processResults(mainApplication.getTypeList(), mainApplication.getSportScheduleList())));
         sportDataMerger.addSource(typeSportLiveData, typeSportList -> sportDataMerger.setValue(processResults(mainApplication.getTypeList(), mainApplication.getSportScheduleList())));
     }
 
+    //link sport types to sport data
     public HashMap<Sport, List<Pair<Type, Integer>>> processResults(List<Type> typeList, List<SportSchedule> sportScheduleList){
         List<Sport> sportList = mainApplication.getSportList();
+        //if sport data list, sport type list or sport catalogue list empty, return empty map
         if(sportList.size() == 0 || typeList.size() == 0 || sportScheduleList.size() == 0) return new HashMap<>();
 
+        //get all sport data
         HashMap<Integer, Sport> sportHashMap = new HashMap<>();
         for(Sport sport : sportList) sportHashMap.put(sport.getSportID(), sport);
 
+        //get all sport types
         HashMap<Integer, Type> typeHashMap = new HashMap<>();
         for(Type type : typeList) typeHashMap.put(type.getTypeID(), type);
 
+        //link sport types to sport data
         HashMap<Sport, List<Pair<Type, Integer>>> sportScheduleHashMap = new HashMap<>();
         for(SportSchedule sportSchedule : sportScheduleList){
             Sport sport = sportHashMap.get(sportSchedule.getSportID());
@@ -82,9 +90,11 @@ public class SportListViewModel extends AndroidViewModel {
             sportScheduleHashMap.putIfAbsent(sport, new ArrayList<>());
             Objects.requireNonNull(sportScheduleHashMap.get(sport)).add(new Pair<>(type, duration));
         }
+        //return hashmap of sport data and sport type list
         return sportScheduleHashMap;
     }
 
+    //send current date to add sport data activity
     public Intent sportAdd(){
         Intent intent = new Intent(getApplication(), SportDataActivity.class);
         long date = LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli();
@@ -92,12 +102,14 @@ public class SportListViewModel extends AndroidViewModel {
         return intent;
     }
 
+    //send selected date to edit sport data activity
     public Intent sportEdit(long date){
         Intent intent = new Intent(getApplication(), SportDataActivity.class);
         intent.putExtra("date", date);
         return intent;
     }
 
+    //dialog to validate sport data deletion
     public AlertDialog deleteSportList(Context context, Sport sport){
         return new AlertDialog.Builder(context)
                 .setTitle("Delete Item")
@@ -111,6 +123,7 @@ public class SportListViewModel extends AndroidViewModel {
                 .create();
     }
 
+    //sort sport data and sport type lists
     public void sortSportLists(List<Sport> sportList, HashMap<Sport, List<Pair<Type, Integer>>> newTypeSports, String data, String order){
         Comparator<Sport> sportComparator = getSportComparator(data, order, newTypeSports);
         sportList.sort(sportComparator);
@@ -118,6 +131,7 @@ public class SportListViewModel extends AndroidViewModel {
         for(List<Pair<Type, Integer>> typeList : newTypeSports.values()) typeList.sort(typeComparator);
     }
 
+    //get comparator to sort sport data list
     public Comparator<Sport> getSportComparator(String data, String order, HashMap<Sport, List<Pair<Type, Integer>>> typeSports){
         Comparator<Sport> sportComparator = Comparator.comparingLong(Sport::getDate);
         switch (data) {
@@ -134,6 +148,7 @@ public class SportListViewModel extends AndroidViewModel {
         return order.equals("Ascending") ? sportComparator : sportComparator.reversed();
     }
 
+    //get comparator to sort sport type list
     public Comparator<Pair<Type, Integer>> getTypeComparator(String data, String order){
         Comparator<Pair<Type, Integer>> typeComparator = Comparator.comparing(a -> a.first.getTypeName());
         switch (data) {
@@ -150,6 +165,7 @@ public class SportListViewModel extends AndroidViewModel {
         return order.equals("Ascending") ? typeComparator : typeComparator.reversed();
     }
 
+    //get total calories of sport types in sport data
     public double getCalories(Sport sport, HashMap<Sport, List<Pair<Type, Integer>>> typeSports){
         double calories = 0;
         for(Pair<Type, Integer> pair : Objects.requireNonNull(typeSports.get(sport)))
@@ -157,6 +173,7 @@ public class SportListViewModel extends AndroidViewModel {
         return calories;
     }
 
+    //get total duration of sport types in sport data
     public int getDuration(Sport sport, HashMap<Sport, List<Pair<Type, Integer>>> typeSports){
         int duration = 0;
         for(Pair<Type, Integer> pair : Objects.requireNonNull(typeSports.get(sport)))
@@ -164,10 +181,12 @@ public class SportListViewModel extends AndroidViewModel {
         return duration;
     }
 
+    //return live data merger of sport type and sport schedule list
     public MediatorLiveData<HashMap<Sport, List<Pair<Type, Integer>>>> getSportDataMerger() {
         return sportDataMerger;
     }
 
+    //update any changes to logs
     public void updateSaveLogs(String saveLogs){
         mainApplication.updateSaveLogs(saveLogs);
     }

@@ -40,8 +40,9 @@
             android:layout_width="2dp"
             android:layout_height="match_parent"
             android:background="#000000"
-            android:orientation="vertical"></LinearLayout>
+            android:orientation="vertical" />
 
+        <!-- Button to select sleep date -->
         <Button
             android:id="@+id/buttonDate"
             android:layout_width="0dp"
@@ -77,8 +78,9 @@
             android:layout_width="2dp"
             android:layout_height="match_parent"
             android:background="#000000"
-            android:orientation="vertical"></LinearLayout>
+            android:orientation="vertical" />
 
+        <!-- Button to select sleep time -->
         <Button
             android:id="@+id/sleepTime"
             android:layout_width="0dp"
@@ -114,8 +116,9 @@
             android:layout_width="2dp"
             android:layout_height="match_parent"
             android:background="#000000"
-            android:orientation="vertical"></LinearLayout>
+            android:orientation="vertical" />
 
+        <!-- Button to select wake time -->
         <Button
             android:id="@+id/wakeTime"
             android:layout_width="0dp"
@@ -153,6 +156,7 @@
             android:background="#000000"
             android:orientation="vertical" />
 
+        <!-- Text view to show sleep duration -->
         <TextView
             android:id="@+id/durationView"
             android:layout_width="0dp"
@@ -183,6 +187,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1" />
 
+        <!-- Button to save changes to sleep data -->
         <Button
             android:id="@+id/buttonSave"
             android:enabled="false"
@@ -191,6 +196,7 @@
             android:layout_weight="3"
             android:text="Save" />
 
+        <!-- Button to return to last activity -->
         <Button
             android:id="@+id/buttonReturn"
             android:layout_width="0dp"
