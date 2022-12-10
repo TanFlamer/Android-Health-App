@@ -34,18 +34,23 @@ MIN_LEARNING_RATE = 0.1
 MIN_EXPLORE_RATE = 0.01
 
 
+# Loop through runs to collect results
 def loop(run_settings, reward_function, t_test_values):
     episodes = []
     failed_runs = []
     run_number = 0
+    # Loop through runs until at least 30 runs or at most 50 runs
     while len(episodes) < MIN_RUNS and run_number < MAX_RUNS:
         run_number += 1
         episode, solved = train(run_number, run_settings, reward_function)
         if solved:
+            # Record number of episodes if run succeeds
             episodes.append(episode)
         else:
+            # Record failure if run fails
             failed_runs.append(run_number)
             print("Run %2d failed in %d episodes - *" % (run_number, NUM_TRAIN_EPISODES))
+    # Return results after processing
     return results_processing.get_results(episodes, t_test_values), failed_runs
 
 
@@ -69,6 +74,7 @@ def train(run, run_settings, reward_function):
     # Q-tables list
     q_tables = []
 
+    # Fill Q-tables with initial values
     for x in range(num_tables):
         q_tables.append(np.zeros(num_buckets + (
             NUM_ACTIONS,)) if initial_q_table == 0 else np.random.randn(*num_buckets, NUM_ACTIONS) * initial_q_table)
@@ -77,6 +83,7 @@ def train(run, run_settings, reward_function):
     episodes_to_solve = 0
     solved = False
 
+    # Run at most 500 episodes or solved requirements met
     for episode in range(1, NUM_TRAIN_EPISODES + 1):
 
         # Reset the environment
@@ -89,27 +96,38 @@ def train(run, run_settings, reward_function):
         discount_factor = MAX_DISCOUNT_FACTOR if fixed_discount_factor else min(
             min_discount_factor + discount_step_size * episode, MAX_DISCOUNT_FACTOR)
 
+        # Run at most 200 time steps or termination conditions met
         for t in range(1, MAX_TRAIN_T + 1):
             env.render()
 
-            # Old observation for opposite action
+            # Save old state for opposition learning
             old_obv = obv
 
             # Select an action
             action = select_action(state_0, explore_rate, q_tables)
+            # Get opposite action
             opposite_action = 1 - action
 
-            # Get Q table indexes
+            # Get Q-table index to be updated
             index_main = 0
+            # Get Q-table index to get best Q-value
             index_secondary = 0
+            # Get Q-tables count
             q_table_length = len(q_tables)
 
+            # If more than 1 Q-table, get different Q-table indexes
+            # Else use same Q-table
             if q_table_length > 1:
+                # Get first Q-table index
                 index_main = random.randint(0, q_table_length - 1)
+                # Get second Q-table index
                 index_secondary = random.randint(0, q_table_length - 2)
+                # Move second Q-table index if overlap occurs
                 index_secondary += 1 if index_secondary >= index_main else 0
 
+            # Get first Q-table
             q_table_main = q_tables[index_main]
+            # Get second Q-table
             q_table_secondary = q_tables[index_secondary]
 
             # Execute the action
@@ -118,7 +136,7 @@ def train(run, run_settings, reward_function):
             # Observe the result
             state = state_to_bucket(obv, num_buckets)
 
-            # Get reward function
+            # Get reward from reward function
             reward = reward_function((obv, reward, terminated, t))
 
             # Get best Q value
@@ -128,13 +146,13 @@ def train(run, run_settings, reward_function):
                 # Execute opposite action
                 opposite_obv, opposite_reward, opposite_terminated, _, _ = step(old_obv, opposite_action)
 
-                # Observe the result
+                # Observe opposite result
                 opposite_state = state_to_bucket(opposite_obv, num_buckets)
 
-                # Get reward function
+                # Get opposite reward from reward function
                 opposite_reward = reward_function((opposite_obv, opposite_reward, opposite_terminated, t))
 
-                # Get best Q value
+                # Get opposite best Q value
                 opposite_best_q = q_table_secondary[opposite_state + (np.argmax(q_table_main[opposite_state]),)]
 
                 # Updating opposite Q table
@@ -147,6 +165,7 @@ def train(run, run_settings, reward_function):
 
             # Termination
             if terminated:
+                # Record time steps to termination cumulatively
                 time_steps.append(t + time_steps[-1])
                 break
 
@@ -154,6 +173,7 @@ def train(run, run_settings, reward_function):
             state_0 = state
 
         else:
+            # Record time steps to termination cumulatively
             time_steps.append(MAX_TRAIN_T + time_steps[-1])
 
         # It's considered done when average for last 100 time steps is >= 195.0
@@ -167,10 +187,10 @@ def train(run, run_settings, reward_function):
         learning_rate = get_learning_rate(episode)
         explore_rate = get_explore_rate(episode)
 
-    # print(q_table)
     return episodes_to_solve, solved
 
 
+# Select action based on sum of Q-tables or randomly
 def select_action(state, explore_rate, q_tables):
     # Select a random action
     if random.random() < explore_rate:
@@ -181,14 +201,17 @@ def select_action(state, explore_rate, q_tables):
     return action
 
 
+# Get explore rate based on episode
 def get_explore_rate(t):
     return max(MIN_EXPLORE_RATE, min(1.0, 1.0 - math.log10((t + 1) / 25)))
 
 
+# Get learning rate based on episode
 def get_learning_rate(t):
     return max(MIN_LEARNING_RATE, min(0.5, 1.0 - math.log10((t + 1) / 25)))
 
 
+# Get bucket from state
 def state_to_bucket(state, num_buckets):
     bucket_indices = []
     for i in range(len(state)):
@@ -212,6 +235,7 @@ def state_to_bucket(state, num_buckets):
     return tuple(bucket_indices)
 
 
+# Function copied from source code for opposition learning
 def step(state, action):
     gravity = 9.8
     masscart = 1.0
@@ -264,6 +288,7 @@ def step(state, action):
     return np.array(state, dtype=np.float32), reward, terminated, False, {}
 
 
+# Initialise all random number generator with give seed
 def random_seed(seed):
     np.random.seed(seed)
     random.seed(seed)
@@ -271,6 +296,7 @@ def random_seed(seed):
     env.reset(seed=seed)
 
 
+# Run cartpole
 def run_simulation(run_settings, reward_function, t_test_values):
     random_seed(RANDOM_SEED)
     results, failed = loop(run_settings, reward_function, t_test_values)
