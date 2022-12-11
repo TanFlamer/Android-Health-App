@@ -63,31 +63,35 @@ if __name__ == "__main__":
     # Sample size to be compared (Original = 30)
     sample_size = 30
 
-    # Improvements to Cartpole
+    # Improvements to Acrobot
     # Values used in the experiment can be changed below
     # First value is the default value
 
     # Number of Q-tables (Values = 1, 2, 3, 4, 5)
     num_tables = 1
+
     # Granularity of the state space (Values = (1, 1, 1, 1, 10, 10))
     num_buckets = (1, 1, 1, 1, 10, 10)
+
     # Number of actions in action space (Values = 3, 2)
-    num_actions = 3
+    num_actions = 2
+
     # Initial Q-table values (Values = 0, 1)
     # Q-tables are initially filled with values from a standard normal distribution
     # Then the Q-tables are multiplied by the initial_q_table value
     # Setting initial_q_table to 0 produces Q-tables filled with 0s
     initial_q_table = 0
+
     # Opposite Q-Learning (Values = False, True)
     opposite_q_learning = False
 
-    # Discount factor
-    # Setting it to True invalidates the following values
-
     # Discount factor discounting (Values = True, False)
+    # Setting it to True invalidates the following values
     fixed_discount_factor = True
+
     # Minimum discount factor (Value = 0.99)
     min_discount_factor = 0.99
+    
     # Steps needed to reach discount factor of 1 (Value = 100)
     # Calculates step size to be increased each episode
     # Calculations = (1 - min_discount_factor) / discount_steps

@@ -88,23 +88,26 @@ if __name__ == "__main__":
 
     # Number of Q-tables (Values = 1, 2, 3, 4, 5)
     num_tables = 1
+
     # Granularity of the state space (Values = (1, 1, 6, 3), (1, 1, 6, 7))
     num_buckets = (1, 1, 6, 3)
+
     # Initial Q-table values (Values = 0, 1)
     # Q-tables are initially filled with values from a standard normal distribution
     # Then the Q-tables are multiplied by the initial_q_table value
     # Setting initial_q_table to 0 produces Q-tables filled with 0s
     initial_q_table = 0
+
     # Opposite Q-Learning (Values = False, True)
     opposite_q_learning = False
 
-    # Discount factor
-    # Setting it to True invalidates the following values
-
     # Discount factor discounting (Values = True, False)
+    # Setting it to True invalidates the following values
     fixed_discount_factor = True
+
     # Minimum discount factor (Value = 0.99)
     min_discount_factor = 0.99
+
     # Steps needed to reach discount factor of 1 (Value = 100)
     # Calculates step size to be increased each episode
     # Calculations = (1 - min_discount_factor) / discount_steps
