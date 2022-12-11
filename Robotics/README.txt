@@ -1,5 +1,6 @@
 This README explains how to run the experiments
-effectively using the settings file provided.
+effectively. Users must first copy all the pyhton
+files provided into a new project.
 
 To be able to run the files in the folder, some
 python packages need to be installed first. These
