@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Layout for sleep data -->
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
@@ -28,7 +30,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="6"
                     android:gravity="center"
-                    android:text="Title"
+                    android:text="@string/title"
                     android:textSize="28sp"
                     android:textStyle="bold" />
 
@@ -53,7 +55,8 @@
                         android:layout_weight="1"
                         android:background="?attr/selectableItemBackgroundBorderless"
                         android:clickable="true"
-                        app:srcCompat="@drawable/ic_edit" />
+                        app:srcCompat="@drawable/ic_edit"
+                        tools:ignore="NestedWeights,ContentDescription" />
 
                     <LinearLayout
                         android:layout_width="2dp"
@@ -69,7 +72,8 @@
                         android:layout_weight="1"
                         android:background="?attr/selectableItemBackgroundBorderless"
                         android:clickable="true"
-                        app:srcCompat="@drawable/ic_delete" />
+                        app:srcCompat="@drawable/ic_delete"
+                        tools:ignore="ContentDescription" />
                 </LinearLayout>
 
             </LinearLayout>
@@ -98,7 +102,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:text="Sleep Time"
+                    android:text="@string/sleep_time"
                     android:textSize="20sp" />
 
                 <LinearLayout
@@ -114,7 +118,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:text="Text"
+                    android:text="@string/text"
                     android:textSize="20sp" />
 
             </LinearLayout>
@@ -135,7 +139,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:text="Wake Time"
+                    android:text="@string/wake_time"
                     android:textSize="20sp" />
 
                 <LinearLayout
@@ -151,7 +155,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:text="Text"
+                    android:text="@string/text"
                     android:textSize="20sp" />
 
             </LinearLayout>
@@ -172,7 +176,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:text="Sleep Duration"
+                    android:text="@string/sleep_duration"
                     android:textSize="20sp" />
 
                 <LinearLayout
@@ -188,7 +192,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:text="Text"
+                    android:text="@string/text"
                     android:textSize="20sp" />
 
             </LinearLayout>

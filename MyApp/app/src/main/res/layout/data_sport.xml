@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Layout for Sport data create and edit activity -->
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -16,7 +17,7 @@
             android:id="@+id/textView2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Sport Schedule"
+            android:text="@string/sport_schedule"
             android:textAlignment="center"
             android:textSize="20sp"
             android:textStyle="bold" />
@@ -40,7 +41,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="Date"
+                android:text="@string/date"
                 android:textSize="20sp"
                 android:textStyle="bold" />
 
@@ -56,7 +57,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Select Date" />
+                android:text="@string/select_date" />
 
         </LinearLayout>
 
@@ -87,7 +88,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:text="Sport Type"
+                    android:text="@string/sport_type"
                     android:textSize="20sp"
                     android:textStyle="bold" />
 
@@ -126,7 +127,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:text="Sport Duration"
+                    android:text="@string/sport_duration"
                     android:textSize="20sp"
                     android:textStyle="bold" />
 
@@ -141,7 +142,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Select Duration" />
+                    android:text="@string/select_duration" />
 
 
             </LinearLayout>
@@ -170,7 +171,7 @@
                     android:layout_height="match_parent"
                     android:layout_weight="2"
                     android:enabled="false"
-                    android:text="Add Sport" />
+                    android:text="@string/add_sport" />
 
                 <Button
                     android:id="@+id/buttonDelete"
@@ -178,7 +179,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="2"
                     android:enabled="false"
-                    android:text="Delete" />
+                    android:text="@string/delete" />
 
                 <Space
                     android:layout_width="0dp"
@@ -204,7 +205,7 @@
                 android:id="@+id/textView8"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Sport List"
+                android:text="@string/sport_list"
                 android:gravity="center"
                 android:textSize="20sp"
                 android:textStyle="bold" />
@@ -257,7 +258,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="2"
-                android:text="Edit" />
+                android:text="@string/edit" />
 
             <!-- Button to return to last activity -->
             <Button
@@ -265,7 +266,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="2"
-                android:text="Return" />
+                android:text="@string/return_string" />
 
             <Space
                 android:layout_width="0dp"

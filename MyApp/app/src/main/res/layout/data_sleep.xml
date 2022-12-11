@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Layout for Sleep data create and edit activity -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -9,7 +10,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Sleep Schedule"
+        android:text="@string/sleep_schedule"
         android:textAlignment="center"
         android:textSize="20sp"
         android:textStyle="bold" />
@@ -32,7 +33,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="Date"
+            android:text="@string/date"
             android:textSize="20sp"
             android:textStyle="bold" />
 
@@ -48,7 +49,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Select Date" />
+            android:text="@string/select_date" />
 
     </LinearLayout>
 
@@ -70,7 +71,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="Sleep Time"
+            android:text="@string/sleep_time"
             android:textSize="20sp"
             android:textStyle="bold" />
 
@@ -86,7 +87,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Sleep Time" />
+            android:text="@string/sleep_time" />
 
     </LinearLayout>
 
@@ -108,7 +109,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="Wake Time"
+            android:text="@string/wake_time"
             android:textSize="20sp"
             android:textStyle="bold" />
 
@@ -124,7 +125,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Wake Time" />
+            android:text="@string/wake_time" />
 
     </LinearLayout>
 
@@ -146,7 +147,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="Sleep Duration"
+            android:text="@string/sleep_duration"
             android:textSize="20sp"
             android:textStyle="bold" />
 
@@ -163,7 +164,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="-"
+            android:text="@string/dash"
             android:textSize="20sp"
             android:textStyle="bold" />
 
@@ -194,7 +195,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="3"
-            android:text="Save" />
+            android:text="@string/save" />
 
         <!-- Button to return to last activity -->
         <Button
@@ -202,7 +203,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="3"
-            android:text="Return" />
+            android:text="@string/return_string" />
 
         <Space
             android:layout_width="0dp"

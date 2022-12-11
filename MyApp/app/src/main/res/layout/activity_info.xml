@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Layout for Info activity -->
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -32,7 +33,7 @@
                 android:marqueeRepeatLimit="marquee_forever"
                 android:scrollHorizontally="true"
                 android:singleLine="true"
-                android:text="No Music Playing"
+                android:text="@string/no_music_playing"
                 android:textSize="24sp" />
             <requestFocus />
 
@@ -43,7 +44,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 app:srcCompat="@drawable/ic_previous"
-                tools:ignore="SpeakableTextPresentCheck" />
+                tools:ignore="SpeakableTextPresentCheck,ContentDescription" />
 
             <!-- Image button to play and pause song -->
             <ImageButton
@@ -52,7 +53,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 app:srcCompat="@drawable/ic_pause"
-                tools:ignore="SpeakableTextPresentCheck" />
+                tools:ignore="SpeakableTextPresentCheck,ContentDescription" />
 
             <!-- Image button to play next song -->
             <ImageButton
@@ -61,7 +62,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 app:srcCompat="@drawable/ic_next"
-                tools:ignore="SpeakableTextPresentCheck" />
+                tools:ignore="SpeakableTextPresentCheck,ContentDescription" />
 
         </LinearLayout>
 
@@ -96,7 +97,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="App Info"
+                android:text="@string/app_info"
                 android:textSize="24sp"
                 android:textStyle="bold" />
 
@@ -116,7 +117,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:text="Date Created"
+                    android:text="@string/date_created"
                     android:textSize="20sp" />
 
                 <LinearLayout
@@ -130,7 +131,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:text="01/12/2022"
+                    android:text="@string/_01_12_2022"
                     android:textSize="20sp" />
 
             </LinearLayout>
@@ -151,7 +152,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:text="Version"
+                    android:text="@string/version"
                     android:textSize="20sp" />
 
                 <LinearLayout
@@ -165,7 +166,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:text="1.0"
+                    android:text="@string/_1_0"
                     android:textSize="20sp" />
 
             </LinearLayout>
@@ -186,7 +187,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:text="Creator"
+                    android:text="@string/creator"
                     android:textSize="20sp" />
 
                 <LinearLayout
@@ -200,7 +201,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:text="Tan Zhun Xian"
+                    android:text="@string/tan_zhun_xian"
                     android:textSize="20sp" />
 
             </LinearLayout>
@@ -220,7 +221,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:text="Description"
+                    android:text="@string/description"
                     android:textSize="24sp"
                     android:textStyle="bold" />
 

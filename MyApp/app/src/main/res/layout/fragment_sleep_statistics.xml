@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Layout for Sleep Statistics fragment -->
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -28,7 +29,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="Total Sleep Time"
+                android:text="@string/total_sleep_time"
                 android:textSize="20sp" />
 
             <LinearLayout
@@ -44,7 +45,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="Text"
+                android:text="@string/text"
                 android:textSize="20sp" />
 
         </LinearLayout>
@@ -66,7 +67,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="Total Days"
+                android:text="@string/total_days"
                 android:textSize="20sp" />
 
             <LinearLayout
@@ -82,7 +83,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="Text"
+                android:text="@string/text"
                 android:textSize="20sp" />
 
         </LinearLayout>
@@ -104,7 +105,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="Longest Sleep Time"
+                android:text="@string/longest_sleep_time"
                 android:textSize="20sp" />
 
             <LinearLayout
@@ -120,7 +121,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="Text"
+                android:text="@string/text"
                 android:textSize="20sp" />
 
         </LinearLayout>
@@ -142,7 +143,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="Shortest Sleep Time"
+                android:text="@string/shortest_sleep_time"
                 android:textSize="20sp" />
 
             <LinearLayout
@@ -158,7 +159,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="Text"
+                android:text="@string/text"
                 android:textSize="20sp" />
 
         </LinearLayout>
@@ -180,7 +181,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="Average Sleep Time"
+                android:text="@string/average_sleep_time"
                 android:textSize="20sp" />
 
             <LinearLayout
@@ -196,7 +197,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="Text"
+                android:text="@string/text"
                 android:textSize="20sp" />
 
         </LinearLayout>
@@ -218,7 +219,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="Earliest Sleep Time"
+                android:text="@string/earliest_sleep_time"
                 android:textSize="20sp" />
 
             <LinearLayout
@@ -234,7 +235,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="Text"
+                android:text="@string/text"
                 android:textSize="20sp" />
 
         </LinearLayout>
@@ -256,7 +257,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="Latest Sleep Time"
+                android:text="@string/latest_sleep_time"
                 android:textSize="20sp" />
 
             <LinearLayout
@@ -272,7 +273,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="Text"
+                android:text="@string/text"
                 android:textSize="20sp" />
 
         </LinearLayout>
@@ -294,7 +295,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="Earliest Wake Time"
+                android:text="@string/earliest_wake_time"
                 android:textSize="20sp" />
 
             <LinearLayout
@@ -310,7 +311,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="Text"
+                android:text="@string/text"
                 android:textSize="20sp" />
 
         </LinearLayout>
@@ -332,7 +333,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="Latest Wake Time"
+                android:text="@string/latest_wake_time"
                 android:textSize="20sp" />
 
             <LinearLayout
@@ -348,7 +349,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="Text"
+                android:text="@string/text"
                 android:textSize="20sp" />
 
         </LinearLayout>
