@@ -1,5 +1,5 @@
 This README explains how to run the experiments
-effectively. Users must first copy all the pyhton
+effectively. Users must first copy all the python
 files provided into a new project.
 
 To be able to run the files in the folder, some
