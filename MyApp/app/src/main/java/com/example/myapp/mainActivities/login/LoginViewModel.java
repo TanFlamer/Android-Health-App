@@ -1,6 +1,6 @@
 package com.example.myapp.mainActivities.login;
 
-import android.annotation.SuppressLint;
+import android.Manifest;
 import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.Application;
@@ -9,9 +9,13 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.lifecycle.AndroidViewModel;
 
 import com.example.myapp.MainApplication;
@@ -80,7 +84,6 @@ public class LoginViewModel extends AndroidViewModel {
     }
 
     //create notification to remind user to sleep at 10pm
-    @SuppressLint("UnspecifiedImmutableFlag")
     public void createNotification(){
         //create notification channel
         createNotificationChannel();
@@ -100,6 +103,7 @@ public class LoginViewModel extends AndroidViewModel {
         alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
     }
 
+    //create notification channel
     private void createNotificationChannel(){
         //notification title
         String name = "Sleep Reminder Channel";
@@ -115,5 +119,13 @@ public class LoginViewModel extends AndroidViewModel {
         NotificationManager notificationManager = getApplication().getSystemService(NotificationManager.class);
         //create notification channel
         notificationManager.createNotificationChannel(channel);
+    }
+
+    //get permission to post notification
+    public void postNotification(ActivityResultLauncher<String> requestPermissionLauncher){
+        //get post notification permission if sdk >= 33
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && ContextCompat.checkSelfPermission(getApplication(), Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED){
+            requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS);
+        }
     }
 }

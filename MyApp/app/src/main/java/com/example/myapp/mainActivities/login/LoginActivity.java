@@ -6,7 +6,10 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -28,6 +31,8 @@ public class LoginActivity extends AppCompatActivity {
         loginViewModel = new ViewModelProvider(this).get(LoginViewModel.class);
         //initialise all components
         initialiseAll();
+        //ask for post notification permission
+        loginViewModel.postNotification(requestPermissionLauncher);
     }
 
     //initialise all components
@@ -175,4 +180,12 @@ public class LoginActivity extends AppCompatActivity {
 
         }
     };
+
+    //ask user to give post notification permission
+    private final ActivityResultLauncher<String> requestPermissionLauncher =
+            registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
+                if (!isGranted) {
+                    Toast.makeText(getApplicationContext(), "Permission not granted to send notification", Toast.LENGTH_SHORT).show();
+                }
+            });
 }

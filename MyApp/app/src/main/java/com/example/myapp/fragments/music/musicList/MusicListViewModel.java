@@ -86,7 +86,7 @@ public class MusicListViewModel extends AndroidViewModel {
         Toast.makeText(getApplication(), fileName + " copied successfully", Toast.LENGTH_SHORT).show();
     }
 
-    //delete song form music folder
+    //delete song from music folder
     public void deleteFile(Song song){
         //reset media player
         musicPlayer.resetMediaPlayer();

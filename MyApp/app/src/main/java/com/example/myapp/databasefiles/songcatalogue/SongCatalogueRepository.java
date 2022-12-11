@@ -23,17 +23,17 @@ public class SongCatalogueRepository {
 
     //insert operation for song catalogue repository
     public void insert(SongCatalogue songCatalogue) {
-        new InsertSongPlaylistExecutorTask(songCatalogueDao).execute(songCatalogue);
+        new InsertSongCatalogueExecutorTask(songCatalogueDao).execute(songCatalogue);
     }
 
     //update operation for song catalogue repository
     public void update(SongCatalogue songCatalogue) {
-        new UpdateSongPlaylistExecutorTask(songCatalogueDao).execute(songCatalogue);
+        new UpdateSongCatalogueExecutorTask(songCatalogueDao).execute(songCatalogue);
     }
 
     //delete operation for song catalogue repository
     public void delete(SongCatalogue songCatalogue) {
-        new DeleteSongPlaylistExecutorTask(songCatalogueDao).execute(songCatalogue);
+        new DeleteSongCatalogueExecutorTask(songCatalogueDao).execute(songCatalogue);
     }
 
     //returns live data of all song catalogues belonging to a user
@@ -42,10 +42,10 @@ public class SongCatalogueRepository {
     }
 
     //insert song catalogue executor task
-    private static class InsertSongPlaylistExecutorTask {
+    private static class InsertSongCatalogueExecutorTask {
         private final ExecutorService service = Executors.newSingleThreadExecutor();
         private final SongCatalogueDao songCatalogueDao;
-        private InsertSongPlaylistExecutorTask(SongCatalogueDao songCatalogueDao) {
+        private InsertSongCatalogueExecutorTask(SongCatalogueDao songCatalogueDao) {
             this.songCatalogueDao = songCatalogueDao;
         }
         protected void execute(SongCatalogue songCatalogue){
@@ -54,10 +54,10 @@ public class SongCatalogueRepository {
     }
 
     //update song catalogue executor task
-    private static class UpdateSongPlaylistExecutorTask {
+    private static class UpdateSongCatalogueExecutorTask {
         private final ExecutorService service = Executors.newSingleThreadExecutor();
         private final SongCatalogueDao songCatalogueDao;
-        private UpdateSongPlaylistExecutorTask(SongCatalogueDao songCatalogueDao) {
+        private UpdateSongCatalogueExecutorTask(SongCatalogueDao songCatalogueDao) {
             this.songCatalogueDao = songCatalogueDao;
         }
         protected void execute(SongCatalogue songCatalogue){
@@ -66,10 +66,10 @@ public class SongCatalogueRepository {
     }
 
     //insert delete catalogue executor task
-    private static class DeleteSongPlaylistExecutorTask {
+    private static class DeleteSongCatalogueExecutorTask {
         private final ExecutorService service = Executors.newSingleThreadExecutor();
         private final SongCatalogueDao songCatalogueDao;
-        private DeleteSongPlaylistExecutorTask(SongCatalogueDao songCatalogueDao) {
+        private DeleteSongCatalogueExecutorTask(SongCatalogueDao songCatalogueDao) {
             this.songCatalogueDao = songCatalogueDao;
         }
         protected void execute(SongCatalogue songCatalogue){

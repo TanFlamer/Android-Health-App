@@ -23,17 +23,17 @@ public class SportScheduleRepository {
 
     //insert operation for sport schedule repository
     public void insert(SportSchedule sportSchedule) {
-        new InsertTypeSportExecutorTask(sportScheduleDao).execute(sportSchedule);
+        new InsertTypeScheduleExecutorTask(sportScheduleDao).execute(sportSchedule);
     }
 
     //update operation for sport schedule repository
     public void update(SportSchedule sportSchedule) {
-        new UpdateTypeSportExecutorTask(sportScheduleDao).execute(sportSchedule);
+        new UpdateTypeScheduleExecutorTask(sportScheduleDao).execute(sportSchedule);
     }
 
     //delete operation for sport schedule repository
     public void delete(SportSchedule sportSchedule) {
-        new DeleteTypeSportExecutorTask(sportScheduleDao).execute(sportSchedule);
+        new DeleteTypeScheduleExecutorTask(sportScheduleDao).execute(sportSchedule);
     }
 
     //returns live data of all sport schedules belonging to a user
@@ -42,10 +42,10 @@ public class SportScheduleRepository {
     }
 
     //insert sport schedule executor task
-    private static class InsertTypeSportExecutorTask {
+    private static class InsertTypeScheduleExecutorTask {
         private final ExecutorService service = Executors.newSingleThreadExecutor();
         private final SportScheduleDao sportScheduleDao;
-        private InsertTypeSportExecutorTask(SportScheduleDao sportScheduleDao) {
+        private InsertTypeScheduleExecutorTask(SportScheduleDao sportScheduleDao) {
             this.sportScheduleDao = sportScheduleDao;
         }
         protected void execute(SportSchedule sportSchedule){
@@ -54,10 +54,10 @@ public class SportScheduleRepository {
     }
 
     //update sport schedule executor task
-    private static class UpdateTypeSportExecutorTask {
+    private static class UpdateTypeScheduleExecutorTask {
         private final ExecutorService service = Executors.newSingleThreadExecutor();
         private final SportScheduleDao sportScheduleDao;
-        private UpdateTypeSportExecutorTask(SportScheduleDao sportScheduleDao) {
+        private UpdateTypeScheduleExecutorTask(SportScheduleDao sportScheduleDao) {
             this.sportScheduleDao = sportScheduleDao;
         }
         protected void execute(SportSchedule sportSchedule){
@@ -66,10 +66,10 @@ public class SportScheduleRepository {
     }
 
     //delete sport schedule executor task
-    private static class DeleteTypeSportExecutorTask {
+    private static class DeleteTypeScheduleExecutorTask {
         private final ExecutorService service = Executors.newSingleThreadExecutor();
         private final SportScheduleDao sportScheduleDao;
-        private DeleteTypeSportExecutorTask(SportScheduleDao sportScheduleDao) {
+        private DeleteTypeScheduleExecutorTask(SportScheduleDao sportScheduleDao) {
             this.sportScheduleDao = sportScheduleDao;
         }
         protected void execute(SportSchedule sportSchedule){
