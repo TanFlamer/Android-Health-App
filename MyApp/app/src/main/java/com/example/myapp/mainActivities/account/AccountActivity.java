@@ -284,7 +284,10 @@ public class AccountActivity extends AppCompatActivity {
     //initialise login button
     public void initialiseLoginButton(){
         //send user to next activity on click
-        loginButton.setOnClickListener(v -> startActivity(accountViewModel.loginUser()));
+        loginButton.setOnClickListener(v -> {
+            reloadPage();
+            startActivity(accountViewModel.loginUser());
+        });
     }
 
     //reload textview and layouts

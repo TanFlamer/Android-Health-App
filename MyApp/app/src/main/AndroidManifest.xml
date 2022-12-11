@@ -98,7 +98,7 @@
         </activity>
         <activity
             android:name=".mainActivities.MusicActivity"
-            android:exported="true">
+            android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
