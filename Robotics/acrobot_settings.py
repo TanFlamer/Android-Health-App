@@ -33,7 +33,7 @@ def height_reward(obv, reward, terminated):
     #  cos(a + b) = cos(a) * cos(b) - sin(a) * sin(b)
     # -cos(a) - cos(a + b) = sin(a) * sin(b) - cos(a) * (cos(b) + 1)
     cosA, sinA, cosB, sinB, _, _ = obv
-    # Add -2 term to move range of results to 0 - -4
+    # Add -2 term to move range of results from -2 - 2 to -4 - 0
     penalty = sinA * sinB - cosA * (cosB + 1) - 2
     return reward if terminated else penalty
 
@@ -74,7 +74,7 @@ if __name__ == "__main__":
     num_buckets = (1, 1, 1, 1, 10, 10)
 
     # Number of actions in action space (Values = 3, 2)
-    num_actions = 2
+    num_actions = 3
 
     # Initial Q-table values (Values = 0, 1)
     # Q-tables are initially filled with values from a standard normal distribution
