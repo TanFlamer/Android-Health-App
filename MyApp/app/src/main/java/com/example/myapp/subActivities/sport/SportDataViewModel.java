@@ -63,14 +63,14 @@ public class SportDataViewModel extends AndroidViewModel {
     //insert new sport schedule to database
     public void insertTypeSport(int typeID, int duration){
         String typeName = Objects.requireNonNull(typeMap.get(typeID)).getTypeName();
-        updateSaveLogs("Sport Type " + typeName + " added to " + getDate());
+        updateSaveLogs("Sport Type " + typeName + " for " + duration + " minutes added to " + getDate());
         sportScheduleRepository.insert(new SportSchedule(sport.getSportID(), typeID, duration, userID));
     }
 
     //update existing sport schedule in database
     public void updateTypeSport(int typeID, int duration){
         String typeName = Objects.requireNonNull(typeMap.get(typeID)).getTypeName();
-        updateSaveLogs("Sport Type " + typeName + " from " + getDate() + " updated");
+        updateSaveLogs("Sport Type " + typeName + " from " + getDate() + " updated to " + duration + " minutes");
         sportScheduleRepository.update(new SportSchedule(sport.getSportID(), typeID, duration, userID));
     }
 

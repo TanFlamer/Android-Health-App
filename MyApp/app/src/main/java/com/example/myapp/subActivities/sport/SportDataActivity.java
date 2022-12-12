@@ -42,7 +42,7 @@ public class SportDataActivity extends AppCompatActivity {
     SportDataListAdapter sportDataListAdapter;
     TypeDataAdapter spinnerAdapter;
 
-    HashMap<Pair<Integer, Integer>, Integer> changeLogs;
+    HashMap<Integer, Pair<Integer, Integer>> changeLogs;
     List<Pair<Pair<Type, Integer>, Boolean>> sportDataList;
     List<Type> typeList;
 
@@ -202,8 +202,8 @@ public class SportDataActivity extends AppCompatActivity {
                 long date = LocalDate.of(year, month, day).atStartOfDay(TimeZone.getDefault().toZoneId()).toInstant().toEpochMilli();
                 if(sportDataViewModel.getSport() == null) //insert new sport data if no date data
                     sportDataViewModel.insertSport(date);
-                changeLogs.forEach((pair, operation) -> { //loop through changes logs
-                    int typeID = pair.first;
+                changeLogs.forEach((typeID, pair) -> { //loop through changes logs
+                    int operation = pair.first;
                     int duration = pair.second;
                     if(operation > 0) //if new sport data
                         sportDataViewModel.insertTypeSport(typeID, duration); //insert new sport schedule
@@ -263,15 +263,15 @@ public class SportDataActivity extends AppCompatActivity {
     public void addSport(){
         Type type = (Type) typeSpinner.getSelectedItem();
         int duration = hour * 60 + minute;
-
+        //add sport type to selected list
         sportDataList.add(new Pair<>(new Pair<>(type, duration), false));
+        //remove sport type from spinner list
         typeList.remove(type);
-
+        //reset duration button
         buttonDuration.setText("Select Duration");
         hour = minute = 0;
-
-        Pair<Integer, Integer> integerDurationPair = new Pair<>(type.getTypeID(), duration);
-        changeLogs.put(integerDurationPair, Objects.requireNonNull(changeLogs.getOrDefault(integerDurationPair, 0)) + 1);
+        //modify change logs
+        modifyChangeLogs(type.getTypeID(), duration, 1);
     }
 
     public void deleteSports(){
@@ -279,11 +279,27 @@ public class SportDataActivity extends AppCompatActivity {
             Pair<Pair<Type, Integer>, Boolean> pairBooleanPair = sportDataList.get(i);
             if(pairBooleanPair.second){
                 Pair<Type, Integer> typeDurationPair = pairBooleanPair.first;
+                //remove sport type from selected list
                 sportDataList.remove(i);
-                typeList.add(typeDurationPair.first);
-                Pair<Integer, Integer> integerDurationPair = new Pair<>(typeDurationPair.first.getTypeID(), typeDurationPair.second);
-                changeLogs.put(integerDurationPair, Objects.requireNonNull(changeLogs.getOrDefault(integerDurationPair, 0)) - 1);
+                Type type = typeDurationPair.first;
+                //add sport type to spinner list
+                typeList.add(type);
+                //modify change logs
+                modifyChangeLogs(type.getTypeID(), typeDurationPair.second, -1);
             }
+        }
+    }
+
+    //modify change logs
+    public void modifyChangeLogs(int typeID, int duration, int operation){
+        Pair<Integer, Integer> pair = Objects.requireNonNull(changeLogs.getOrDefault(typeID, new Pair<>(0, 0)));
+        if(pair.first == 0)
+            changeLogs.put(typeID, new Pair<>(operation, duration));
+        else{
+            if(duration == pair.second)
+                changeLogs.remove(typeID);
+            else
+                changeLogs.put(typeID, new Pair<>(0, duration));
         }
     }
 

@@ -79,14 +79,14 @@ public class MusicDataViewModel extends AndroidViewModel {
     //insert new song catalogue to database
     public void insertSongPlaylist(int songID){
         String songName = Objects.requireNonNull(songMap.get(songID)).getSongName();
-        updateSaveLogs("Song " + songName + " added to " + playlist.getPlaylistName());
+        updateSaveLogs("Song " + songName + " added to Playlist " + playlist.getPlaylistName());
         songCatalogueRepository.insert(new SongCatalogue(playlist.getPlaylistID(), songID, userID));
     }
 
     //delete existing song catalogue from database
     public void deleteSongPlaylist(int songID){
         String songName = Objects.requireNonNull(songMap.get(songID)).getSongName();
-        updateSaveLogs("Song " + songName + " removed from " + playlist.getPlaylistName());
+        updateSaveLogs("Song " + songName + " removed from Playlist " + playlist.getPlaylistName());
         songCatalogueRepository.delete(new SongCatalogue(playlist.getPlaylistID(), songID, userID));
     }
 

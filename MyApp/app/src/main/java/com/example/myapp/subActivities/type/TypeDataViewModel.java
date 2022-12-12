@@ -37,13 +37,13 @@ public class TypeDataViewModel extends AndroidViewModel {
 
     //insert new sport type to database
     public void insert(String typeName, double calorie){
-        updateSaveLogs("Sport Type " + typeName + " added");
+        updateSaveLogs("Sport Type " + typeName + " with " + calorie + " calories per minute added");
         typeRepository.insert(new Type(typeName, calorie, userID));
     }
 
     //update existing sport type in database
     public void update(String typeName, double calorie){
-        updateSaveLogs("Sport Type " + typeName + " updated");
+        updateSaveLogs("Sport Type " + typeName + " updated to " + calorie + " calories per minute");
         type.setTypeName(typeName);
         type.setCaloriePerMinute(calorie);
         typeRepository.update(type);
