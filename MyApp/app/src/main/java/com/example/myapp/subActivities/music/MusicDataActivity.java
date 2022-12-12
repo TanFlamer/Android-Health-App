@@ -3,6 +3,7 @@ package com.example.myapp.subActivities.music;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.InputFilter;
 import android.text.TextWatcher;
 import android.util.Pair;
 import android.view.Menu;
@@ -240,6 +241,8 @@ public class MusicDataActivity extends AppCompatActivity {
         //link components by ID
         playlistNameInput = findViewById(R.id.playlistNameInput);
         playlistName = findViewById(R.id.playlistName);
+        //force uppercase
+        playlistName.setFilters(new InputFilter[] {new InputFilter.AllCaps()});
         //set original playlist name if given else empty
         playlistName.setText(namePlaylist);
         //add text watcher

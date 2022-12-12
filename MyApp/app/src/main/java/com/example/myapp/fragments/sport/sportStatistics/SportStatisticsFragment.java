@@ -81,7 +81,7 @@ public class SportStatisticsFragment extends Fragment {
     //initialise sort spinners
     public void initialiseSpinners(){
         //spinner sort choices
-        String[] data = new String[] {"Date Added", "Name", "Total Days", "Total Duration", "Total Calorie", "Average Duration", "Average Calorie", "Max Duration", "Max Calorie", "Min Duration", "Min Calorie"};
+        String[] data = new String[] {"Date Added", "Name", "Total Days", "Total Time", "Total Calorie", "Average Time", "Average Calorie", "Max Time", "Max Calorie", "Min Time", "Min Calorie"};
         String[] order = new String[] {"Ascending", "Descending"};
         //get spinners by ID
         dataSpinner = requireView().findViewById(R.id.dataSpinner);

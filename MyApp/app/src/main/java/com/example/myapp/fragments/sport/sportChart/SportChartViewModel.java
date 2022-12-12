@@ -20,6 +20,7 @@ import com.github.mikephil.charting.data.BarEntry;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -103,6 +104,7 @@ public class SportChartViewModel extends AndroidViewModel {
         for(SportSchedule sportSchedule : sportScheduleList){
             Sport sport = sportHashMap.get(sportSchedule.getSportID());
             Type type = typeHashMap.get(sportSchedule.getTypeID());
+            if(type == null) continue;
             int duration = sportSchedule.getSportDuration();
             newTypeSport.putIfAbsent(sport, new ArrayList<>());
             Objects.requireNonNull(newTypeSport.get(sport)).add(new Pair<>(type, duration));
@@ -121,8 +123,6 @@ public class SportChartViewModel extends AndroidViewModel {
         sportList.clear();
         //add new sport data list
         sportList.addAll(currentSportMap.keySet());
-        //remove null values from sport list
-        sportList.removeIf(Objects::isNull);
         //sort sport data list according to date in ascending order
         sportList.sort(Comparator.comparingLong(Sport::getDate));
         //clear old date labels
@@ -158,6 +158,11 @@ public class SportChartViewModel extends AndroidViewModel {
     public void getTotalDuration(){
         for(int i = 0; i < sportList.size(); i++){
             List<Pair<Type, Integer>> pairList = currentSportMap.get(sportList.get(i));
+            //null check for sport data
+            if(pairList == null) continue;
+            pairList.removeIf(pair -> pair == null || pair.first == null || pair.second == null);
+            if(pairList.isEmpty()) continue;
+            //get total duration of sport
             int totalDuration = 0;
             for(Pair<Type, Integer> pair : pairList){
                 totalDuration += pair.second;
@@ -171,6 +176,11 @@ public class SportChartViewModel extends AndroidViewModel {
     public void getTotalCalorie(){
         for(int i = 0; i < sportList.size(); i++){
             List<Pair<Type, Integer>> pairList = currentSportMap.get(sportList.get(i));
+            //null check for sport data
+            if(pairList == null) continue;
+            pairList.removeIf(pair -> pair == null || pair.first == null || pair.second == null);
+            if(pairList.isEmpty()) continue;
+            //get total calorie of sport
             float totalCalorie = 0;
             for(Pair<Type, Integer> pair : pairList){
                 totalCalorie += pair.first.getCaloriePerMinute() * pair.second;

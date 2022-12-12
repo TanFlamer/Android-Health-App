@@ -70,6 +70,7 @@ public class SportStatisticsViewModel extends AndroidViewModel {
             int duration = sportSchedule.getSportDuration();
             sportResults.putIfAbsent(type, new double[] {0, Integer.MIN_VALUE, Integer.MAX_VALUE, 0});
             double[] results = sportResults.get(type);
+            assert results != null;
             results[0] += duration; //total duration
             results[1] = Math.max(duration, results[1]); //max duration
             results[2] = Math.min(duration, results[2]); //min duration
@@ -86,6 +87,7 @@ public class SportStatisticsViewModel extends AndroidViewModel {
         for(Type type : results.keySet()){
             if(type == null) continue;
             double[] initial = results.get(type);
+            assert initial != null;
             double[] processed = new double[9];
             double calorie = type.getCaloriePerMinute();
             processed[0] = initial[0];
@@ -120,7 +122,7 @@ public class SportStatisticsViewModel extends AndroidViewModel {
             case "Name":
                 typeComparator = Comparator.comparing(Type::getTypeName);
                 break;
-            case "Total Duration":
+            case "Total Time":
                 typeComparator = Comparator.comparingDouble(a -> getResults(a, 0, sportResults));
                 break;
             case "Total Calorie":
@@ -129,16 +131,16 @@ public class SportStatisticsViewModel extends AndroidViewModel {
             case "Total Days":
                 typeComparator = Comparator.comparingDouble(a -> getResults(a, 2, sportResults));
                 break;
-            case "Average Duration":
+            case "Average Time":
                 typeComparator = Comparator.comparingDouble(a -> getResults(a, 3, sportResults));
                 break;
             case "Average Calorie":
                 typeComparator = Comparator.comparingDouble(a -> getResults(a, 4, sportResults));
                 break;
-            case "Max Duration":
+            case "Max Time":
                 typeComparator = Comparator.comparingDouble(a -> getResults(a, 5, sportResults));
                 break;
-            case "Min Duration":
+            case "Min Time":
                 typeComparator = Comparator.comparingDouble(a -> getResults(a, 6, sportResults));
                 break;
             case "Max Calorie":

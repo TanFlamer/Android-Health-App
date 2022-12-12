@@ -3,6 +3,7 @@ package com.example.myapp.mainActivities.login;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.InputFilter;
 import android.text.TextWatcher;
 import android.widget.Button;
 import android.widget.EditText;
@@ -66,6 +67,8 @@ public class LoginActivity extends AppCompatActivity {
 
     //initialise username edit text
     public void initialiseUsername(){
+        //force uppercase
+        username.setFilters(new InputFilter[] {new InputFilter.AllCaps()});
         //add text watcher
         username.addTextChangedListener(loginTextWatcher);
         //add focus listener

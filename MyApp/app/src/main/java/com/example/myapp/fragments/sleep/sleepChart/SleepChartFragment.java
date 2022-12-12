@@ -169,7 +169,11 @@ public class SleepChartFragment extends Fragment {
         barChart.getXAxis().setValueFormatter(new ValueFormatter() {
             @Override
             public String getFormattedValue(float value) {
-                return xAxisLabels.size() == 0 ? "" : xAxisLabels.get((int) value);
+                int intValue = (int) value;
+                if(intValue < 0 || intValue >= xAxisLabels.size())
+                    return "";
+                else
+                    return xAxisLabels.get((int) value);
             }
         });
     }

@@ -1,5 +1,6 @@
 package com.example.myapp.fragments.sleep.sleepStatistics;
 
+import android.annotation.SuppressLint;
 import android.app.Application;
 
 import androidx.annotation.NonNull;
@@ -27,9 +28,9 @@ public class SleepStatisticsViewModel extends AndroidViewModel {
     }
 
     //compile sleep statistics
-    public double[] processResults(List<Sleep> sleepList){
+    public String[] processResults(List<Sleep> sleepList){
         //if no sleep data, return empty statistics
-        if(sleepList.size() == 0) return new double[9];
+        if(sleepList.size() == 0) return new String[] { "0:00" , "0", "0:00", "0:00", "0:00", "0:00", "0:00", "0:00", "0:00" };
 
         int[] results = new int[] {0, 0, 1440, 719, 720, 1439, 0, 0};
         for(Sleep sleep : sleepList){
@@ -49,17 +50,19 @@ public class SleepStatisticsViewModel extends AndroidViewModel {
     }
 
     //convert sleep results
-    public double[] compileResults(int[] results){
-        double[] newResults = new double[9];
-        newResults[0] = (double) results[0] / 60;
-        newResults[1] = (double) results[7];
-        newResults[2] = (double) results[1] / 60;
-        newResults[3] = (double) results[2] / 60;
-        newResults[4] = (double) results[0] / (results[7] * 60);
-        newResults[5] = results[3];
-        newResults[6] = results[4];
-        newResults[7] = results[5];
-        newResults[8] = results[6];
+    @SuppressLint("DefaultLocale")
+    public String[] compileResults(int[] results){
+        int average = results[0] / results[7];
+        String[] newResults = new String[9];
+        newResults[0] = String.format("%d:%02d", results[0] / 60, results[0] % 60);
+        newResults[1] = String.valueOf(results[7]);
+        newResults[2] = String.format("%d:%02d", results[1] / 60, results[1] % 60);
+        newResults[3] = String.format("%d:%02d", results[2] / 60, results[2] % 60);
+        newResults[4] = String.format("%d:%02d", average / 60, average % 60);
+        newResults[5] = String.format("%d:%02d", results[3] / 60, results[3] % 60);
+        newResults[6] = String.format("%d:%02d", results[4] / 60, results[4] % 60);
+        newResults[7] = String.format("%d:%02d", results[5] / 60, results[5] % 60);
+        newResults[8] = String.format("%d:%02d", results[6] / 60, results[6] % 60);
         return newResults;
     }
 
@@ -76,7 +79,7 @@ public class SleepStatisticsViewModel extends AndroidViewModel {
     }
 
     //return live data for sleep data list
-    public LiveData<double[]> getSleepLiveData(){
+    public LiveData<String[]> getSleepLiveData(){
         return Transformations.map(sleepList, this::processResults);
     }
 }

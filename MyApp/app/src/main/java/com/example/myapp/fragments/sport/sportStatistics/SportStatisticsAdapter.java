@@ -43,21 +43,22 @@ public class SportStatisticsAdapter extends RecyclerView.Adapter<SportStatistics
         return new SportRecyclerItemViewHolder(view);
     }
 
-    @SuppressLint("SetTextI18n")
+    @SuppressLint({"SetTextI18n", "DefaultLocale"})
     @Override //bind sport statistics to view holder
     public void onBindViewHolder(@NonNull SportRecyclerItemViewHolder holder, int position) {
         Type type = typeList.get(position);
         double[] results = sportResults.get(type);
+        assert results != null;
         holder.titleView.setText(type.getTypeName());
-        holder.totalTimeView.setText(String.valueOf(results[0]));
-        holder.totalCalorieView.setText(String.valueOf(results[1]));
-        holder.totalDaysView.setText(String.valueOf(results[2]));
-        holder.averageTimeView.setText(String.valueOf(results[3]));
-        holder.averageCalorieView.setText(String.valueOf((results[4])));
-        holder.longestTimeView.setText(String.valueOf(results[5]));
-        holder.shortestTimeView.setText(String.valueOf(results[6]));
-        holder.mostCalorieView.setText(String.valueOf(results[7]));
-        holder.leastCalorieView.setText(String.valueOf(results[8]));
+        holder.totalTimeView.setText(String.format("%d:%02d", (int) results[0] / 60, (int) results[0] % 60));
+        holder.totalCalorieView.setText(String.format("%.2f", results[1]));
+        holder.totalDaysView.setText(String.format("%d", (int) results[2]));
+        holder.averageTimeView.setText(String.format("%d:%02d", (int) results[3] / 60, (int) results[3] % 60));
+        holder.averageCalorieView.setText(String.format("%.2f", results[4]));
+        holder.longestTimeView.setText(String.format("%d:%02d", (int) results[5] / 60, (int) results[5] % 60));
+        holder.shortestTimeView.setText(String.format("%d:%02d", (int) results[6] / 60, (int) results[6] % 60));
+        holder.mostCalorieView.setText(String.format("%.2f", results[7]));
+        holder.leastCalorieView.setText(String.format("%.2f", results[8]));
         holder.layoutHidden.setVisibility(Boolean.TRUE.equals(visibilityMap.get(type)) ? View.VISIBLE : View.GONE);
     }
 

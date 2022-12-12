@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.InputFilter;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
@@ -171,6 +172,8 @@ public class AccountActivity extends AppCompatActivity {
 
     //initialise user creation edit text
     public void initialiseNewUser(){
+        //force uppercase
+        newUsername.setFilters(new InputFilter[] {new InputFilter.AllCaps()});
         //add text watcher and on focus listener to new username edit text
         newUsername.addTextChangedListener(newUserTextWatcher);
         newUsername.setOnFocusChangeListener((v, hasFocus) -> validateUsername(newUsernameInput, newUsername));
@@ -184,6 +187,8 @@ public class AccountActivity extends AppCompatActivity {
 
     //initialise change username edit text
     public void initialiseChangeUsername(){
+        //force uppercase
+        changeUsername.setFilters(new InputFilter[] {new InputFilter.AllCaps()});
         //add text watcher and on focus listener to change username edit text
         changeUsername.addTextChangedListener(changeUsernameTextWatcher);
         changeUsername.setOnFocusChangeListener((v, hasFocus) -> validateUsername(changeUsernameInput, changeUsername));

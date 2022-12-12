@@ -68,15 +68,15 @@ public class SleepStatisticsFragment extends Fragment {
 
     //update sleep statistics if sleep data list changes
     @SuppressLint("DefaultLocale")
-    public void updateResults(double[] results){
-        sleepTotal.setText(String.valueOf(results[0]));
-        dayTotal.setText(String.valueOf(results[1]));
-        sleepLongest.setText(String.valueOf(results[2]));
-        sleepShortest.setText(String.valueOf(results[3]));
-        sleepAverage.setText(String.valueOf(results[4]));
-        sleepEarliest.setText(String.format("%02d:%02d", (int) results[5] / 60, (int) results[5] % 60));
-        sleepLatest.setText(String.format("%02d:%02d", (int) results[6] / 60, (int) results[6] % 60));
-        wakeEarliest.setText(String.format("%02d:%02d", (int) results[7] / 60, (int) results[7] % 60));
-        wakeLatest.setText(String.format("%02d:%02d", (int) results[8] / 60, (int) results[8] % 60));
+    public void updateResults(String[] results){
+        sleepTotal.setText(results[0]);
+        dayTotal.setText(results[1]);
+        sleepLongest.setText(results[2]);
+        sleepShortest.setText(results[3]);
+        sleepAverage.setText(results[4]);
+        sleepEarliest.setText(results[5]);
+        sleepLatest.setText(results[6]);
+        wakeEarliest.setText(results[7]);
+        wakeLatest.setText(results[8]);
     }
 }

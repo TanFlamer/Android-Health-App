@@ -1,5 +1,6 @@
 package com.example.myapp.fragments.music.musicStatistics;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -79,22 +80,23 @@ public class MusicStatisticsFragment extends Fragment {
     }
 
     //update song statistics if song list changes
-    public void updateSongResults(double[] songResults){
-        songTotal.setText(String.valueOf(songResults[0]));
-        songNumber.setText(String.valueOf(songResults[1]));
-        songAverage.setText(String.valueOf(songResults[2]));
-        songLongest.setText(String.valueOf(songResults[3]));
-        songShortest.setText(String.valueOf(songResults[4]));
+    @SuppressLint("DefaultLocale")
+    public void updateSongResults(String[] songResults){
+        songTotal.setText(songResults[0]);
+        songNumber.setText(songResults[1]);
+        songAverage.setText(songResults[2]);
+        songLongest.setText(songResults[3]);
+        songShortest.setText(songResults[4]);
     }
 
     //update playlists statistics if song list or song catalogue list changes
-    public void updatePlaylistResults(double[] playlistResults){
-        playlistNumber.setText(String.valueOf(playlistResults[0]));
-        playlistLength.setText(String.valueOf(playlistResults[1]));
-        playlistCount.setText(String.valueOf(playlistResults[2]));
-        playlistLongest.setText(String.valueOf(playlistResults[3]));
-        playlistShortest.setText(String.valueOf(playlistResults[4]));
-        playlistHighest.setText(String.valueOf(playlistResults[5]));
-        playlistLowest.setText(String.valueOf(playlistResults[6]));
+    public void updatePlaylistResults(String[] playlistResults){
+        playlistNumber.setText(playlistResults[0]);
+        playlistLength.setText(playlistResults[1]);
+        playlistCount.setText(playlistResults[2]);
+        playlistLongest.setText(playlistResults[3]);
+        playlistShortest.setText(playlistResults[4]);
+        playlistHighest.setText(playlistResults[5]);
+        playlistLowest.setText(playlistResults[6]);
     }
 }

@@ -1,5 +1,6 @@
 package com.example.myapp.fragments.music.musicStatistics;
 
+import android.annotation.SuppressLint;
 import android.app.Application;
 
 import androidx.annotation.NonNull;
@@ -25,7 +26,7 @@ public class MusicStatisticsViewModel extends AndroidViewModel {
     private final SongRepository songRepository;
     private final SongCatalogueRepository songCatalogueRepository;
 
-    private MediatorLiveData<double[]> musicDateMerger;
+    private MediatorLiveData<String[]> musicDateMerger;
     private LiveData<List<Song>> songLiveData;
     private LiveData<List<SongCatalogue>> songCatalogueLiveData;
 
@@ -58,9 +59,10 @@ public class MusicStatisticsViewModel extends AndroidViewModel {
     }
 
     //compile song statistics
-    public double[] compileSongResults(List<Song> songs){
+    @SuppressLint("DefaultLocale")
+    public String[] compileSongResults(List<Song> songs){
         //if no songs return empty statistics
-        if(songs.size() == 0) return new double[5];
+        if(songs.size() == 0) return new String[] { "0", "0:00", "0:00", "0:00", "0:00"};
 
         int[] results = new int[] {0, 0, Integer.MIN_VALUE, Integer.MAX_VALUE};
         for(Song song : songs){
@@ -69,13 +71,21 @@ public class MusicStatisticsViewModel extends AndroidViewModel {
             results[2] = Math.max(song.getSongDuration(), results[2]); //longest song
             results[3] = Math.min(song.getSongDuration(), results[3]); //shortest song
         }
-        return new double[] { results[0], results[1], (double) results[0] / results[1], results[2], results[3] };
+
+        int average = results[0] / results[1];
+        String[] resultStrings = new String[5];
+        resultStrings[0] = String.format("%d:%02d", results[0] / 60, results[0] % 60);
+        resultStrings[1] = String.valueOf(results[1]);
+        resultStrings[2] = String.format("%d:%02d", average / 60, average % 60);
+        resultStrings[3] = String.format("%d:%02d", results[2] / 60, results[2] % 60);
+        resultStrings[4] = String.format("%d:%02d", results[3] / 60, results[3] % 60);
+        return resultStrings;
     }
 
     //link songs to playlists
-    public double[] compilePlaylistResults(List<Song> songs, List<SongCatalogue> songCatalogues){
+    public String[] compilePlaylistResults(List<Song> songs, List<SongCatalogue> songCatalogues){
         //if no song catalogues return empty statistics
-        if(songCatalogues.size() == 0) return new double[7];
+        if(songCatalogues.size() == 0) return new String[] { "0", "0:00", "0", "0:00", "0:00", "0", "0" };
 
         HashMap<Integer, Song> songHashMap = new HashMap<>();
         for(Song song : songs) songHashMap.put(song.getSongID(), song);
@@ -92,7 +102,8 @@ public class MusicStatisticsViewModel extends AndroidViewModel {
     }
 
     //compile playlist statistics
-    public double[] processPlaylistResults(HashMap<Integer, List<Song>> songCatalogueHashMap){
+    @SuppressLint("DefaultLocale")
+    public String[] processPlaylistResults(HashMap<Integer, List<Song>> songCatalogueHashMap){
         int[] results = new int[] {0, Integer.MIN_VALUE, Integer.MAX_VALUE, 0, Integer.MIN_VALUE, Integer.MAX_VALUE, 0};
         for(List<Song> songs : songCatalogueHashMap.values()){
             int songDuration = 0;
@@ -110,17 +121,27 @@ public class MusicStatisticsViewModel extends AndroidViewModel {
             results[5] = Math.min(songDuration, results[5]); //shortest playlist
             results[6] += songCount; //total song count
         }
-        return new double[] {results[0], (double) results[3] / results[0],
-                (double) results[6] / results[0], results[6], results[5], results[1], results[2]};
+
+        int averageLength = results[3] / results[0];
+        float averageCount = (float) results[6] / results[0];
+        String[] resultStrings = new String[7];
+        resultStrings[0] = String.valueOf(results[0]);
+        resultStrings[1] = String.format("%d:%02d", averageLength / 60, averageLength % 60);
+        resultStrings[2] = String.format("%.2f", averageCount);
+        resultStrings[3] = String.format("%d:%02d", results[4] / 60, results[4] % 60);
+        resultStrings[4] = String.format("%d:%02d", results[5] / 60, results[5] % 60);
+        resultStrings[5] = String.valueOf(results[1]);
+        resultStrings[6] = String.valueOf(results[2]);
+        return resultStrings;
     }
 
     //return live data for song list
-    public LiveData<double[]> getSongLiveData() {
+    public LiveData<String[]> getSongLiveData() {
         return Transformations.map(songLiveData, this::compileSongResults);
     }
 
     //return live data merger of music statistics
-    public MediatorLiveData<double[]> getMusicDateMerger() {
+    public MediatorLiveData<String[]> getMusicDateMerger() {
         return musicDateMerger;
     }
 }

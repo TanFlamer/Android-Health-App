@@ -2,6 +2,7 @@ package com.example.myapp.subActivities.type;
 
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.InputFilter;
 import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -58,12 +59,16 @@ public class TypeDataActivity extends AppCompatActivity {
 
     //initialise edit text for user input
     public void initialiseEditTexts(){
-        //initialise sport type name text view with text watcher and on focus listener
+        //get sport type name text view by ID
         nameInput = findViewById(R.id.nameInput);
+        //force uppercase
+        name.setFilters(new InputFilter[] {new InputFilter.AllCaps()});
+        //add text view with text watcher and on focus listener
         name.addTextChangedListener(typeTextWatcher);
         name.setOnFocusChangeListener((v, hasFocus) -> validateName());
-        //initialise sport type calorie text view with text watcher and on focus listener
+        //get sport type calorie text view by ID
         calorieInput = findViewById(R.id.calorieInput);
+        //add text view with text watcher and on focus listener
         calorie.addTextChangedListener(typeTextWatcher);
         calorie.setOnFocusChangeListener((v, hasFocus) -> validateDouble());
         //fill sport name and calorie text views with initial strings

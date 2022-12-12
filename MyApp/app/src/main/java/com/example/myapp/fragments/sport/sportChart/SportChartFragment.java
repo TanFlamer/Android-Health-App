@@ -2,12 +2,6 @@ package com.example.myapp.fragments.sport.sportChart;
 
 import android.graphics.Color;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
-
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +9,11 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.example.myapp.R;
 import com.github.mikephil.charting.charts.BarChart;
@@ -165,7 +164,11 @@ public class SportChartFragment extends Fragment {
         barChart.getXAxis().setValueFormatter(new ValueFormatter() {
             @Override
             public String getFormattedValue(float value) {
-                return xAxisLabels.isEmpty() ? "" : xAxisLabels.get((int) value);
+                int intValue = (int) value;
+                if(intValue < 0 || intValue >= xAxisLabels.size())
+                    return "";
+                else
+                    return xAxisLabels.get((int) value);
             }
         });
     }
