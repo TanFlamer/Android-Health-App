@@ -43,9 +43,19 @@ public class TypeDataViewModel extends AndroidViewModel {
 
     //update existing sport type in database
     public void update(String typeName, double calorie){
-        updateSaveLogs("Sport Type " + typeName + " updated to " + calorie + " calories per minute");
-        type.setTypeName(typeName);
-        type.setCaloriePerMinute(calorie);
+        //check if sport type name different
+        String oldTypeName = type.getTypeName();
+        if(!oldTypeName.equals(typeName)){
+            type.setTypeName(typeName);
+            updateSaveLogs("Sport Type " + oldTypeName + " changed to " + typeName);
+        }
+        //check if sport type calorie per minute different
+        double oldCalories = type.getCaloriePerMinute();
+        if(Double.compare(oldCalories, calorie) != 0){
+            type.setCaloriePerMinute(calorie);
+            updateSaveLogs("Sport Type " + typeName + " updated to " + calorie + " calories per minute");
+        }
+        //update sport type
         typeRepository.update(type);
     }
 

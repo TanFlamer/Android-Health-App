@@ -89,14 +89,12 @@ public class TypeDataActivity extends AppCompatActivity {
             double newTypeDouble = Double.parseDouble(calorie.getText().toString());
             if(type == null) //if old sport type is null
                 typeDataViewModel.insert(newTypeName, newTypeDouble); //insert new sport type
-            else if(!type.getTypeName().equals(newTypeName) || !type.getCaloriePerMinute().equals(newTypeDouble)) //else
+            else
                 typeDataViewModel.update(newTypeName, newTypeDouble); //update old sport type if name or calorie different
             finish(); //return to last activity
         });
         //set return button on click listener to return to last activity
         buttonReturn.setOnClickListener(v -> finish());
-        //disable save button
-        buttonSave.setEnabled(false);
     }
 
     //validate sport type name
@@ -147,6 +145,18 @@ public class TypeDataActivity extends AppCompatActivity {
         return positiveTypeCalorie; //return validity of sport type calorie
     }
 
+    //check if there is difference with old sport type
+    public boolean differentSportType(){
+        //get old sport type
+        Type type = typeDataViewModel.getType();
+        //get sport type name entered
+        String typeNameText = name.getText().toString();
+        //get sport type calorie entered
+        String typeCalorieText = calorie.getText().toString();
+        //check if there is difference with old sport type
+        return type == null || !type.getTypeName().equals(typeNameText) || !type.getCaloriePerMinute().toString().equals(typeCalorieText);
+    }
+
     //check if string is valid double
     public boolean isDouble(String calorieText){
         try{
@@ -173,8 +183,10 @@ public class TypeDataActivity extends AppCompatActivity {
             boolean validTypeName = validateName();
             //check if valid sport type calorie
             boolean validTypeCalorie = validateDouble();
+            //check if there is difference with old sport type
+            boolean differentSportType = differentSportType();
             //enable save button if valid sport typename and calorie
-            buttonSave.setEnabled(validTypeName && validTypeCalorie);
+            buttonSave.setEnabled(validTypeName && validTypeCalorie && differentSportType);
         }
 
         @Override
