@@ -12,6 +12,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.myapp.R;
+import com.example.myapp.ViewHolder;
 import com.example.myapp.databasefiles.sport.Sport;
 import com.example.myapp.databasefiles.type.Type;
 
@@ -82,36 +83,75 @@ public class SportListAdapter extends BaseExpandableListAdapter {
         View currentItemView = view;
 
         //inflate new view for sport data if null
-        if(currentItemView == null)
+        if(currentItemView == null) {
             currentItemView = LayoutInflater.from(context).inflate(R.layout.sport_expandable_list_item, null);
+            //create new view holder
+            ViewHolder viewHolder = new ViewHolder();
+            //add text view to view holder
+            viewHolder.addView(currentItemView.findViewById(R.id.sportDate));
+            //add layout to view holder
+            viewHolder.addView(currentItemView.findViewById(R.id.layoutHidden));
+            //add button to view holder
+            viewHolder.addView(currentItemView.findViewById(R.id.clickEdit));
+            //add button to view holder
+            viewHolder.addView(currentItemView.findViewById(R.id.clickDelete));
+            //set tag to view
+            currentItemView.setTag(viewHolder);
+        }
 
-        //initialise sport data view data
-        initialiseGroupView(currentItemView, i);
+        //get view holder
+        ViewHolder viewHolder = (ViewHolder) currentItemView.getTag();
+        //update sport data view data
+        updateGroupView(viewHolder, i);
         //return sport data view
         return currentItemView;
     }
 
-    //initialise sport data view data
-    public void initialiseGroupView(View view, int position){
+    //update sport data view data
+    public void updateGroupView(ViewHolder viewHolder, int position){
         Sport sport = sportList.get(position);
-        //initialise sport data date
-        initialiseGroupDate(view, sport);
-        //initialise sport data hidden layout
-        initialiseHiddenLayout(view, sport);
-        //initialise sport data edit button
-        initialiseEditButton(view, sport);
-        //initialise sport data delete button
-        initialiseDeleteButton(view, sport);
+        //update sport data date
+        updateGroupDate(viewHolder, sport);
+        //update sport data hidden layout
+        updateHiddenLayout(viewHolder, sport);
+        //update sport data edit button
+        updateEditButton(viewHolder, sport);
+        //update sport data delete button
+        updateDeleteButton(viewHolder, sport);
     }
 
-    //initialise sport data date
-    public void initialiseGroupDate(View view, Sport sport){
+    //update sport data date
+    public void updateGroupDate(ViewHolder viewHolder, Sport sport){
         //get text view ID for sport data date
-        TextView dateView = view.findViewById(R.id.sportDate);
+        TextView dateView = (TextView) viewHolder.getView(R.id.sportDate);
         //convert long to local date
         LocalDate date = Instant.ofEpochMilli(sport.getDate()).atZone(ZoneId.systemDefault()).toLocalDate();
         //set sport data date
         dateView.setText(date.toString());
+    }
+
+    //update sport data hidden layout
+    public void updateHiddenLayout(ViewHolder viewHolder, Sport sport){
+        //get hidden layout by ID
+        LinearLayout layoutHidden = (LinearLayout) viewHolder.getView(R.id.layoutHidden);
+        //change visibility of hidden layout on long click
+        layoutHidden.setVisibility(Boolean.TRUE.equals(buttonMap.get(sport)) ? View.VISIBLE : View.GONE);
+    }
+
+    //update sport data edit button
+    public void updateEditButton(ViewHolder viewHolder, Sport sport){
+        //get edit button by ID
+        ImageView clickEdit = (ImageView) viewHolder.getView(R.id.clickEdit);
+        //send to edit sport data activity on click
+        clickEdit.setOnClickListener(v -> context.startActivity(sportListViewModel.sportEdit(sport.getDate())));
+    }
+
+    //update sport data delete button
+    public void updateDeleteButton(ViewHolder viewHolder, Sport sport){
+        //get delete button by ID
+        ImageView clickDelete = (ImageView) viewHolder.getView(R.id.clickDelete);
+        //show dialog to validate sport data deletion on click
+        clickDelete.setOnClickListener(view1 -> sportListViewModel.deleteSportList(context, sport).show());
     }
 
     //show or hide hidden layout on long click
@@ -124,30 +164,6 @@ public class SportListAdapter extends BaseExpandableListAdapter {
         notifyDataSetChanged();
     }
 
-    //initialise sport data hidden layout
-    public void initialiseHiddenLayout(View view, Sport sport){
-        //get hidden layout by ID
-        LinearLayout layoutHidden = view.findViewById(R.id.layoutHidden);
-        //change visibility of hidden layout on long click
-        layoutHidden.setVisibility(Boolean.TRUE.equals(buttonMap.get(sport)) ? View.VISIBLE : View.GONE);
-    }
-
-    //initialise sport data edit button
-    public void initialiseEditButton(View view, Sport sport){
-        //get edit button by ID
-        ImageView clickEdit = view.findViewById(R.id.clickEdit);
-        //send to edit sport data activity on click
-        clickEdit.setOnClickListener(v -> context.startActivity(sportListViewModel.sportEdit(sport.getDate())));
-    }
-
-    //initialise sport data delete button
-    public void initialiseDeleteButton(View view, Sport sport){
-        //get delete button by ID
-        ImageView clickDelete = view.findViewById(R.id.clickDelete);
-        //show dialog to validate sport data deletion on click
-        clickDelete.setOnClickListener(view1 -> sportListViewModel.deleteSportList(context, sport).show());
-    }
-
     @SuppressLint("InflateParams")
     @Override //get view for each sport type
     public View getChildView(int i, int i1, boolean b, View view, ViewGroup viewGroup) {
@@ -156,47 +172,61 @@ public class SportListAdapter extends BaseExpandableListAdapter {
         //inflate new view for sport type if null
         if(currentItemView == null) {
             currentItemView = LayoutInflater.from(context).inflate(R.layout.sport_expandable_list_item_data, null);
+            //create new view holder
+            ViewHolder viewHolder = new ViewHolder();
+            //add text view to view holder
+            viewHolder.addView(currentItemView.findViewById(R.id.sportName));
+            //add text view to view holder
+            viewHolder.addView(currentItemView.findViewById(R.id.sportDuration));
+            //add text view to view holder
+            viewHolder.addView(currentItemView.findViewById(R.id.sportCalorie));
+            //set tag to view
+            currentItemView.setTag(viewHolder);
         }
 
-        //initialise sport type view data
-        initialiseChildView(currentItemView, i, i1);
+        //get view holder
+        ViewHolder viewHolder = (ViewHolder) currentItemView.getTag();
+        //update sport type view data
+        updateChildView(viewHolder, i, i1);
         //return sport type view
         return currentItemView;
     }
 
-    //initialise sport type view data
-    public void initialiseChildView(View view, int parent, int child){
+    //update sport type view data
+    public void updateChildView(ViewHolder viewHolder, int parent, int child){
         Pair<Type, Integer> pair = Objects.requireNonNull(typeSports.get(sportList.get(parent))).get(child);
+        //get sport type
         Type type = pair.first;
-        int duration = pair.second;
-        //get sport type name
-        initialiseChildName(view, type);
         //get sport type duration
-        initialiseChildDuration(view, duration);
-        //get sport type calorie
-        initialiseCalorieView(view, type, duration);
+        int duration = pair.second;
+        //update sport type name
+        updateChildName(viewHolder, type);
+        //update sport type duration
+        updateChildDuration(viewHolder, duration);
+        //update sport type calorie
+        updateCalorieView(viewHolder, type, duration);
     }
 
-    //get sport type name
-    public void initialiseChildName(View view, Type type){
+    //update sport type name
+    public void updateChildName(ViewHolder viewHolder, Type type){
         //get text view ID for sport type name
-        TextView nameView = view.findViewById(R.id.sportName);
+        TextView nameView = (TextView) viewHolder.getView(R.id.sportName);
         //set sport type name
         nameView.setText(type.getTypeName());
     }
 
-    //get sport type duration
-    public void initialiseChildDuration(View view, int duration){
+    //update sport type duration
+    public void updateChildDuration(ViewHolder viewHolder, int duration){
         //get text view ID for sport type duration
-        TextView durationView = view.findViewById(R.id.sportDuration);
+        TextView durationView = (TextView) viewHolder.getView(R.id.sportDuration);
         //set sport type duration
         durationView.setText(String.valueOf(duration));
     }
 
-    //get sport type calorie
-    public void initialiseCalorieView(View view, Type type, int duration){
+    //update sport type calorie
+    public void updateCalorieView(ViewHolder viewHolder, Type type, int duration){
         //get text view ID for sport type calorie
-        TextView calorieView = view.findViewById(R.id.sportCalorie);
+        TextView calorieView = (TextView) viewHolder.getView(R.id.sportCalorie);
         //set sport type calorie
         calorieView.setText(String.valueOf(type.getCaloriePerMinute() * duration));
     }
@@ -216,8 +246,6 @@ public class SportListAdapter extends BaseExpandableListAdapter {
         typeSports.clear();
         //add new sport type list
         typeSports.putAll(newTypeSports);
-        //remove null sport types
-        removeNull();
         //sort sport data and sport type lists
         sortSportList(data, order);
     }
@@ -230,12 +258,5 @@ public class SportListAdapter extends BaseExpandableListAdapter {
         for(Sport sport : sportList) buttonMap.put(sport, false);
         //notify adapter dataset changed
         notifyDataSetChanged();
-    }
-
-    //remove null sport types
-    public void removeNull(){
-        for(List<Pair<Type, Integer>> pairList : typeSports.values()){
-            pairList.removeIf(pair -> pair == null || pair.first == null || pair.second == null);
-        }
     }
 }

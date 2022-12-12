@@ -16,6 +16,7 @@ import androidx.annotation.Nullable;
 import com.example.myapp.MusicPlayer;
 import com.example.myapp.R;
 import com.example.myapp.databasefiles.song.Song;
+import com.example.myapp.ViewHolder;
 
 import java.util.HashMap;
 import java.util.List;
@@ -45,57 +46,71 @@ public class MusicListAdapter extends ArrayAdapter<Song> {
         //inflate new view for song if null
         if(currentItemView == null) {
             currentItemView = LayoutInflater.from(getContext()).inflate(R.layout.music_list_item, parent, false);
+            //create new view holder
+            ViewHolder viewHolder = new ViewHolder();
+            //add layout to view holder
+            viewHolder.addView(currentItemView.findViewById(R.id.layoutHidden));
+            //add text view to view holder
+            viewHolder.addView(currentItemView.findViewById(R.id.musicName));
+            //add text view to view holder
+            viewHolder.addView(currentItemView.findViewById(R.id.musicLength));
+            //add button to view holder
+            viewHolder.addView(currentItemView.findViewById(R.id.clickDelete));
+            //set tag to view
+            currentItemView.setTag(viewHolder);
         }
 
-        //initialise song view data
-        initialiseAll(currentItemView, position);
+        //get view holder
+        ViewHolder viewHolder = (ViewHolder) currentItemView.getTag();
+        //update song view data
+        updateAllViews(viewHolder, position);
         //return song view
         return currentItemView;
     }
 
     //initialise song view data
-    public void initialiseAll(View view, int position){
+    public void updateAllViews(ViewHolder viewHolder, int position){
         Song song = songList.get(position);
-        //initialise song hidden layout
-        initialiseLayouts(view, song);
-        //get song name
-        initialiseNameView(view, song);
-        //get song duration
-        initialiseLengthView(view, song);
-        //initialise song delete button
-        initialiseDeleteButton(view, song);
+        //update song hidden layout
+        updateLayouts(viewHolder, song);
+        //update song name
+        updateNameView(viewHolder, song);
+        //update song duration
+        updateLengthView(viewHolder, song);
+        //update song delete button
+        updateDeleteButton(viewHolder, song);
     }
 
-    //initialise song hidden layout
-    public void initialiseLayouts(View view, Song song){
+    //update song hidden layout
+    public void updateLayouts(ViewHolder viewHolder, Song song){
         //get hidden layout by ID
-        LinearLayout layoutHidden = view.findViewById(R.id.layoutHidden);
+        LinearLayout layoutHidden = (LinearLayout) viewHolder.getView(R.id.layoutHidden);
         //change visibility of hidden layout on long click
         layoutHidden.setVisibility(Boolean.TRUE.equals(buttonMap.get(song)) ? View.VISIBLE : View.GONE);
     }
 
-    //get song name
-    public void initialiseNameView(View view, Song song){
+    //update song name
+    public void updateNameView(ViewHolder viewHolder, Song song){
         //get text view ID for song name
-        TextView nameView = view.findViewById(R.id.musicName);
+        TextView nameView = (TextView) viewHolder.getView(R.id.musicName);
         //set song name
         nameView.setText(song.getSongName());
     }
 
-    //get song duration
+    //update song duration
     @SuppressLint("DefaultLocale")
-    public void initialiseLengthView(View view, Song song){
+    public void updateLengthView(ViewHolder viewHolder, Song song){
         //get text view ID for song duration
-        TextView lengthView = view.findViewById(R.id.musicLength);
+        TextView lengthView = (TextView) viewHolder.getView(R.id.musicLength);
         int length = song.getSongDuration();
         //set song duration
         lengthView.setText(String.format("%d:%02d", length/60, length%60));
     }
 
-    //initialise song delete button
-    public void initialiseDeleteButton(View currentItemView, Song song){
+    //update song delete button
+    public void updateDeleteButton(ViewHolder viewHolder, Song song){
         //get delete button by ID
-        ImageView clickDelete = currentItemView.findViewById(R.id.clickDelete);
+        ImageView clickDelete = (ImageView) viewHolder.getView(R.id.clickDelete);
         //show dialog to validate song deletion on click
         clickDelete.setOnClickListener(view -> musicListViewModel.deleteSong(context, song).show());
     }

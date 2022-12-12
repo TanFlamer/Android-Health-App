@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.example.myapp.R;
+import com.example.myapp.ViewHolder;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -36,36 +37,46 @@ public class LogsListAdapter extends ArrayAdapter<Pair<String, LocalDateTime>> {
         //inflate new view for log if null
         if(currentItemView == null) {
             currentItemView = LayoutInflater.from(getContext()).inflate(R.layout.logs_list_item, parent, false);
+            //create new view holder
+            ViewHolder viewHolder = new ViewHolder();
+            //add text view to view holder
+            viewHolder.addView(currentItemView.findViewById(R.id.saveLog));
+            //add text view to view holder
+            viewHolder.addView(currentItemView.findViewById(R.id.saveTime));
+            //set tag to view
+            currentItemView.setTag(viewHolder);
         }
 
-        //initialise log view data
-        initialiseAll(currentItemView, getItem(position));
+        //get view holder
+        ViewHolder viewHolder = (ViewHolder) currentItemView.getTag();
+        //update log view data
+        updateAllViews(viewHolder, getItem(position));
         //return log view
         return currentItemView;
     }
 
-    //initialise log view data
-    public void initialiseAll(View view, Pair<String, LocalDateTime> saveLog){
-        //get date time format
+    //update log view data
+    public void updateAllViews(ViewHolder viewHolder, Pair<String, LocalDateTime> saveLog){
+        //update date time format
         String formattedDateTime = saveLog.second.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-        //get log text
-        initialiseLogView(view, saveLog.first);
-        //get log date time
-        initialiseTimeView(view, formattedDateTime);
+        //update log text
+        updateLogView(viewHolder, saveLog.first);
+        //update log date time
+        updateTimeView(viewHolder, formattedDateTime);
     }
 
-    //get log text
-    public void initialiseLogView(View view, String log){
+    //update log text
+    public void updateLogView(ViewHolder viewHolder, String log){
         //get textview ID for log text
-        TextView logView = view.findViewById(R.id.saveLog);
+        TextView logView = (TextView) viewHolder.getView(R.id.saveLog);
         //set log text
         logView.setText(log);
     }
 
-    //get log date time
-    public void initialiseTimeView(View view, String time){
+    //update log date time
+    public void updateTimeView(ViewHolder viewHolder, String time){
         //get textview ID for log date time
-        TextView timeView = view.findViewById(R.id.saveTime);
+        TextView timeView = (TextView) viewHolder.getView(R.id.saveTime);
         //set log date time
         timeView.setText(time);
     }

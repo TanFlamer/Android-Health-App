@@ -165,7 +165,7 @@ public class SportChartFragment extends Fragment {
         barChart.getXAxis().setValueFormatter(new ValueFormatter() {
             @Override
             public String getFormattedValue(float value) {
-                return xAxisLabels.size() == 0 ? "" : xAxisLabels.get((int) value);
+                return xAxisLabels.isEmpty() ? "" : xAxisLabels.get((int) value);
             }
         });
     }

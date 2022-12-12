@@ -121,6 +121,8 @@ public class SportChartViewModel extends AndroidViewModel {
         sportList.clear();
         //add new sport data list
         sportList.addAll(currentSportMap.keySet());
+        //remove null values from sport list
+        sportList.removeIf(Objects::isNull);
         //sort sport data list according to date in ascending order
         sportList.sort(Comparator.comparingLong(Sport::getDate));
         //clear old date labels

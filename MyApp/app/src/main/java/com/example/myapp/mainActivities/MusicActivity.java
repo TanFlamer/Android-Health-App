@@ -10,6 +10,7 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager2.widget.ViewPager2;
 
+import com.example.myapp.FragmentAdapter;
 import com.example.myapp.MainApplication;
 import com.example.myapp.MusicPlayer;
 import com.example.myapp.R;

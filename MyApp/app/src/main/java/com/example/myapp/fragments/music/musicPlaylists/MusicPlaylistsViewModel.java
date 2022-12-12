@@ -131,9 +131,15 @@ public class MusicPlaylistsViewModel extends AndroidViewModel {
     //sort playlists and song lists
     public void sortPlaylists(List<Playlist> playlists, HashMap<Playlist, List<Song>> songPlaylists, String data, String order){
         Comparator<Playlist> playlistComparator = getPlaylistComparator(data, order, songPlaylists);
+        //remove null values from playlist
+        playlists.removeIf(Objects::isNull);
         playlists.sort(playlistComparator);
         Comparator<Song> songComparator = getSongComparator(data, order);
-        for(List<Song> songList : songPlaylists.values()) songList.sort(Comparator.nullsLast(songComparator));
+        for(List<Song> songList : songPlaylists.values()) {
+            //remove null values from song list
+            songList.removeIf(Objects::isNull);
+            songList.sort(songComparator);
+        }
     }
 
     //get comparator to sort playlists

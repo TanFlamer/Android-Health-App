@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.example.myapp.MusicPlayer;
 import com.example.myapp.R;
+import com.example.myapp.ViewHolder;
 import com.example.myapp.databasefiles.playlist.Playlist;
 import com.example.myapp.databasefiles.song.Song;
 
@@ -81,33 +82,71 @@ public class MusicPlaylistsAdapter extends BaseExpandableListAdapter {
         //inflate new view for playlist if null
         if(currentItemView == null) {
             currentItemView = LayoutInflater.from(context).inflate(R.layout.music_expandable_list_item, null);
+            //create new view holder
+            ViewHolder viewHolder = new ViewHolder();
+            //add text view to view holder
+            viewHolder.addView(currentItemView.findViewById(R.id.musicPlaylistName));
+            //add layout to view holder
+            viewHolder.addView(currentItemView.findViewById(R.id.layoutHidden));
+            //add button to view holder
+            viewHolder.addView(currentItemView.findViewById(R.id.clickEdit));
+            //add button to view holder
+            viewHolder.addView(currentItemView.findViewById(R.id.clickDelete));
+            //set tag to view
+            currentItemView.setTag(viewHolder);
         }
 
-        //initialise playlist view data
-        initialiseGroupView(currentItemView, i);
+        //get view holder
+        ViewHolder viewHolder = (ViewHolder) currentItemView.getTag();
+        //update playlist view data
+        initialiseGroupView(viewHolder, i);
         //return playlist view
         return currentItemView;
     }
 
-    //initialise playlist view data
-    public void initialiseGroupView(View view, int position){
+    //update playlist view data
+    public void initialiseGroupView(ViewHolder viewHolder, int position){
         Playlist playlist = playlistList.get(position);
-        //initialise playlist name
-        initialiseGroupName(view, playlist);
-        //initialise playlist hidden layout
-        initialiseHiddenLayout(view, playlist);
-        //initialise playlist edit button
-        initialiseEditButton(view, playlist);
-        //initialise playlist delete button
-        initialiseDeleteButton(view, playlist);
+        //update playlist name
+        initialiseGroupName(viewHolder, playlist);
+        //update playlist hidden layout
+        initialiseHiddenLayout(viewHolder, playlist);
+        //update playlist edit button
+        initialiseEditButton(viewHolder, playlist);
+        //update playlist delete button
+        initialiseDeleteButton(viewHolder, playlist);
     }
 
-    //initialise playlist name
-    public void initialiseGroupName(View view, Playlist playlist){
+    //update playlist name
+    public void initialiseGroupName(ViewHolder viewHolder, Playlist playlist){
         //get text view ID for playlist name
-        TextView nameView = view.findViewById(R.id.musicPlaylistName);
+        TextView nameView = (TextView) viewHolder.getView(R.id.musicPlaylistName);
         //set playlist name
         nameView.setText(playlist.getPlaylistName());
+    }
+
+    //update playlist hidden layout
+    public void initialiseHiddenLayout(ViewHolder viewHolder, Playlist playlist){
+        //get hidden layout by ID
+        LinearLayout layoutHidden = (LinearLayout) viewHolder.getView(R.id.layoutHidden);
+        //change visibility of hidden layout on long click
+        layoutHidden.setVisibility(Boolean.TRUE.equals(buttonMap.get(playlist)) ? View.VISIBLE : View.GONE);
+    }
+
+    //update playlist edit button
+    public void initialiseEditButton(ViewHolder viewHolder, Playlist playlist){
+        //get edit button by ID
+        ImageView clickEdit = (ImageView) viewHolder.getView(R.id.clickEdit);
+        //send to edit playlist activity on click
+        clickEdit.setOnClickListener(v -> context.startActivity(musicPlaylistsViewModel.editPlaylist(playlist.getPlaylistName())));
+    }
+
+    //update playlist delete button
+    public void initialiseDeleteButton(ViewHolder viewHolder, Playlist playlist){
+        //get delete button by ID
+        ImageView clickDelete = (ImageView) viewHolder.getView(R.id.clickDelete);
+        //show dialog to validate playlist deletion on click
+        clickDelete.setOnClickListener(view1 -> musicPlaylistsViewModel.deletePlaylist(context, playlist).show());
     }
 
     //show or hide hidden layout on long click
@@ -120,30 +159,6 @@ public class MusicPlaylistsAdapter extends BaseExpandableListAdapter {
         notifyDataSetChanged();
     }
 
-    //initialise playlist hidden layout
-    public void initialiseHiddenLayout(View view, Playlist playlist){
-        //get hidden layout by ID
-        LinearLayout layoutHidden = view.findViewById(R.id.layoutHidden);
-        //change visibility of hidden layout on long click
-        layoutHidden.setVisibility(Boolean.TRUE.equals(buttonMap.get(playlist)) ? View.VISIBLE : View.GONE);
-    }
-
-    //initialise playlist edit button
-    public void initialiseEditButton(View view, Playlist playlist){
-        //get edit button by ID
-        ImageView clickEdit = view.findViewById(R.id.clickEdit);
-        //send to edit playlist activity on click
-        clickEdit.setOnClickListener(v -> context.startActivity(musicPlaylistsViewModel.editPlaylist(playlist.getPlaylistName())));
-    }
-
-    //initialise playlist delete button
-    public void initialiseDeleteButton(View view, Playlist playlist){
-        //get delete button by ID
-        ImageView clickDelete = view.findViewById(R.id.clickDelete);
-        //show dialog to validate playlist deletion on click
-        clickDelete.setOnClickListener(view1 -> musicPlaylistsViewModel.deletePlaylist(context, playlist).show());
-    }
-
     @SuppressLint({"InflateParams", "SetTextI18n"})
     @Override //get view for each song
     public View getChildView(int i, int i1, boolean b, View view, ViewGroup viewGroup) {
@@ -152,45 +167,57 @@ public class MusicPlaylistsAdapter extends BaseExpandableListAdapter {
         //inflate new view for song if null
         if(currentItemView == null) {
             currentItemView = LayoutInflater.from(context).inflate(R.layout.music_expandable_list_item_data, null);
+            //create new view holder
+            ViewHolder viewHolder = new ViewHolder();
+            //add text view to view holder
+            viewHolder.addView(currentItemView.findViewById(R.id.musicSongName));
+            //add text view to view holder
+            viewHolder.addView(currentItemView.findViewById(R.id.musicSongLength));
+            //set tag to view
+            currentItemView.setTag(viewHolder);
         }
 
-        //initialise song view data
-        initialiseChildView(currentItemView, i, i1);
+        //update song view data
+        updateChildView(currentItemView, i, i1);
         //return song view
         return currentItemView;
     }
 
-    //initialise song view data
-    public void initialiseChildView(View view, int parent, int child){
+    //update song view data
+    public void updateChildView(View view, int parent, int child){
+        //get view holder
+        ViewHolder viewHolder = (ViewHolder) view.getTag();
+        //Get song at current position
         Song song = Objects.requireNonNull(songPlaylists.get(playlistList.get(parent))).get(child);
-        //get song name
-        initialiseChildName(view, song);
-        //get song duration
-        initialiseChildLength(view, song);
+        //update song name
+        updateChildName(viewHolder, song);
+        //update song duration
+        updateChildLength(viewHolder, song);
         //set song on click listener
-        initialiseOnClickView(view, parent, child);
+        updateOnClickView(view, parent, child);
     }
 
-    //get song name
-    public void initialiseChildName(View view, Song song){
+    //update song name
+    public void updateChildName(ViewHolder viewHolder, Song song){
         //get text view ID for song name
-        TextView nameView = view.findViewById(R.id.musicSongName);
+        TextView nameView = (TextView) viewHolder.getView(R.id.musicSongName);
         //set song name
         nameView.setText(song.getSongName());
     }
 
-    //get song duration
+    //update song duration
     @SuppressLint("DefaultLocale")
-    public void initialiseChildLength(View view, Song song){
+    public void updateChildLength(ViewHolder viewHolder, Song song){
         //get text view ID for song duration
-        TextView lengthView = view.findViewById(R.id.musicSongLength);
+        TextView lengthView = (TextView) viewHolder.getView(R.id.musicSongLength);
+        //get song length
         int length = song.getSongDuration();
         //set song length
         lengthView.setText(String.format("%d:%02d", length/60, length%60));
     }
 
     //set song on click listener
-    public void initialiseOnClickView(View view, int parent, int child){
+    public void updateOnClickView(View view, int parent, int child){
         //get music player
         MusicPlayer musicPlayer = musicPlaylistsViewModel.getMusicPlayer();
         //load clicked playlist and song in music player
@@ -212,8 +239,6 @@ public class MusicPlaylistsAdapter extends BaseExpandableListAdapter {
         songPlaylists.clear();
         //add new song lists
         songPlaylists.putAll(newSongPlaylists);
-        //remove null songs
-        removeNull();
         //sort playlists and song lists
         sortMusicPlaylists(data, order);
     }
@@ -226,12 +251,5 @@ public class MusicPlaylistsAdapter extends BaseExpandableListAdapter {
         for(Playlist playlist : playlistList) buttonMap.put(playlist, false);
         //notify adapter dataset changed
         notifyDataSetChanged();
-    }
-
-    //remove null songs
-    public void removeNull(){
-        for(List<Song> songList : songPlaylists.values()){
-            songList.removeIf(Objects::isNull);
-        }
     }
 }
