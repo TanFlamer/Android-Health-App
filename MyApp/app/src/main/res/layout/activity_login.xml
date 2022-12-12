@@ -71,6 +71,7 @@
                 android:layout_height="wrap_content"
                 android:ems="10"
                 android:hint="@string/username"
+                android:inputType="textPersonName"
                 tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck"
                 android:autofillHints="username" />
         </com.google.android.material.textfield.TextInputLayout>

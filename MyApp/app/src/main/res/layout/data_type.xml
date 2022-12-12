@@ -39,6 +39,7 @@
                 android:layout_height="wrap_content"
                 android:ems="10"
                 android:hint="@string/name"
+                android:inputType="textPersonName"
                 android:minHeight="48dp"
                 android:autofillHints="name" />
         </com.google.android.material.textfield.TextInputLayout>

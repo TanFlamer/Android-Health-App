@@ -82,6 +82,7 @@
                             android:layout_height="match_parent"
                             android:ems="10"
                             android:hint="@string/username"
+                            android:inputType="textPersonName"
                             tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck"
                             android:autofillHints="username" />
                     </com.google.android.material.textfield.TextInputLayout>
@@ -208,6 +209,7 @@
                             android:layout_height="match_parent"
                             android:ems="10"
                             android:hint="@string/username"
+                            android:inputType="textPersonName"
                             tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck"
                             android:autofillHints="username" />
                     </com.google.android.material.textfield.TextInputLayout>
