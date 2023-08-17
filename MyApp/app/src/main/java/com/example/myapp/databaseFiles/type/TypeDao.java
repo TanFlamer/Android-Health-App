@@ -1,4 +1,4 @@
-package com.example.myapp.databasefiles.type;
+package com.example.myapp.databaseFiles.type;
 
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;

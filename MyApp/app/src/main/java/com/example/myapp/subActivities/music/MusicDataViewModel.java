@@ -7,11 +7,11 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 
 import com.example.myapp.MainApplication;
-import com.example.myapp.databasefiles.playlist.Playlist;
-import com.example.myapp.databasefiles.playlist.PlaylistRepository;
-import com.example.myapp.databasefiles.song.Song;
-import com.example.myapp.databasefiles.songcatalogue.SongCatalogue;
-import com.example.myapp.databasefiles.songcatalogue.SongCatalogueRepository;
+import com.example.myapp.databaseFiles.playlist.Playlist;
+import com.example.myapp.databaseFiles.playlist.PlaylistRepository;
+import com.example.myapp.databaseFiles.song.Song;
+import com.example.myapp.databaseFiles.songcatalogue.SongCatalogue;
+import com.example.myapp.databaseFiles.songcatalogue.SongCatalogueRepository;
 
 import java.util.ArrayList;
 import java.util.HashMap;

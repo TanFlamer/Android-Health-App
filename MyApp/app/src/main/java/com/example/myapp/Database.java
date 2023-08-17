@@ -5,22 +5,22 @@ import android.content.Context;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
 
-import com.example.myapp.databasefiles.playlist.Playlist;
-import com.example.myapp.databasefiles.playlist.PlaylistDao;
-import com.example.myapp.databasefiles.sleep.Sleep;
-import com.example.myapp.databasefiles.sleep.SleepDao;
-import com.example.myapp.databasefiles.song.Song;
-import com.example.myapp.databasefiles.song.SongDao;
-import com.example.myapp.databasefiles.songcatalogue.SongCatalogue;
-import com.example.myapp.databasefiles.songcatalogue.SongCatalogueDao;
-import com.example.myapp.databasefiles.sport.Sport;
-import com.example.myapp.databasefiles.sport.SportDao;
-import com.example.myapp.databasefiles.sportschedule.SportSchedule;
-import com.example.myapp.databasefiles.sportschedule.SportScheduleDao;
-import com.example.myapp.databasefiles.type.Type;
-import com.example.myapp.databasefiles.type.TypeDao;
-import com.example.myapp.databasefiles.user.User;
-import com.example.myapp.databasefiles.user.UserDao;
+import com.example.myapp.databaseFiles.playlist.Playlist;
+import com.example.myapp.databaseFiles.playlist.PlaylistDao;
+import com.example.myapp.databaseFiles.sleep.Sleep;
+import com.example.myapp.databaseFiles.sleep.SleepDao;
+import com.example.myapp.databaseFiles.song.Song;
+import com.example.myapp.databaseFiles.song.SongDao;
+import com.example.myapp.databaseFiles.songcatalogue.SongCatalogue;
+import com.example.myapp.databaseFiles.songcatalogue.SongCatalogueDao;
+import com.example.myapp.databaseFiles.sport.Sport;
+import com.example.myapp.databaseFiles.sport.SportDao;
+import com.example.myapp.databaseFiles.sportschedule.SportSchedule;
+import com.example.myapp.databaseFiles.sportschedule.SportScheduleDao;
+import com.example.myapp.databaseFiles.type.Type;
+import com.example.myapp.databaseFiles.type.TypeDao;
+import com.example.myapp.databaseFiles.user.User;
+import com.example.myapp.databaseFiles.user.UserDao;
 
 @androidx.room.Database(entities = { User.class, Playlist.class, Song.class, Sleep.class, Sport.class, Type.class, SongCatalogue.class, SportSchedule.class },
                         version = 1,

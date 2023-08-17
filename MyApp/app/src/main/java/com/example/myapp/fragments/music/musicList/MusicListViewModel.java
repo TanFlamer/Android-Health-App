@@ -19,8 +19,8 @@ import androidx.lifecycle.LiveData;
 
 import com.example.myapp.MainApplication;
 import com.example.myapp.MusicPlayer;
-import com.example.myapp.databasefiles.song.Song;
-import com.example.myapp.databasefiles.song.SongRepository;
+import com.example.myapp.databaseFiles.song.Song;
+import com.example.myapp.databaseFiles.song.SongRepository;
 
 import java.io.File;
 import java.io.IOException;

@@ -13,8 +13,8 @@ import android.widget.TextView;
 import com.example.myapp.MusicPlayer;
 import com.example.myapp.R;
 import com.example.myapp.ViewHolder;
-import com.example.myapp.databasefiles.playlist.Playlist;
-import com.example.myapp.databasefiles.song.Song;
+import com.example.myapp.databaseFiles.playlist.Playlist;
+import com.example.myapp.databaseFiles.song.Song;
 
 import java.util.ArrayList;
 import java.util.HashMap;

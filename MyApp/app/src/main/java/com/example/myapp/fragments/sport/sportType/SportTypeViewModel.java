@@ -9,8 +9,8 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
 import com.example.myapp.MainApplication;
-import com.example.myapp.databasefiles.type.Type;
-import com.example.myapp.databasefiles.type.TypeRepository;
+import com.example.myapp.databaseFiles.type.Type;
+import com.example.myapp.databaseFiles.type.TypeRepository;
 
 import java.util.Comparator;
 import java.util.List;

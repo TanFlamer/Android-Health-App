@@ -12,10 +12,9 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 
 import com.example.myapp.R;
-import com.example.myapp.databasefiles.type.Type;
+import com.example.myapp.databaseFiles.type.Type;
 import com.example.myapp.subActivities.type.TypeDataActivity;
 
 import java.util.HashMap;

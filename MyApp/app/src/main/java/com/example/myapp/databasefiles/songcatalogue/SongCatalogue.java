@@ -1,4 +1,4 @@
-package com.example.myapp.databasefiles.songcatalogue;
+package com.example.myapp.databaseFiles.songcatalogue;
 
 import static androidx.room.ForeignKey.CASCADE;
 
@@ -7,9 +7,9 @@ import androidx.room.Entity;
 import androidx.room.ForeignKey;
 import androidx.room.Index;
 
-import com.example.myapp.databasefiles.user.User;
-import com.example.myapp.databasefiles.playlist.Playlist;
-import com.example.myapp.databasefiles.song.Song;
+import com.example.myapp.databaseFiles.playlist.Playlist;
+import com.example.myapp.databaseFiles.song.Song;
+import com.example.myapp.databaseFiles.user.User;
 
 @Entity(tableName = "SongCatalogue",
         primaryKeys = { "playlistID", "songID" },

@@ -6,8 +6,8 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 
 import com.example.myapp.MainApplication;
-import com.example.myapp.databasefiles.type.Type;
-import com.example.myapp.databasefiles.type.TypeRepository;
+import com.example.myapp.databaseFiles.type.Type;
+import com.example.myapp.databaseFiles.type.TypeRepository;
 
 public class TypeDataViewModel extends AndroidViewModel {
 

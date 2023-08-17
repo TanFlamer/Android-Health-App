@@ -20,8 +20,8 @@ import androidx.lifecycle.AndroidViewModel;
 
 import com.example.myapp.MainApplication;
 import com.example.myapp.Notification;
-import com.example.myapp.databasefiles.user.User;
-import com.example.myapp.databasefiles.user.UserRepository;
+import com.example.myapp.databaseFiles.user.User;
+import com.example.myapp.databaseFiles.user.UserRepository;
 import com.example.myapp.mainActivities.account.AccountActivity;
 
 import java.util.Calendar;

@@ -8,8 +8,8 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 
 import com.example.myapp.MainApplication;
-import com.example.myapp.databasefiles.user.User;
-import com.example.myapp.databasefiles.user.UserRepository;
+import com.example.myapp.databaseFiles.user.User;
+import com.example.myapp.databaseFiles.user.UserRepository;
 import com.example.myapp.mainActivities.MusicActivity;
 
 import java.io.File;

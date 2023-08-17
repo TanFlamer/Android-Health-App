@@ -12,12 +12,12 @@ import androidx.lifecycle.MediatorLiveData;
 
 import com.example.myapp.MainApplication;
 import com.example.myapp.MusicPlayer;
-import com.example.myapp.databasefiles.playlist.Playlist;
-import com.example.myapp.databasefiles.playlist.PlaylistRepository;
-import com.example.myapp.databasefiles.song.Song;
-import com.example.myapp.databasefiles.song.SongRepository;
-import com.example.myapp.databasefiles.songcatalogue.SongCatalogue;
-import com.example.myapp.databasefiles.songcatalogue.SongCatalogueRepository;
+import com.example.myapp.databaseFiles.playlist.Playlist;
+import com.example.myapp.databaseFiles.playlist.PlaylistRepository;
+import com.example.myapp.databaseFiles.song.Song;
+import com.example.myapp.databaseFiles.song.SongRepository;
+import com.example.myapp.databaseFiles.songcatalogue.SongCatalogue;
+import com.example.myapp.databaseFiles.songcatalogue.SongCatalogueRepository;
 import com.example.myapp.subActivities.music.MusicDataActivity;
 
 import java.util.ArrayList;

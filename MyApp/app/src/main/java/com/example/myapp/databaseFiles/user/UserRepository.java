@@ -1,4 +1,4 @@
-package com.example.myapp.databasefiles.user;
+package com.example.myapp.databaseFiles.user;
 
 import android.app.Application;
 

@@ -1,4 +1,4 @@
-package com.example.myapp.databasefiles.songcatalogue;
+package com.example.myapp.databaseFiles.songcatalogue;
 
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;

@@ -1,4 +1,4 @@
-package com.example.myapp.databasefiles.sport;
+package com.example.myapp.databaseFiles.sport;
 
 import static androidx.room.ForeignKey.CASCADE;
 
@@ -8,7 +8,7 @@ import androidx.room.Ignore;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
-import com.example.myapp.databasefiles.user.User;
+import com.example.myapp.databaseFiles.user.User;
 
 @Entity(tableName = "Sport",
         indices = { @Index("userID"), @Index("date") },

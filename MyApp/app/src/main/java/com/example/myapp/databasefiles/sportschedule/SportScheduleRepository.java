@@ -1,4 +1,4 @@
-package com.example.myapp.databasefiles.sportschedule;
+package com.example.myapp.databaseFiles.sportschedule;
 
 import android.app.Application;
 

@@ -1,4 +1,4 @@
-package com.example.myapp.databasefiles.sport;
+package com.example.myapp.databaseFiles.sport;
 
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;

@@ -19,7 +19,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.myapp.R;
-import com.example.myapp.databasefiles.song.Song;
+import com.example.myapp.databaseFiles.song.Song;
 import com.google.android.material.textfield.TextInputLayout;
 
 import java.util.ArrayList;

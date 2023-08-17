@@ -10,10 +10,10 @@ import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.Transformations;
 
 import com.example.myapp.MainApplication;
-import com.example.myapp.databasefiles.song.Song;
-import com.example.myapp.databasefiles.song.SongRepository;
-import com.example.myapp.databasefiles.songcatalogue.SongCatalogue;
-import com.example.myapp.databasefiles.songcatalogue.SongCatalogueRepository;
+import com.example.myapp.databaseFiles.song.Song;
+import com.example.myapp.databaseFiles.song.SongRepository;
+import com.example.myapp.databaseFiles.songcatalogue.SongCatalogue;
+import com.example.myapp.databaseFiles.songcatalogue.SongCatalogueRepository;
 
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -12,7 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.myapp.R;
-import com.example.myapp.databasefiles.type.Type;
+import com.example.myapp.databaseFiles.type.Type;
 
 import java.util.ArrayList;
 import java.util.HashMap;

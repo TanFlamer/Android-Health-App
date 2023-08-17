@@ -1,4 +1,4 @@
-package com.example.myapp.databasefiles.type;
+package com.example.myapp.databaseFiles.type;
 
 import android.app.Application;
 

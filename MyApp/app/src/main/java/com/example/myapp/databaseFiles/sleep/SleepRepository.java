@@ -1,4 +1,4 @@
-package com.example.myapp.databasefiles.sleep;
+package com.example.myapp.databaseFiles.sleep;
 
 import android.app.Application;
 

@@ -15,7 +15,7 @@ import androidx.annotation.Nullable;
 
 import com.example.myapp.MusicPlayer;
 import com.example.myapp.R;
-import com.example.myapp.databasefiles.song.Song;
+import com.example.myapp.databaseFiles.song.Song;
 import com.example.myapp.ViewHolder;
 
 import java.util.HashMap;

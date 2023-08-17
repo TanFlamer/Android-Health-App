@@ -13,8 +13,8 @@ import android.widget.TextView;
 
 import com.example.myapp.R;
 import com.example.myapp.ViewHolder;
-import com.example.myapp.databasefiles.sport.Sport;
-import com.example.myapp.databasefiles.type.Type;
+import com.example.myapp.databaseFiles.sport.Sport;
+import com.example.myapp.databaseFiles.type.Type;
 
 import java.time.Instant;
 import java.time.LocalDate;

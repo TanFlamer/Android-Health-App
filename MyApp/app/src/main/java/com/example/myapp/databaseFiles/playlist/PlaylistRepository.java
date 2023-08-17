@@ -1,4 +1,4 @@
-package com.example.myapp.databasefiles.playlist;
+package com.example.myapp.databaseFiles.playlist;
 
 import android.app.Application;
 

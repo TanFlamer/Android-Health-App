@@ -19,7 +19,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.myapp.R;
-import com.example.myapp.databasefiles.type.Type;
+import com.example.myapp.databaseFiles.type.Type;
 import com.example.myapp.subActivities.type.TypeDataAdapter;
 
 import java.time.Instant;

@@ -10,8 +10,8 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
 import com.example.myapp.MainApplication;
-import com.example.myapp.databasefiles.sleep.Sleep;
-import com.example.myapp.databasefiles.sleep.SleepRepository;
+import com.example.myapp.databaseFiles.sleep.Sleep;
+import com.example.myapp.databaseFiles.sleep.SleepRepository;
 import com.example.myapp.subActivities.sleep.SleepDataActivity;
 
 import java.time.Instant;

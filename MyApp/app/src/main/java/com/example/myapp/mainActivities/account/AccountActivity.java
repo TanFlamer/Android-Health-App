@@ -17,7 +17,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.myapp.R;
-import com.example.myapp.databasefiles.user.User;
+import com.example.myapp.databaseFiles.user.User;
 import com.google.android.material.textfield.TextInputLayout;
 
 import java.util.HashMap;

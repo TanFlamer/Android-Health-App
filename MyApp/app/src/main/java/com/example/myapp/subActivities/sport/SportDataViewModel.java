@@ -7,11 +7,11 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 
 import com.example.myapp.MainApplication;
-import com.example.myapp.databasefiles.sport.Sport;
-import com.example.myapp.databasefiles.type.Type;
-import com.example.myapp.databasefiles.sportschedule.SportSchedule;
-import com.example.myapp.databasefiles.sport.SportRepository;
-import com.example.myapp.databasefiles.sportschedule.SportScheduleRepository;
+import com.example.myapp.databaseFiles.sport.Sport;
+import com.example.myapp.databaseFiles.type.Type;
+import com.example.myapp.databaseFiles.sportschedule.SportSchedule;
+import com.example.myapp.databaseFiles.sport.SportRepository;
+import com.example.myapp.databaseFiles.sportschedule.SportScheduleRepository;
 
 import java.time.Instant;
 import java.time.LocalDate;

@@ -1,4 +1,4 @@
-package com.example.myapp.databasefiles.user;
+package com.example.myapp.databaseFiles.user;
 
 import androidx.room.Dao;
 import androidx.room.Delete;

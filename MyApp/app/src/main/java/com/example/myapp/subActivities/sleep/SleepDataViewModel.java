@@ -7,8 +7,8 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 
 import com.example.myapp.MainApplication;
-import com.example.myapp.databasefiles.sleep.Sleep;
-import com.example.myapp.databasefiles.sleep.SleepRepository;
+import com.example.myapp.databaseFiles.sleep.Sleep;
+import com.example.myapp.databaseFiles.sleep.SleepRepository;
 
 import java.time.Instant;
 import java.time.LocalDate;

@@ -13,7 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.myapp.R;
-import com.example.myapp.databasefiles.sleep.Sleep;
+import com.example.myapp.databaseFiles.sleep.Sleep;
 
 import java.time.Instant;
 import java.time.LocalDate;

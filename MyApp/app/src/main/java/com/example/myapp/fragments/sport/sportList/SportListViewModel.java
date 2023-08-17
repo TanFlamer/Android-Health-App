@@ -12,12 +12,12 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
 
 import com.example.myapp.MainApplication;
-import com.example.myapp.databasefiles.sport.Sport;
-import com.example.myapp.databasefiles.sport.SportRepository;
-import com.example.myapp.databasefiles.sportschedule.SportSchedule;
-import com.example.myapp.databasefiles.sportschedule.SportScheduleRepository;
-import com.example.myapp.databasefiles.type.Type;
-import com.example.myapp.databasefiles.type.TypeRepository;
+import com.example.myapp.databaseFiles.sport.Sport;
+import com.example.myapp.databaseFiles.sport.SportRepository;
+import com.example.myapp.databaseFiles.sportschedule.SportSchedule;
+import com.example.myapp.databaseFiles.sportschedule.SportScheduleRepository;
+import com.example.myapp.databaseFiles.type.Type;
+import com.example.myapp.databaseFiles.type.TypeRepository;
 import com.example.myapp.subActivities.sport.SportDataActivity;
 
 import java.time.Instant;

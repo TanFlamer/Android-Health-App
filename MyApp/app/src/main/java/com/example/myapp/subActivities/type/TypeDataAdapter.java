@@ -9,7 +9,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.example.myapp.databasefiles.type.Type;
+import com.example.myapp.databaseFiles.type.Type;
 
 import java.util.List;
 
