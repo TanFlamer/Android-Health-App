@@ -194,8 +194,8 @@ public class MainApplication extends Application {
         if(songRepository == null) {
             songList = new ArrayList<>();
             songRepository = new SongRepository(this);
-            songRepository.getAllSongs(userID).observeForever(newSongList -> songList = newSongList);
         }
+        songRepository.getAllSongs(userID).observeForever(newSongList -> songList = newSongList);
         return songRepository;
     }
 
@@ -204,8 +204,8 @@ public class MainApplication extends Application {
         if(playlistRepository == null) {
             playlistList = new ArrayList<>();
             playlistRepository = new PlaylistRepository(this);
-            playlistRepository.getAllPlaylists(userID).observeForever(newPlaylistList -> playlistList = newPlaylistList);
         }
+        playlistRepository.getAllPlaylists(userID).observeForever(newPlaylistList -> playlistList = newPlaylistList);
         return playlistRepository;
     }
 
@@ -214,8 +214,8 @@ public class MainApplication extends Application {
         if(songCatalogueRepository == null) {
             songCatalogueList = new ArrayList<>();
             songCatalogueRepository = new SongCatalogueRepository(this);
-            songCatalogueRepository.getAllSongCatalogue(userID).observeForever(newSongPlaylistList -> songCatalogueList = newSongPlaylistList);
         }
+        songCatalogueRepository.getAllSongCatalogue(userID).observeForever(newSongPlaylistList -> songCatalogueList = newSongPlaylistList);
         return songCatalogueRepository;
     }
 
@@ -224,8 +224,8 @@ public class MainApplication extends Application {
         if(sportRepository == null) {
             sportList = new ArrayList<>();
             sportRepository = new SportRepository(this);
-            sportRepository.getAllSport(userID).observeForever(newSportList -> sportList = newSportList);
         }
+        sportRepository.getAllSport(userID).observeForever(newSportList -> sportList = newSportList);
         return sportRepository;
     }
 
@@ -234,8 +234,8 @@ public class MainApplication extends Application {
         if(typeRepository == null) {
             typeList = new ArrayList<>();
             typeRepository = new TypeRepository(this);
-            typeRepository.getAllTypes(userID).observeForever(newTypeList -> typeList = newTypeList);
         }
+        typeRepository.getAllTypes(userID).observeForever(newTypeList -> typeList = newTypeList);
         return typeRepository;
     }
 
@@ -244,8 +244,8 @@ public class MainApplication extends Application {
         if(sportScheduleRepository == null) {
             sportScheduleList = new ArrayList<>();
             sportScheduleRepository = new SportScheduleRepository(this);
-            sportScheduleRepository.getAllSportSchedule(userID).observeForever(newTypeSportList -> sportScheduleList = newTypeSportList);
         }
+        sportScheduleRepository.getAllSportSchedule(userID).observeForever(newTypeSportList -> sportScheduleList = newTypeSportList);
         return sportScheduleRepository;
     }
 
